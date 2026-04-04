@@ -192,11 +192,11 @@ export default function HomePage({ onLogin, user }: { onLogin: () => void, user:
         <p className="text-center text-emerald-accent/60 mb-16 max-w-xl mx-auto">Nature's most potent healing ingredients used in our treatment protocols.</p>
         <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-5 gap-6">
           {[
-            { name: "Ashwagandha", benefit: "Stress relief & vitality", emoji: "🌿" },
-            { name: "Turmeric", benefit: "Anti-inflammatory", emoji: "🟡" },
-            { name: "Tulsi", benefit: "Immunity booster", emoji: "🍃" },
-            { name: "Triphala", benefit: "Digestive health", emoji: "🫐" },
-            { name: "Brahmi", benefit: "Brain & memory", emoji: "🧠" },
+            { name: "Ashwagandha", benefit: "Stress relief & vitality", emoji: "🌿", image: "/ashwagandha.png" },
+            { name: "Turmeric", benefit: "Anti-inflammatory", emoji: "🟡", image: "/turmeric.png" },
+            { name: "Tulsi", benefit: "Immunity booster", emoji: "🍃", image: "/tulsi.png" },
+            { name: "Triphala", benefit: "Digestive health", emoji: "🫐", image: "/triphala.png" },
+            { name: "Brahmi", benefit: "Brain & memory", emoji: "🧠", image: "/brahmi.png" },
           ].map((herb, i) => (
             <motion.div 
               key={i}
@@ -204,11 +204,20 @@ export default function HomePage({ onLogin, user }: { onLogin: () => void, user:
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.1 }}
-              className="bg-forest/60 border border-white/5 rounded-3xl p-6 text-center hover:border-emerald-accent/30 transition-all hover:-translate-y-1 cursor-default"
+              className="bg-forest/60 border border-white/5 rounded-3xl p-5 text-center hover:border-emerald-accent/30 transition-all hover:-translate-y-2 cursor-default group"
             >
-              <div className="text-4xl mb-3">{herb.emoji}</div>
-              <h4 className="font-bold text-cream text-lg">{herb.name}</h4>
-              <p className="text-xs text-emerald-accent/50 mt-1">{herb.benefit}</p>
+              <div className="mb-4 relative rounded-2xl overflow-hidden aspect-square shadow-lg shadow-black/20">
+                <img 
+                  src={herb.image} 
+                  alt={herb.name} 
+                  className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-forest/90 via-forest/20 to-transparent opacity-80 group-hover:opacity-60 transition-opacity"></div>
+              </div>
+              <h4 className="font-bold text-cream text-lg flex items-center justify-center gap-2">
+                {herb.name} <span className="text-xl">{herb.emoji}</span>
+              </h4>
+              <p className="text-sm text-emerald-accent/70 mt-1">{herb.benefit}</p>
             </motion.div>
           ))}
         </div>
