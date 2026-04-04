@@ -403,7 +403,7 @@ export default function ShopPage({ user, onLogin }: { user: FirebaseUser | null,
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
           onClick={() => setShowCart(true)}
-          className="fixed bottom-24 left-6 z-40 bg-emerald-accent text-forest w-16 h-16 rounded-2xl flex items-center justify-center shadow-2xl shadow-emerald-accent/30 hover:scale-110 transition-transform"
+          className="fixed bottom-48 left-6 z-40 bg-emerald-accent text-forest w-16 h-16 rounded-2xl flex items-center justify-center shadow-2xl shadow-emerald-accent/30 hover:scale-110 transition-transform"
         >
           <ShoppingCart size={24} />
           <span className="absolute -top-2 -right-2 bg-rose-500 text-white text-xs font-bold w-6 h-6 rounded-full flex items-center justify-center">
