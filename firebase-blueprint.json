@@ -1,0 +1,75 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile information",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "Firebase Auth UID" },
+        "name": { "type": "string", "description": "User's full name" },
+        "email": { "type": "string", "format": "email", "description": "User's email address" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Account creation timestamp" }
+      },
+      "required": ["uid", "name", "email", "createdAt"]
+    },
+    "Appointment": {
+      "title": "Appointment",
+      "description": "Ayurvedic consultation appointment",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string", "description": "UID of the user who booked" },
+        "name": { "type": "string", "description": "Patient name" },
+        "age": { "type": "number", "description": "Patient age" },
+        "problem": { "type": "string", "description": "Health issue description" },
+        "preferredDate": { "type": "string", "format": "date", "description": "Requested date" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "name", "age", "problem", "preferredDate", "createdAt"]
+    },
+    "HeartLog": {
+      "title": "HeartLog",
+      "description": "Heart rate measurement log",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "heartRate": { "type": "number", "description": "BPM" },
+        "status": { "type": "string", "enum": ["low", "normal", "high"] },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "heartRate", "status", "timestamp"]
+    },
+    "HealthAnalysis": {
+      "title": "HealthAnalysis",
+      "description": "AI-generated health analysis result",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "symptoms": { "type": "string" },
+        "possibleDisease": { "type": "string" },
+        "ayurvedicSuggestion": { "type": "string" },
+        "precautions": { "type": "array", "items": { "type": "string" } },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "symptoms", "possibleDisease", "ayurvedicSuggestion", "precautions", "timestamp"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User profile documents"
+    },
+    "/appointments/{appointmentId}": {
+      "schema": "Appointment",
+      "description": "Appointment records"
+    },
+    "/heart_logs/{logId}": {
+      "schema": "HeartLog",
+      "description": "Heart rate logs"
+    },
+    "/health_analyses/{analysisId}": {
+      "schema": "HealthAnalysis",
+      "description": "Saved AI health analyses"
+    }
+  }
+}
