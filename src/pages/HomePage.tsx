@@ -64,11 +64,11 @@ export default function HomePage({ onLogin, user }: { onLogin: () => void, user:
               boxShadow: '0 24px 64px rgba(0,0,0,0.45)',
             }}>
               <video
-                src="/hero-video.mp4"
                 autoPlay
                 loop
                 muted
                 playsInline
+                preload="auto"
                 style={{
                   width: '100%',
                   height: '280px',
@@ -76,7 +76,9 @@ export default function HomePage({ onLogin, user }: { onLogin: () => void, user:
                   objectPosition: 'center center',
                   display: 'block',
                 }}
-              />
+              >
+                <source src="/hero-video.mp4" type="video/mp4" />
+              </video>
               {/* Gradient overlay */}
               <div style={{
                 position: 'absolute', inset: 0,
