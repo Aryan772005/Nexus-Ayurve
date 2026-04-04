@@ -2,10 +2,10 @@
 @import "tailwindcss";
 
 @theme {
-  --color-forest: #022C22;
-  --color-moss: #064E3B;
-  --color-emerald-accent: #34D399;
-  --color-cream: #F0FDF4;
+  --color-forest: #0A0F0D;
+  --color-moss: #131C18;
+  --color-emerald-accent: #10B981;
+  --color-cream: #F8FAFC;
 
   --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
   --font-display: 'Playfair Display', ui-serif, Georgia, serif;
