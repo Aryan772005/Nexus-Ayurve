@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Sparkles, Heart, Calendar, ChevronRight, Star, Users, Award, Leaf, Quote } from 'lucide-react';
+import { Sparkles, Heart, Calendar, ChevronRight, Star, Users, Award, Leaf, Quote, Shield } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export default function HomePage({ onLogin, user }: { onLogin: () => void, user: any }) {
@@ -63,10 +63,12 @@ export default function HomePage({ onLogin, user }: { onLogin: () => void, user:
               border: '1px solid rgba(52,211,153,0.25)',
               boxShadow: '0 24px 64px rgba(0,0,0,0.45)',
             }}>
-              <img
-                src="/ayurveda-hero.png"
-                alt="Ayurvedic herbs and wellness"
-                loading="lazy"
+              <video
+                src="/hero-video.mp4"
+                autoPlay
+                loop
+                muted
+                playsInline
                 style={{
                   width: '100%',
                   height: '280px',
@@ -139,7 +141,7 @@ export default function HomePage({ onLogin, user }: { onLogin: () => void, user:
         <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
           {[
             { num: "8+", label: "Expert Doctors", icon: <Users size={20} /> },
-            { num: "5000+", label: "Consultations", icon: <Calendar size={20} /> },
+            { num: "Trusted", label: "Platform", icon: <Shield size={20} /> },
             { num: "₹1", label: "Per Session", icon: <Award size={20} /> },
             { num: "4.8★", label: "Avg. Rating", icon: <Star size={20} /> },
           ].map((s, i) => (

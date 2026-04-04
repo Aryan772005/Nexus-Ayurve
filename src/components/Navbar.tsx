@@ -23,10 +23,14 @@ export default function Navbar({ user }: NavbarProps) {
 
   useEffect(() => {
     const savedMode = localStorage.getItem('theme');
-    // Default is dark mode ("normal when users new login the ui should be before one only")
-    if (savedMode === 'light') {
+    // Default is light mode ("normal when new users login should be in light mode")
+    if (savedMode === 'dark') {
+      setIsLightMode(false);
+      document.body.classList.remove('light-mode');
+    } else {
       setIsLightMode(true);
       document.body.classList.add('light-mode');
+      if (!savedMode) localStorage.setItem('theme', 'light');
     }
   }, []);
 
