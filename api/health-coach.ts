@@ -49,20 +49,41 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   Profile: Age ${age}, ${gender}, ${height}cm, ${weight}kg, Goal: ${goal}, Activity: ${activityLevel}, Diet: ${foodPreference}, Med: ${conditions || 'None'}.
   Real-time: BPM ${bpm || 'N/A'}, Cals Today ${caloriesToday || '0'}, Food: ${foodList || 'None'}, Skin: ${skinType}, Hair: ${hairCondition}.
 
-  JSON Map (Use strings for all numeric values with units):
+  JSON Map:
   {
-    "healthAnalysis": "Section 1+7 (BPM/Dosha analysis)",
-    "calories": { "required": "0 kcal", "protein": "0g", "carbs": "0g", "fats": "0g" },
-    "dietPlan": { "breakfast": "item+cal", "lunch": "item+cal", "dinner": "item+cal", "snacks": "item+cal" },
-    "foodAnalysis": "Detailed section 5 report.",
-    "recommendations": ["3-5 actionable steps"],
-    "hairCare": { "issue": "cause from sec 8", "remedies": ["routine", "herbs"] },
-    "skinCare": { "routine": "am/pm", "remedies": ["packs"] },
-    "fitness": "Section 10 details",
-    "alerts": ["Risk alerts from sec 11"],
-    "tips": { "hair": "tip (10w)", "skin": "tip (10w)", "health": "tip (10w)" },
-    "summary": ["5 clear steps for tomorrow"]
-  }`;
+    "healthAnalysis": "Detailed analysis (min 100 words) of heart rate trends, classification, and Ayurvedic dosha balance.",
+    "calories": { 
+      "required": "Total daily calorie requirement (e.g., 2500 kcal)", 
+      "protein": "Protein in grams (e.g., 120g)", 
+      "carbs": "Carbs in grams (e.g., 300g)", 
+      "fats": "Fats in grams (e.g., 70g)" 
+    },
+    "dietPlan": { 
+      "breakfast": "Item + calorie count", 
+      "lunch": "Item + calorie count", 
+      "dinner": "Item + calorie count", 
+      "snacks": "Item + calorie count" 
+    },
+    "foodAnalysis": "Detailed evaluation (min 50 words) of today's consumed food vs required metrics.",
+    "recommendations": ["3-5 specific actionable health steps"],
+    "hairCare": { 
+      "issue": "Identified hair condition and cause", 
+      "remedies": ["Specific daily routine", "Weekly treatment", "Herbal suggestions"] 
+    },
+    "skinCare": { 
+      "routine": "Morning and Night step-by-step routine", 
+      "remedies": ["Natural packs or remedies based on skin type"] 
+    },
+    "fitness": "Specific workout, sleep, and hydration plan.",
+    "alerts": ["Any detected health risks or abnormalities"],
+    "tips": { 
+      "hair": "One short hair tip", 
+      "skin": "One short skin tip", 
+      "health": "One short general wellness tip" 
+    },
+    "summary": ["5 clear actionable steps for the next 24 hours"]
+  }
+`;
 
   try {
     const controller = new AbortController();
