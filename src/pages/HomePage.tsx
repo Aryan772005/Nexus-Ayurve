@@ -264,7 +264,7 @@ export default function HomePage({ onLogin, user }: { onLogin: () => void, user:
                 <ShoppingBag size={14} /> New — Ayurvedic Shop
               </div>
               <h2 className="text-4xl font-display font-bold text-cream mb-2">Shop Trusted Medicines</h2>
-              <p className="text-emerald-accent/60 max-w-lg">Handpicked Ayurvedic medicines from top Indian brands. Buy directly from Tata 1mg.</p>
+              <p className="text-emerald-accent/60 max-w-lg">Handpicked Ayurvedic medicines from top Indian brands. Fast and trusted delivery.</p>
             </div>
             <Link to="/shop" className="mt-6 md:mt-0 text-emerald-accent font-bold text-sm hover:underline flex items-center gap-1">
               View All Medicines <ChevronRight size={16} />
@@ -312,7 +312,7 @@ export default function HomePage({ onLogin, user }: { onLogin: () => void, user:
                     rel="noopener noreferrer"
                     className="w-full py-2.5 rounded-xl bg-emerald-accent text-forest font-bold text-xs hover:bg-emerald-accent/90 transition-all flex items-center justify-center gap-1.5"
                   >
-                    Buy on 1mg <ExternalLink size={13} />
+                    Buy Now <ExternalLink size={13} />
                   </a>
                 </div>
               </motion.div>

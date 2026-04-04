@@ -188,7 +188,7 @@ export default function ShopPage() {
   const cartCount = cart.reduce((sum, c) => sum + c.qty, 0);
 
   const handleCheckout = () => {
-    // Open Tata 1mg with first item in cart as search
+    // Open external pharmacy with first item in cart as search
     if (cart.length > 0) {
       const searchTerms = cart.map(c => c.medicine.name.split(' ')[0]).join('+');
       window.open(`https://www.1mg.com/search/all?name=${searchTerms}`, '_blank');
@@ -215,7 +215,7 @@ export default function ShopPage() {
           </h1>
           <p className="text-lg text-cream/60 max-w-2xl mx-auto">
             Curated collection of certified Ayurvedic medicines from trusted Indian brands.
-            Buy directly from Tata 1mg with safe delivery to your doorstep.
+            Buy directly from our trusted partners with safe delivery to your doorstep.
           </p>
         </motion.div>
 
@@ -326,7 +326,7 @@ export default function ShopPage() {
                       target="_blank"
                       rel="noopener noreferrer"
                       className="p-2.5 rounded-xl bg-moss/60 border border-white/10 text-cream/60 hover:text-emerald-accent hover:border-emerald-accent/30 transition-all"
-                      title="Buy on Tata 1mg"
+                      title="Buy Now"
                     >
                       <ExternalLink size={16} />
                     </a>
@@ -351,9 +351,9 @@ export default function ShopPage() {
         className="max-w-5xl mx-auto mt-16 p-8 rounded-3xl bg-moss/30 border border-white/5 text-center"
       >
         <Sparkles className="text-emerald-accent mx-auto mb-4" size={28} />
-        <h3 className="text-xl font-display font-bold text-cream mb-2">Powered by Tata 1mg</h3>
+        <h3 className="text-xl font-display font-bold text-cream mb-2">Secure & Authentic</h3>
         <p className="text-cream/50 text-sm max-w-xl mx-auto leading-relaxed">
-          All purchases are securely processed through Tata 1mg, India's most trusted online pharmacy.
+          All purchases are securely processed through our certified pharmacy partners.
           We curate the finest Ayurvedic medicines so you get genuine products every time.
         </p>
       </motion.div>
@@ -439,12 +439,12 @@ export default function ShopPage() {
                     <span className="text-cream/60 text-sm">Subtotal</span>
                     <span className="text-2xl font-display font-bold text-cream">₹{cartTotal}</span>
                   </div>
-                  <p className="text-emerald-accent/40 text-xs text-center">Powered by Tata 1mg — Free delivery on orders above ₹499</p>
+                  <p className="text-emerald-accent/40 text-xs text-center">Secure checkout — Free delivery on orders above ₹499</p>
                   <button
                     onClick={handleCheckout}
                     className="w-full py-4 rounded-2xl bg-emerald-accent text-forest font-bold text-lg hover:bg-emerald-accent/90 transition-all shadow-lg shadow-emerald-accent/20 flex items-center justify-center gap-2"
                   >
-                    Buy on Tata 1mg <ExternalLink size={18} />
+                    Proceed to Checkout <ExternalLink size={18} />
                   </button>
                 </div>
               )}
@@ -534,7 +534,7 @@ export default function ShopPage() {
                         rel="noopener noreferrer"
                         className="py-3 px-5 rounded-xl bg-moss/60 border border-white/10 text-cream font-bold text-sm hover:border-emerald-accent/30 transition-all flex items-center gap-2"
                       >
-                        <ExternalLink size={16} /> 1mg
+                        <ExternalLink size={16} /> Buy Now
                       </a>
                     </div>
                   </div>
