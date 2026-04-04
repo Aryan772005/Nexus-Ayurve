@@ -49,15 +49,20 @@ export default function BodyMap({ onSymptomSelect }: BodyMapProps) {
   return (
     <div className="flex flex-col md:flex-row gap-8 items-start justify-center w-full">
       {/* SVB Body Map */}
-      <div className="relative w-full max-w-[300px] h-[500px] bg-forest/40 border border-white/5 rounded-3xl mx-auto flex items-center justify-center p-4">
-        <svg viewBox="0 0 300 500" className="w-full h-full drop-shadow-2xl">
-          {/* Base Silhouette (Simplified Human Body) */}
-          <path d="M 150 10 C 130 10, 125 30, 125 45 C 125 60, 135 70, 140 80 C 120 85, 90 90, 80 110 C 70 130, 50 180, 50 200 C 50 210, 60 215, 70 215 C 80 215, 90 180, 100 150 L 110 250 C 110 300, 100 400, 100 450 C 100 470, 120 480, 130 460 L 140 300 L 150 300 L 160 300 L 170 460 C 180 480, 200 470, 200 450 C 200 400, 190 300, 190 250 L 200 150 C 210 180, 220 215, 230 215 C 240 215, 250 210, 250 200 C 250 180, 230 130, 220 110 C 210 90, 180 85, 160 80 C 165 70, 175 60, 175 45 C 175 30, 170 10, 150 10 Z" 
-                fill="#131C18" 
-                stroke="#10B981" 
-                strokeWidth="2" 
-                strokeOpacity="0.4" />
+      <div className="relative w-full max-w-[300px] h-[500px] bg-forest/40 border border-white/5 rounded-3xl mx-auto flex items-center justify-center p-0 overflow-hidden relative">
+        <svg viewBox="0 0 300 500" className="w-full h-full drop-shadow-2xl absolute inset-0 z-10">
           
+          {/* Base Hologram AI Body */}
+          <image 
+            href="/hologram_body.png" 
+            x="-50" 
+            y="0" 
+            width="400" 
+            height="500" 
+            preserveAspectRatio="xMidYMid slice" 
+            className="opacity-90 mix-blend-screen pointer-events-none"
+          />
+
           {/* Interactive Regions */}
           {BODY_REGIONS.map((region) => (
             <circle
@@ -65,10 +70,10 @@ export default function BodyMap({ onSymptomSelect }: BodyMapProps) {
               cx={region.x}
               cy={region.y}
               r={region.radius}
-              fill={hoveredRegion === region.id ? "rgba(16, 185, 129, 0.6)" : "rgba(16, 185, 129, 0.2)"}
-              stroke="rgba(16, 185, 129, 0.8)"
-              strokeWidth="2"
-              className="cursor-pointer transition-all duration-300"
+              fill={hoveredRegion === region.id ? "rgba(16, 185, 129, 0.8)" : "rgba(16, 185, 129, 0.4)"}
+              stroke="rgba(52, 211, 153, 1)"
+              strokeWidth={hoveredRegion === region.id ? "4" : "2"}
+              className="cursor-pointer transition-all duration-300 drop-shadow-[0_0_8px_rgba(16,185,129,0.8)]"
               onMouseEnter={() => setHoveredRegion(region.id)}
               onMouseLeave={() => setHoveredRegion(null)}
               onClick={() => handleRegionClick(region.symptoms)}
