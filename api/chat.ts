@@ -14,13 +14,14 @@ export default async function handler(req: any, res: any) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  // Read API key inside handler to ensure Vercel always picks up the env var
-  const apiKey = (process.env.NVIDIA_API_KEY || '').trim();
+  // Read API key inside handler. Check for common typos the user might have made in Vercel.
+  const rawKey = process.env.NVIDIA_API_KEY || process.env.NIVIDIA_API_KEY || process.env.NVIDIA_KEY || process.env.NVIDIA_PI_KEY || '';
+  const apiKey = rawKey.trim();
 
   if (!apiKey) {
     console.error("NVIDIA_API_KEY is not set in environment variables");
     // Try to find the user's typo. Filter out common system variables to just show custom ones.
-    const ignorePrefixes = ['npm_', 'VERCEL_', 'AWS_', 'NODE_', 'npm_', 'XDG_', 'LANG', 'HOME', 'PATH', 'PWD', 'USER', 'SHLVL', '_', 'LOGNAME', 'TZ', 'TERM'];
+    const ignorePrefixes = ['npm_', 'VERCEL_', 'AWS_', 'NODE_', 'XDG_', 'LANG', 'HOME', 'PATH', 'PWD', 'USER', 'SHLVL', '_', 'LOGNAME', 'TZ', 'TERM'];
     const customKeys = Object.keys(process.env).filter(k => !ignorePrefixes.some(p => k.startsWith(p)));
     const foundStr = customKeys.length > 0 ? customKeys.join(', ') : "No custom keys found";
     const isVercel = process.env.VERCEL === '1' ? 'Yes' : 'No';
