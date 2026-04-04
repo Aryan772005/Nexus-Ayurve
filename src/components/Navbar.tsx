@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Leaf, LogOut, Sun, Moon, Activity, Ribbon, Heart, Scale, Shield, Coffee, ShoppingBag } from 'lucide-react';
+import { Leaf, LogOut, Sun, Moon, Activity, Ribbon, Heart, Scale, Shield, Coffee, ShoppingBag, TrendingDown, TrendingUp, Utensils } from 'lucide-react';
 import { auth, logout } from '../lib/firebase';
 import { User as FirebaseUser } from 'firebase/auth';
 import LanguageSwitcher from './LanguageSwitcher';
@@ -10,12 +10,12 @@ interface NavbarProps {
 }
 
 const TOPICS = [
-  { id: 'liver', label: 'Liver', icon: Activity },
-  { id: 'cancer', label: 'Cancer', icon: Ribbon },
-  { id: 'sexual-wellness', label: 'Sexual Wellness', icon: Heart },
-  { id: 'weight', label: 'Weight Management', icon: Scale },
-  { id: 'immunity', label: 'Immunity', icon: Shield },
-  { id: 'hangover', label: 'Hangover Fix', icon: Coffee },
+  { id: 'liver',            label: 'Liver',          icon: Activity  },
+  { id: 'cancer',           label: 'Cancer',         icon: Ribbon    },
+  { id: 'sexual-wellness',  label: 'Sexual Wellness',icon: Heart     },
+  { id: 'weight',           label: 'Weight Management',icon: Scale     },
+  { id: 'immunity',         label: 'Immunity',       icon: Shield    },
+  { id: 'hangover',         label: 'Hangover Fix',   icon: Coffee    },
 ];
 
 export default function Navbar({ user }: NavbarProps) {

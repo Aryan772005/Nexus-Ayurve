@@ -44,6 +44,9 @@ export default function ToolsPage({ user }: { user: FirebaseUser | null }) {
 
   return (
     <div className="min-h-screen pt-48 px-6 pb-20 max-w-7xl mx-auto">
+      <div className="fixed inset-0 -z-10" style={{backgroundImage: "url('/bg-page-dash.png')", backgroundSize: 'cover', backgroundPosition: 'center'}}>
+        <div className="absolute inset-0" style={{background: 'linear-gradient(135deg, rgba(10,15,13,0.93) 0%, rgba(3,20,12,0.90) 100%)'}} />
+      </div>
       <header className="mb-12 text-center max-w-2xl mx-auto">
         <h1 className="text-4xl md:text-5xl font-display font-bold text-cream mb-4">Wellness Tools</h1>
         <p className="text-emerald-accent/60 text-lg">Measure and monitor your doshas with our interactive calculators.</p>

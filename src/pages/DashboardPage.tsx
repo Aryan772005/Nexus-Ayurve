@@ -36,6 +36,7 @@ export default function DashboardPage({ user }: { user: FirebaseUser }) {
 
   return (
     <div className="min-h-screen pt-48 px-6 pb-20 max-w-7xl mx-auto">
+      <div className="fixed inset-0 -z-10 bg-[url('/bg-page-dash.png')] bg-cover bg-center bg-no-repeat before:absolute before:inset-0 before:bg-forest/90" />
       <header className="mb-12">
         <h1 className="text-4xl md:text-5xl font-display font-bold text-cream mb-2">Welcome back, {user.displayName?.split(' ')[0]}</h1>
         <p className="text-emerald-accent/60 text-lg">Here is your holistic health overview.</p>

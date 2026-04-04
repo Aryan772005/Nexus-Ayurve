@@ -158,7 +158,7 @@ export default function HomePage({ onLogin, user }: { onLogin: () => void, user:
       </section>
 
       {/* Features Grid */}
-      <section className="px-6 py-24 relative z-10">
+      <section className="px-6 py-24 relative z-10 bg-[url('/bg-features.png')] bg-cover bg-center bg-fixed bg-no-repeat before:content-[''] before:absolute before:inset-0 before:bg-forest/85 before:-z-10">
         <h2 className="text-4xl font-display font-bold text-center text-cream mb-4">Everything You Need</h2>
         <p className="text-center text-emerald-accent/60 mb-16 max-w-xl mx-auto">A complete Ayurvedic wellness platform for every aspect of your health journey.</p>
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-10">
@@ -187,7 +187,7 @@ export default function HomePage({ onLogin, user }: { onLogin: () => void, user:
       </section>
 
       {/* Popular Herbs Section */}
-      <section className="px-6 py-20 bg-moss/20 border-y border-white/5">
+      <section className="px-6 py-20 border-y border-white/5 relative z-10 bg-[url('/bg-herbs.png')] bg-cover bg-center bg-fixed bg-no-repeat before:content-[''] before:absolute before:inset-0 before:bg-forest/90 before:-z-10">
         <h2 className="text-4xl font-display font-bold text-center text-cream mb-4">Sacred Herbs of Ayurveda</h2>
         <p className="text-center text-emerald-accent/60 mb-16 max-w-xl mx-auto">Nature's most potent healing ingredients used in our treatment protocols.</p>
         <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-5 gap-6">
@@ -224,7 +224,7 @@ export default function HomePage({ onLogin, user }: { onLogin: () => void, user:
       </section>
 
       {/* Testimonials */}
-      <section className="px-6 py-24">
+      <section className="px-6 py-24 relative z-10 bg-[url('/bg-testimonials.png')] bg-cover bg-center bg-fixed bg-no-repeat before:content-[''] before:absolute before:inset-0 before:bg-forest/85 before:-z-10">
         <h2 className="text-4xl font-display font-bold text-center text-cream mb-4">What Our Users Say</h2>
         <p className="text-center text-emerald-accent/60 mb-16 max-w-xl mx-auto">Real stories from people who transformed their health with Ayurcare+.</p>
         <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -256,7 +256,7 @@ export default function HomePage({ onLogin, user }: { onLogin: () => void, user:
       </section>
 
       {/* Featured Medicines — Shop Promo */}
-      <section className="px-6 py-24 bg-moss/20 border-y border-white/5">
+      <section className="px-6 py-24 border-y border-white/5 relative z-10 bg-[url('/bg-shop.png')] bg-cover bg-center bg-fixed bg-no-repeat before:content-[''] before:absolute before:inset-0 before:bg-forest/90 before:-z-10">
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-12">
             <div>

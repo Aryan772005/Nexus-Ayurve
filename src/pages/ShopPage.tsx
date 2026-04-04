@@ -235,7 +235,8 @@ export default function ShopPage({ user, onLogin }: { user: FirebaseUser | null,
   };
 
   return (
-    <div className="min-h-screen bg-forest pt-40 pb-20 px-4 md:px-6 relative overflow-hidden">
+    <div className="min-h-screen pt-40 pb-20 px-4 md:px-6 relative overflow-hidden">
+      <div className="fixed inset-0 -z-10 bg-[url('/bg-page-shop.png')] bg-cover bg-center bg-no-repeat before:absolute before:inset-0 before:bg-forest/90" />
       {/* Background decorations */}
       <motion.div
         animate={{ scale: [1, 1.2, 1], opacity: [0.04, 0.08, 0.04] }}

@@ -86,6 +86,9 @@ export default function ChatPage({ user }: { user: FirebaseUser | null }) {
 
   return (
     <div className="min-h-screen pt-44 px-4 pb-0 max-w-4xl mx-auto flex flex-col h-screen">
+      <div className="fixed inset-0 -z-10" style={{backgroundImage: "url('/bg-page-dash.png')", backgroundSize: 'cover', backgroundPosition: 'center'}}>
+        <div className="absolute inset-0" style={{background: 'linear-gradient(135deg, rgba(5,10,15,0.94) 0%, rgba(2,10,8,0.92) 100%)'}} />
+      </div>
       <header className="mb-6 mt-4 text-center shrink-0">
         <h1 className="text-3xl font-display font-bold text-cream">AI Ayurvedic Assistant</h1>
         <p className="text-emerald-accent/60 text-sm">Ask me about your health, diet, or Ayurvedic remedies</p>
