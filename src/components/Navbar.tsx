@@ -72,10 +72,11 @@ export default function Navbar({ user }: NavbarProps) {
               {/* Theme Toggle Button */}
               <button 
                 onClick={toggleTheme}
-                className="w-8 h-8 flex items-center justify-center rounded-full bg-forest/40 border border-white/10 text-emerald-accent/80 hover:text-emerald-accent transition-colors"
+                className="flex items-center gap-1.5 px-3 h-8 rounded-full bg-forest/40 border border-white/10 text-emerald-accent/80 hover:text-emerald-accent transition-colors text-xs font-semibold"
                 title="Toggle Theme"
               >
-                {isLightMode ? <Moon size={16} /> : <Sun size={16} />}
+                {isLightMode ? <Moon size={14} /> : <Sun size={14} />}
+                <span>{isLightMode ? 'Dark' : 'Light'}</span>
               </button>
 
               {user ? (
