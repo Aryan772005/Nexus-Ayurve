@@ -4,7 +4,6 @@ import cors from "cors";
 import path from "path";
 import fs from "fs";
 import { fileURLToPath } from "url";
-import { createServer as createViteServer } from "vite";
 import authRoutes from "./src/routes/authRoutes";
 import userRoutes from "./src/routes/userRoutes";
 import appointmentRoutes from "./src/routes/appointmentRoutes";
@@ -38,6 +37,7 @@ async function startServer() {
     // Vite middleware for development
     if (process.env.NODE_ENV !== "production") {
       console.log("Starting Vite in development mode...");
+      const { createServer: createViteServer } = await import("vite");
       const vite = await createViteServer({
         server: { middlewareMode: true },
         appType: "spa",
