@@ -2,6 +2,8 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Send, Sparkles, User as UserIcon } from 'lucide-react';
 import { User as FirebaseUser } from 'firebase/auth';
 
+const NVIDIA_API_KEY = "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";
+
 export default function ChatPage({ user }: { user: FirebaseUser | null }) {
   const [messages, setMessages] = useState<{role: 'user'|'assistant', content: string}[]>([
     { role: 'assistant', content: "Namaste 🙏 I am your Ayurvedic AI assistant. Describe your symptoms, diet, or health concerns, and I will provide natural holistic insights." }
@@ -23,36 +25,43 @@ export default function ChatPage({ user }: { user: FirebaseUser | null }) {
     setIsLoading(true);
 
     try {
-      // Send to backend AI route (no auth required)
-      const res = await fetch(`/api/analyze-symptoms`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ symptoms: userMessage })
+      const prompt = `As an Ayurvedic health assistant for Ayurcare+, analyze the following query and provide a helpful, detailed response. If the user describes symptoms, suggest possible Ayurvedic conditions, remedies, herbs, diet changes, and precautions. If the user asks about diet, yoga, or lifestyle, give Ayurvedic recommendations. Always be compassionate and professional.
+
+User query: ${userMessage}
+
+Respond in a friendly, informative way. Use bullet points for lists. Do NOT respond in JSON format - respond in natural, readable text.`;
+
+      const response = await fetch("https://integrate.api.nvidia.com/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${NVIDIA_API_KEY}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          model: "meta/llama-3.1-8b-instruct",
+          messages: [
+            { role: "system", content: "You are a knowledgeable and compassionate Ayurvedic health assistant. Provide helpful advice based on Ayurvedic principles including dosha balancing, herbal remedies, yoga, pranayama, and diet recommendations. Always recommend consulting a qualified Ayurvedic doctor for serious conditions." },
+            { role: "user", content: prompt }
+          ],
+          temperature: 0.4,
+          top_p: 0.8,
+          max_tokens: 1024,
+        })
       });
-      
-      if (!res.ok) {
-        const errorData = await res.text();
-        throw new Error(`Server responded with ${res.status}: ${errorData}`);
+
+      if (!response.ok) {
+        const errText = await response.text();
+        throw new Error(`NVIDIA API error (${response.status}): ${errText}`);
       }
 
-      const data = await res.json();
-      
-      let aiResponseText = '';
-      if (data && data.possibleDisease) {
-        aiResponseText = `🔍 **Possible Condition:** ${data.possibleDisease}\n\n💚 **Ayurvedic Suggestion:** ${data.ayurvedicSuggestion}\n\n⚠️ **Precautions:**\n${data.precautions?.map((p: string) => `• ${p}`).join('\n')}`;
-      } else if (data.error) {
-        aiResponseText = `Sorry, I encountered an issue: ${data.error}`;
-      } else if (typeof data === 'string') {
-        aiResponseText = data;
-      } else {
-        aiResponseText = JSON.stringify(data, null, 2);
-      }
+      const data = await response.json();
+      const aiText = data.choices?.[0]?.message?.content || "I couldn't generate a response. Please try again.";
 
-      setMessages(prev => [...prev, { role: 'assistant', content: aiResponseText }]);
+      setMessages(prev => [...prev, { role: 'assistant', content: aiText }]);
     } catch (err) {
       console.error("Chat error:", err);
       const errorMsg = err instanceof Error ? err.message : 'Unknown error';
-      setMessages(prev => [...prev, { role: 'assistant', content: `⚠️ Connection error: ${errorMsg}\n\nPlease make sure the server is running and try again.` }]);
+      setMessages(prev => [...prev, { role: 'assistant', content: `⚠️ Error: ${errorMsg}` }]);
     } finally {
       setIsLoading(false);
     }
