@@ -14,16 +14,14 @@
     {
       "source": "/__/auth/:path*",
       "destination": "https://gen-lang-client-0339779591.firebaseapp.com/__/auth/:path*"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "/server.ts"
     },
     {
-      "src": "/(.*)",
-      "dest": "/index.html"
+      "source": "/api/(.*)",
+      "destination": "/server.ts"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
   ]
 }
