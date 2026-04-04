@@ -52,7 +52,7 @@ export default function Navbar({ user }: NavbarProps) {
   };
 
   return (
-    <nav className="fixed w-full z-50 bg-forest/95 border-b border-white/5 py-4 md:py-5 px-6 md:px-12 backdrop-blur-2xl shadow-sm transition-all">
+    <nav className="fixed w-full z-50 bg-transparent py-4 md:py-5 px-6 md:px-12 backdrop-blur-[4px] transition-all">
       <div className="max-w-7xl mx-auto flex flex-col gap-4">
         {/* Main Nav */}
         <div className="flex items-center justify-between">
