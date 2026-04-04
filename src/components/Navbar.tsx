@@ -17,7 +17,7 @@ export default function Navbar({ user }: NavbarProps) {
   };
 
   return (
-    <nav className="fixed w-full z-50 bg-forest/80 backdrop-blur-md border-b border-white/5 py-4 px-6 md:px-12">
+    <nav className="fixed w-full z-50 bg-moss/95 backdrop-blur-md border-b border-white/10 shadow-lg shadow-black/20 py-4 px-6 md:px-12">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         <Link to="/" className="flex items-center gap-2 group">
           <div className="bg-emerald-accent p-2 rounded-xl group-hover:scale-110 transition-transform">
