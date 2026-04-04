@@ -126,50 +126,61 @@ export default function GuidesPage() {
         <p className="text-emerald-accent/60 text-lg">Ancient guides for modern living — dosha balancing, natural weight management, and holistic healing.</p>
       </header>
 
-      {/* Dosha Guides */}
-      <h2 className="text-3xl font-display font-bold text-cream mb-8 text-center">Know Your Dosha</h2>
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-20">
-        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="bg-moss/20 border border-white/5 p-8 rounded-[40px] shadow-2xl relative overflow-hidden">
-          <Wind className="absolute -right-6 -top-6 w-32 h-32 text-blue-400/5" />
-          <div className="w-12 h-12 bg-blue-400/10 rounded-2xl flex items-center justify-center mb-4"><Wind className="text-blue-400" /></div>
-          <h3 className="text-2xl font-display font-bold text-cream mb-2">Vata</h3>
-          <p className="text-xs text-blue-400 font-bold mb-4">Air &amp; Space Element</p>
-          <ul className="space-y-3 text-cream/70 text-sm">
-            <li className="flex items-start gap-2"><div className="w-1.5 h-1.5 mt-1.5 rounded-full bg-blue-400 shrink-0" /> Favor warm, cooked, grounding foods — root vegetables, soups, ghee</li>
-            <li className="flex items-start gap-2"><div className="w-1.5 h-1.5 mt-1.5 rounded-full bg-blue-400 shrink-0" /> Avoid cold, raw salads and iced drinks</li>
-            <li className="flex items-start gap-2"><div className="w-1.5 h-1.5 mt-1.5 rounded-full bg-blue-400 shrink-0" /> Practice restorative Yoga and meditation</li>
-            <li className="flex items-start gap-2"><div className="w-1.5 h-1.5 mt-1.5 rounded-full bg-blue-400 shrink-0" /> Key herbs: Ashwagandha, Shatavari, Bala</li>
-            <li className="flex items-start gap-2"><div className="w-1.5 h-1.5 mt-1.5 rounded-full bg-blue-400 shrink-0" /> Maintain a regular sleep schedule</li>
-          </ul>
-        </motion.div>
+      {/* ── All Topic Guides ── */}
+      <div className="relative mb-10 mt-8">
+        <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-white/5" /></div>
+        <div className="relative flex justify-center">
+          <span className="bg-forest px-6 py-2 text-xs uppercase tracking-[0.2em] font-bold text-emerald-accent/50 rounded-full border border-white/5">Deep Dive Guides</span>
+        </div>
+      </div>
 
-        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.1 }} className="bg-moss/20 border border-white/5 p-8 rounded-[40px] shadow-2xl relative overflow-hidden">
-          <Sun className="absolute -right-6 -top-6 w-32 h-32 text-rose-400/5" />
-          <div className="w-12 h-12 bg-rose-400/10 rounded-2xl flex items-center justify-center mb-4"><Sun className="text-rose-400" /></div>
-          <h3 className="text-2xl font-display font-bold text-cream mb-2">Pitta</h3>
-          <p className="text-xs text-rose-400 font-bold mb-4">Fire &amp; Water Element</p>
-          <ul className="space-y-3 text-cream/70 text-sm">
-            <li className="flex items-start gap-2"><div className="w-1.5 h-1.5 mt-1.5 rounded-full bg-rose-400 shrink-0" /> Favor cooling, sweet, and bitter foods — cucumber, mint, coconut water</li>
-            <li className="flex items-start gap-2"><div className="w-1.5 h-1.5 mt-1.5 rounded-full bg-rose-400 shrink-0" /> Avoid spicy, sour, and fermented foods</li>
-            <li className="flex items-start gap-2"><div className="w-1.5 h-1.5 mt-1.5 rounded-full bg-rose-400 shrink-0" /> Swimming and moderate exercise in cool environments</li>
-            <li className="flex items-start gap-2"><div className="w-1.5 h-1.5 mt-1.5 rounded-full bg-rose-400 shrink-0" /> Key herbs: Brahmi, Amalaki, Neem</li>
-            <li className="flex items-start gap-2"><div className="w-1.5 h-1.5 mt-1.5 rounded-full bg-rose-400 shrink-0" /> Practice Shitali pranayama (cooling breath)</li>
-          </ul>
-        </motion.div>
+      <div className="text-center mb-10">
+        <motion.h2 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-4xl md:text-5xl font-display font-bold text-cream mb-3">
+          All Wellness Guides
+        </motion.h2>
+        <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ delay: 0.15 }} className="text-emerald-accent/60 text-lg max-w-xl mx-auto">
+          Step-by-step Ayurvedic protocols — pick a goal and dive deep
+        </motion.p>
+      </div>
 
-        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.2 }} className="bg-moss/20 border border-white/5 p-8 rounded-[40px] shadow-2xl relative overflow-hidden">
-          <Droplets className="absolute -right-6 -top-6 w-32 h-32 text-emerald-accent/5" />
-          <div className="w-12 h-12 bg-emerald-accent/10 rounded-2xl flex items-center justify-center mb-4"><Droplets className="text-emerald-accent" /></div>
-          <h3 className="text-2xl font-display font-bold text-cream mb-2">Kapha</h3>
-          <p className="text-xs text-emerald-accent font-bold mb-4">Earth &amp; Water Element</p>
-          <ul className="space-y-3 text-cream/70 text-sm">
-            <li className="flex items-start gap-2"><div className="w-1.5 h-1.5 mt-1.5 rounded-full bg-emerald-accent shrink-0" /> Favor light, warm, stimulating foods — ginger, pepper, leafy greens</li>
-            <li className="flex items-start gap-2"><div className="w-1.5 h-1.5 mt-1.5 rounded-full bg-emerald-accent shrink-0" /> Avoid heavy, oily, and sweet foods</li>
-            <li className="flex items-start gap-2"><div className="w-1.5 h-1.5 mt-1.5 rounded-full bg-emerald-accent shrink-0" /> Engage in vigorous exercise — running, cycling</li>
-            <li className="flex items-start gap-2"><div className="w-1.5 h-1.5 mt-1.5 rounded-full bg-emerald-accent shrink-0" /> Key herbs: Trikatu, Guggulu, Punarnava</li>
-            <li className="flex items-start gap-2"><div className="w-1.5 h-1.5 mt-1.5 rounded-full bg-emerald-accent shrink-0" /> Wake before sunrise for optimal energy</li>
-          </ul>
-        </motion.div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-24">
+        {TOPIC_CARDS.map((card, i) => {
+          const Icon = card.icon;
+          return (
+            <motion.div
+              key={card.id}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.4, delay: i * 0.06 }}
+              className="rounded-[28px] overflow-hidden border border-white/5 shadow-xl group bg-moss/20 flex flex-col"
+            >
+              <div className="relative h-44 w-full overflow-hidden shrink-0">
+                <img src={card.image} alt={card.imageAlt} className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700" />
+                <div className={`absolute inset-0 bg-gradient-to-t ${card.colorClasses.gradient}`} />
+                <span className={`absolute top-3 left-3 text-xs font-bold uppercase tracking-widest backdrop-blur-sm px-2.5 py-1 rounded-full border ${card.colorClasses.badge}`}>{card.badge}</span>
+              </div>
+              <div className="p-5 flex flex-col flex-1">
+                <div className="flex items-center gap-2.5 mb-3">
+                  <div className={`w-9 h-9 rounded-xl flex items-center justify-center border shrink-0 ${card.colorClasses.icon}`}><Icon size={17} /></div>
+                  <div>
+                    <h3 className="text-base font-display font-bold text-cream leading-tight">{card.title}</h3>
+                    <p className="text-xs text-cream/40">{card.subtitle}</p>
+                  </div>
+                </div>
+                <p className="text-cream/60 text-xs leading-relaxed mb-4 flex-1">{card.desc}</p>
+                <div className="flex flex-wrap gap-1.5 mb-4">
+                  {card.tags.slice(0, 3).map(tag => (
+                    <span key={tag} className={`text-xs px-2 py-0.5 rounded-full border ${card.colorClasses.tag}`}>{tag}</span>
+                  ))}
+                </div>
+                <Link to={`/topic/${card.id}`} className={`inline-flex items-center gap-1.5 font-bold px-4 py-2.5 rounded-xl transition-all shadow-lg hover:-translate-y-0.5 self-start text-xs ${card.colorClasses.btn}`}>
+                  <Icon size={13} /> Read Guide
+                </Link>
+              </div>
+            </motion.div>
+          );
+        })}
       </div>
 
       {/* Quick Weight Tips */}
@@ -242,61 +253,57 @@ export default function GuidesPage() {
         ))}
       </div>
 
-      {/* ── All Topic Guides ── */}
-      <div className="relative mb-10">
+      {/* Dosha Guides */}
+      <div className="relative mb-10 mt-8">
         <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-white/5" /></div>
         <div className="relative flex justify-center">
-          <span className="bg-forest px-6 py-2 text-xs uppercase tracking-[0.2em] font-bold text-emerald-accent/50 rounded-full border border-white/5">Deep Dive Guides</span>
+          <span className="bg-forest px-6 py-2 text-xs uppercase tracking-[0.2em] font-bold text-emerald-accent/50 rounded-full border border-white/5">Foundations</span>
         </div>
       </div>
 
-      <div className="text-center mb-10">
-        <motion.h2 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-4xl md:text-5xl font-display font-bold text-cream mb-3">
-          All Wellness Guides
-        </motion.h2>
-        <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ delay: 0.15 }} className="text-emerald-accent/60 text-lg max-w-xl mx-auto">
-          Step-by-step Ayurvedic protocols — pick a goal and dive deep
-        </motion.p>
-      </div>
+      <h2 className="text-3xl md:text-5xl font-display font-bold text-cream mb-8 text-center">Know Your Dosha</h2>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-20">
+        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="bg-moss/20 border border-white/5 p-8 rounded-[40px] shadow-2xl relative overflow-hidden">
+          <Wind className="absolute -right-6 -top-6 w-32 h-32 text-blue-400/5" />
+          <div className="w-12 h-12 bg-blue-400/10 rounded-2xl flex items-center justify-center mb-4"><Wind className="text-blue-400" /></div>
+          <h3 className="text-2xl font-display font-bold text-cream mb-2">Vata</h3>
+          <p className="text-xs text-blue-400 font-bold mb-4">Air &amp; Space Element</p>
+          <ul className="space-y-3 text-cream/70 text-sm">
+            <li className="flex items-start gap-2"><div className="w-1.5 h-1.5 mt-1.5 rounded-full bg-blue-400 shrink-0" /> Favor warm, cooked, grounding foods — root vegetables, soups, ghee</li>
+            <li className="flex items-start gap-2"><div className="w-1.5 h-1.5 mt-1.5 rounded-full bg-blue-400 shrink-0" /> Avoid cold, raw salads and iced drinks</li>
+            <li className="flex items-start gap-2"><div className="w-1.5 h-1.5 mt-1.5 rounded-full bg-blue-400 shrink-0" /> Practice restorative Yoga and meditation</li>
+            <li className="flex items-start gap-2"><div className="w-1.5 h-1.5 mt-1.5 rounded-full bg-blue-400 shrink-0" /> Key herbs: Ashwagandha, Shatavari, Bala</li>
+            <li className="flex items-start gap-2"><div className="w-1.5 h-1.5 mt-1.5 rounded-full bg-blue-400 shrink-0" /> Maintain a regular sleep schedule</li>
+          </ul>
+        </motion.div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-24">
-        {TOPIC_CARDS.map((card, i) => {
-          const Icon = card.icon;
-          return (
-            <motion.div
-              key={card.id}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.4, delay: i * 0.06 }}
-              className="rounded-[28px] overflow-hidden border border-white/5 shadow-xl group bg-moss/20 flex flex-col"
-            >
-              <div className="relative h-44 w-full overflow-hidden shrink-0">
-                <img src={card.image} alt={card.imageAlt} className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700" />
-                <div className={`absolute inset-0 bg-gradient-to-t ${card.colorClasses.gradient}`} />
-                <span className={`absolute top-3 left-3 text-xs font-bold uppercase tracking-widest backdrop-blur-sm px-2.5 py-1 rounded-full border ${card.colorClasses.badge}`}>{card.badge}</span>
-              </div>
-              <div className="p-5 flex flex-col flex-1">
-                <div className="flex items-center gap-2.5 mb-3">
-                  <div className={`w-9 h-9 rounded-xl flex items-center justify-center border shrink-0 ${card.colorClasses.icon}`}><Icon size={17} /></div>
-                  <div>
-                    <h3 className="text-base font-display font-bold text-cream leading-tight">{card.title}</h3>
-                    <p className="text-xs text-cream/40">{card.subtitle}</p>
-                  </div>
-                </div>
-                <p className="text-cream/60 text-xs leading-relaxed mb-4 flex-1">{card.desc}</p>
-                <div className="flex flex-wrap gap-1.5 mb-4">
-                  {card.tags.slice(0, 3).map(tag => (
-                    <span key={tag} className={`text-xs px-2 py-0.5 rounded-full border ${card.colorClasses.tag}`}>{tag}</span>
-                  ))}
-                </div>
-                <Link to={`/topic/${card.id}`} className={`inline-flex items-center gap-1.5 font-bold px-4 py-2.5 rounded-xl transition-all shadow-lg hover:-translate-y-0.5 self-start text-xs ${card.colorClasses.btn}`}>
-                  <Icon size={13} /> Read Guide
-                </Link>
-              </div>
-            </motion.div>
-          );
-        })}
+        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.1 }} className="bg-moss/20 border border-white/5 p-8 rounded-[40px] shadow-2xl relative overflow-hidden">
+          <Sun className="absolute -right-6 -top-6 w-32 h-32 text-rose-400/5" />
+          <div className="w-12 h-12 bg-rose-400/10 rounded-2xl flex items-center justify-center mb-4"><Sun className="text-rose-400" /></div>
+          <h3 className="text-2xl font-display font-bold text-cream mb-2">Pitta</h3>
+          <p className="text-xs text-rose-400 font-bold mb-4">Fire &amp; Water Element</p>
+          <ul className="space-y-3 text-cream/70 text-sm">
+            <li className="flex items-start gap-2"><div className="w-1.5 h-1.5 mt-1.5 rounded-full bg-rose-400 shrink-0" /> Favor cooling, sweet, and bitter foods — cucumber, mint, coconut water</li>
+            <li className="flex items-start gap-2"><div className="w-1.5 h-1.5 mt-1.5 rounded-full bg-rose-400 shrink-0" /> Avoid spicy, sour, and fermented foods</li>
+            <li className="flex items-start gap-2"><div className="w-1.5 h-1.5 mt-1.5 rounded-full bg-rose-400 shrink-0" /> Swimming and moderate exercise in cool environments</li>
+            <li className="flex items-start gap-2"><div className="w-1.5 h-1.5 mt-1.5 rounded-full bg-rose-400 shrink-0" /> Key herbs: Brahmi, Amalaki, Neem</li>
+            <li className="flex items-start gap-2"><div className="w-1.5 h-1.5 mt-1.5 rounded-full bg-rose-400 shrink-0" /> Practice Shitali pranayama (cooling breath)</li>
+          </ul>
+        </motion.div>
+
+        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.2 }} className="bg-moss/20 border border-white/5 p-8 rounded-[40px] shadow-2xl relative overflow-hidden">
+          <Droplets className="absolute -right-6 -top-6 w-32 h-32 text-emerald-accent/5" />
+          <div className="w-12 h-12 bg-emerald-accent/10 rounded-2xl flex items-center justify-center mb-4"><Droplets className="text-emerald-accent" /></div>
+          <h3 className="text-2xl font-display font-bold text-cream mb-2">Kapha</h3>
+          <p className="text-xs text-emerald-accent font-bold mb-4">Earth &amp; Water Element</p>
+          <ul className="space-y-3 text-cream/70 text-sm">
+            <li className="flex items-start gap-2"><div className="w-1.5 h-1.5 mt-1.5 rounded-full bg-emerald-accent shrink-0" /> Favor light, warm, stimulating foods — ginger, pepper, leafy greens</li>
+            <li className="flex items-start gap-2"><div className="w-1.5 h-1.5 mt-1.5 rounded-full bg-emerald-accent shrink-0" /> Avoid heavy, oily, and sweet foods</li>
+            <li className="flex items-start gap-2"><div className="w-1.5 h-1.5 mt-1.5 rounded-full bg-emerald-accent shrink-0" /> Engage in vigorous exercise — running, cycling</li>
+            <li className="flex items-start gap-2"><div className="w-1.5 h-1.5 mt-1.5 rounded-full bg-emerald-accent shrink-0" /> Key herbs: Trikatu, Guggulu, Punarnava</li>
+            <li className="flex items-start gap-2"><div className="w-1.5 h-1.5 mt-1.5 rounded-full bg-emerald-accent shrink-0" /> Wake before sunrise for optimal energy</li>
+          </ul>
+        </motion.div>
       </div>
     </div>
   );
