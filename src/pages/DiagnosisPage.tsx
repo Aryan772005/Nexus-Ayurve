@@ -16,7 +16,7 @@ export default function DiagnosisPage({ user }: { user: FirebaseUser | null }) {
   
   const [diagnosis, setDiagnosis] = useState<DoshaDiagnosis | null>(null);
   const [dietPlan, setDietPlan] = useState<DietRoutine | null>(null);
-  const [foodAnalysis, setFoodAnalysis] = useState<FoodAnalysisResult | null>(null);
+  const [foodAnalysis, setFoodAnalysis] = useState<any | null>(null);
   
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -31,11 +31,15 @@ export default function DiagnosisPage({ user }: { user: FirebaseUser | null }) {
       recognition.lang = 'en-IN'; // Works for Indian English + basic Hindi terms
 
       recognition.onresult = (event: any) => {
-        let text = '';
+        let finalTranscript = '';
         for (let i = event.resultIndex; i < event.results.length; ++i) {
-          text += event.results[i][0].transcript;
+          if (event.results[i].isFinal) {
+            finalTranscript += event.results[i][0].transcript;
+          }
         }
-        setTextInput((prev) => prev + " " + text.trim());
+        if (finalTranscript) {
+          setTextInput((prev) => prev ? prev + " " + finalTranscript.trim() : finalTranscript.trim());
+        }
       };
 
       recognition.start();
@@ -99,47 +103,73 @@ export default function DiagnosisPage({ user }: { user: FirebaseUser | null }) {
     }, 2500);
   };
 
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [showFoodModal, setShowFoodModal] = useState(false);
+  const [foodError, setFoodError] = useState<string | null>(null);
+
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
+    // Instantly show preview
+    const reader = new FileReader();
+    reader.onload = async (ev) => {
+      const base64 = ev.target?.result as string;
+      setImagePreview(base64);
+      analyzeImage(base64);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const analyzeImage = async (base64: string) => {
     setIsProcessing(true);
+    setFoodError(null);
     try {
-      // First try hitting our real Vercel backend if deployed
-      const formData = new FormData();
-      formData.append('image', file);
-      
+      console.log("Sending image to API...");
       const res = await fetch('/api/food-analyze', {
         method: 'POST',
-        body: formData
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ imageBase64: base64 })
       });
       
-      if (res.ok) {
-        const data = await res.json();
-        setFoodAnalysis(data);
-      } else {
-        // Fallback to local smart mock if API fails/quota hit
-        const result = await fallbackAnalyzeFood(file);
-        setFoodAnalysis(result);
+      const data = await res.json();
+      
+      if (!res.ok) {
+        throw new Error(data.error || "Unable to analyze image. Please try again.");
       }
-    } catch (err) {
-      console.error(err);
-      const result = await fallbackAnalyzeFood(file);
-      setFoodAnalysis(result);
+      
+      console.log("Image analysis success:", data);
+      setFoodAnalysis(data);
+      setShowFoodModal(true);
+    } catch (err: any) {
+      console.error("Image analysis error:", err);
+      setFoodError(err.message || "Unable to analyze image. Please try again.");
     }
-    
     setIsProcessing(false);
-    setStep(6);
   };
 
   return (
-    <div className="min-h-screen pt-40 px-4 md:px-8 pb-20 max-w-7xl mx-auto flex flex-col h-screen">
-      <div className="fixed inset-0 -z-10" style={{backgroundImage: "url('/bg-page-dash.png')", backgroundSize: 'cover', backgroundPosition: 'center'}}>
-        <div className="absolute inset-0" style={{background: 'linear-gradient(135deg, rgba(5,10,15,0.96) 0%, rgba(2,20,15,0.92) 100%)'}} />
+    <div className="min-h-screen bg-forest pt-40 px-4 md:px-8 pb-20 flex flex-col relative overflow-hidden">
+      {/* Decorative background matching HomePage */}
+      <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none -z-10">
+        <motion.div 
+          animate={{ scale: [1, 1.2, 1], opacity: [0.08, 0.15, 0.08] }}
+          transition={{ duration: 10, repeat: Infinity }}
+          className="absolute -top-1/4 -left-1/4 w-full h-full bg-emerald-accent/10 rounded-full blur-[120px]" 
+        />
+        <motion.div 
+          animate={{ scale: [1, 1.3, 1], opacity: [0.05, 0.1, 0.05] }}
+          transition={{ duration: 14, repeat: Infinity, delay: 3 }}
+          className="absolute -bottom-1/4 -right-1/4 w-3/4 h-3/4 bg-emerald-accent/5 rounded-full blur-[150px]" 
+        />
       </div>
 
+      <div className="max-w-7xl mx-auto w-full flex-1 flex flex-col">
+
       {/* Progress Header */}
-      <div className="mb-8">
+      <div className="mb-8 relative z-20">
         <div className="flex justify-between text-sm text-emerald-accent/60 mb-2 font-bold uppercase tracking-wider">
           <span>Symptoms</span>
           <span>Diagnosis</span>
@@ -162,49 +192,51 @@ export default function DiagnosisPage({ user }: { user: FirebaseUser | null }) {
           <motion.div 
             key="step1"
             initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}
-            className="flex-1 flex flex-col"
+            className="flex flex-col w-full relative z-10"
           >
             <div className="text-center mb-8">
               <h1 className="text-4xl md:text-5xl font-display font-bold text-cream mb-4">What's bothering you?</h1>
               <p className="text-emerald-accent/60 text-lg">Click on the body map, type, or speak your symptoms.</p>
             </div>
 
-            <div className="bg-moss/30 p-1 md:p-8 rounded-[40px] border border-white/5 shadow-2xl flex-1 flex flex-col">
+            <div className="bg-moss/30 p-4 md:p-8 rounded-[40px] border border-white/5 shadow-2xl flex flex-col">
               <BodyMap onSymptomSelect={handleBodyMapSelect} />
 
               <div className="mt-8 border-t border-white/5 pt-8">
-                <form onSubmit={handleSymptomAdd} className="flex gap-4 items-center">
-                  <div className="relative flex-1">
+                <form onSubmit={handleSymptomAdd} className="flex gap-4 items-center flex-wrap md:flex-nowrap">
+                  <div className="relative flex-1 min-w-[200px] w-full">
                     <input 
                       type="text" 
                       value={textInput}
                       onChange={(e) => setTextInput(e.target.value)}
-                      placeholder="e.g. Acid reflux, joint pain, restless sleep..."
+                      placeholder="e.g. Acid reflux, joint pain..."
                       className="w-full bg-forest/40 border border-white/10 rounded-2xl p-4 pl-12 text-cream focus:border-emerald-accent outline-none"
                     />
                     <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-emerald-accent/40" size={20} />
                   </div>
                   
-                  <button 
-                    type="button"
-                    onClick={() => setIsListening(!isListening)}
-                    className={`w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 transition-colors shadow-lg ${
-                      isListening ? 'bg-rose-500 text-white animate-pulse' : 'bg-forest border border-white/10 text-emerald-accent hover:border-emerald-accent focus:border-emerald-accent'
-                    }`}
-                  >
-                    {isListening ? <MicOff size={24} /> : <Mic size={24} />}
-                  </button>
+                  <div className="flex gap-2 w-full md:w-auto">
+                    <button 
+                      type="button"
+                      onClick={() => setIsListening(!isListening)}
+                      className={`w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 transition-colors shadow-lg ${
+                        isListening ? 'bg-rose-500 text-white animate-pulse' : 'bg-forest border border-white/10 text-emerald-accent hover:border-emerald-accent focus:border-emerald-accent'
+                      }`}
+                    >
+                      {isListening ? <MicOff size={24} /> : <Mic size={24} />}
+                    </button>
 
-                  <button 
-                    type="submit"
-                    className="bg-emerald-accent/20 text-emerald-accent px-6 h-14 rounded-2xl font-bold hover:bg-emerald-accent hover:text-forest transition-colors"
-                  >
-                    Add
-                  </button>
+                    <button 
+                      type="submit"
+                      className="flex-1 md:flex-none bg-emerald-accent/20 text-emerald-accent px-6 h-14 rounded-2xl font-bold hover:bg-emerald-accent hover:text-forest transition-colors"
+                    >
+                      Add
+                    </button>
+                  </div>
                 </form>
               </div>
 
-              <div className="mt-8 flex justify-center">
+              <div className="mt-8 flex justify-center pb-4">
                 <button 
                   onClick={processAI}
                   disabled={symptoms.length === 0}
@@ -316,11 +348,16 @@ export default function DiagnosisPage({ user }: { user: FirebaseUser | null }) {
 
             {isProcessing ? (
                <div className="flex flex-col items-center gap-4">
+                 {imagePreview && (
+                    <div className="w-32 h-32 rounded-2xl overflow-hidden mb-2">
+                       <img src={imagePreview} alt="Food Preview" className="w-full h-full object-cover" />
+                    </div>
+                 )}
                  <div className="w-12 h-12 border-4 border-emerald-accent border-t-transparent rounded-full animate-spin"></div>
                  <p className="text-cream font-bold">Scanning nutrients...</p>
                </div>
             ) : (
-              <div className="flex gap-4">
+              <div className="flex gap-4 flex-col md:flex-row">
                 <button 
                   onClick={() => setStep(7)} // Skip to routine
                   className="px-8 py-4 rounded-full font-bold text-emerald-accent/60 hover:text-emerald-accent transition-colors"
@@ -329,46 +366,16 @@ export default function DiagnosisPage({ user }: { user: FirebaseUser | null }) {
                 </button>
                 <button 
                   onClick={() => fileInputRef.current?.click()}
-                  className="bg-emerald-accent text-forest px-10 py-4 rounded-full text-lg font-bold shadow-2xl flex items-center gap-3 hover:bg-emerald-accent/90 transition-all hover:-translate-y-1"
+                  className="bg-emerald-accent text-forest px-10 py-4 rounded-full text-lg font-bold shadow-2xl flex items-center justify-center gap-3 hover:bg-emerald-accent/90 transition-all hover:-translate-y-1"
                 >
                   <Upload size={20} /> Upload Food Image
                 </button>
               </div>
             )}
-          </motion.div>
-        )}
-
-        {/* === STEP 6: Food Analysis Result === */}
-        {step === 6 && foodAnalysis && (
-          <motion.div 
-            key="step6"
-            initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
-            className="flex-1 max-w-3xl mx-auto w-full"
-          >
-            <h1 className="text-3xl font-display font-bold text-cream mb-8 text-center text-gradient">AI Nutrition Report</h1>
             
-            <div className="bg-moss/40 border border-white/5 rounded-[30px] p-8 md:p-12 text-center">
-              <h2 className="text-3xl font-bold text-cream mb-2">{foodAnalysis.food_name}</h2>
-              <p className="text-emerald-accent font-bold mb-8 text-lg">{foodAnalysis.health_rating}</p>
-
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
-                {[
-                  { label: "Calories", val: foodAnalysis.calories, color: "text-yellow-400", bg:"bg-yellow-400/10" },
-                  { label: "Protein", val: foodAnalysis.protein, color: "text-blue-400", bg:"bg-blue-400/10" },
-                  { label: "Carbs", val: foodAnalysis.carbs, color: "text-rose-400", bg:"bg-rose-400/10" },
-                  { label: "Fats", val: foodAnalysis.fats, color: "text-orange-400", bg:"bg-orange-400/10" },
-                ].map((m, i) => (
-                  <div key={i} className={`${m.bg} p-6 rounded-3xl flex flex-col items-center justify-center`}>
-                    <p className={`text-2xl font-bold ${m.color} mb-1`}>{m.val}</p>
-                    <p className="text-xs uppercase tracking-wider text-cream/50 font-bold">{m.label}</p>
-                  </div>
-                ))}
-              </div>
-
-              <button onClick={() => setStep(7)} className="w-full bg-emerald-accent text-forest py-4 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-emerald-accent/90">
-                View Full Daily Routine <ArrowRight size={20} />
-              </button>
-            </div>
+            {foodError && (
+              <p className="text-rose-400 mt-6 font-bold">{foodError}</p>
+            )}
           </motion.div>
         )}
 
@@ -420,6 +427,69 @@ export default function DiagnosisPage({ user }: { user: FirebaseUser | null }) {
         )}
 
       </AnimatePresence>
+
+      {/* AI Food Analysis Modal */}
+      <AnimatePresence>
+        {showFoodModal && foodAnalysis && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={() => { setShowFoodModal(false); setStep(7); }}></div>
+            <motion.div 
+               initial={{ opacity: 0, scale: 0.9, y: 20 }}
+               animate={{ opacity: 1, scale: 1, y: 0 }}
+               exit={{ opacity: 0, scale: 0.9, y: 20 }}
+               className="relative bg-forest border border-emerald-accent/30 rounded-[30px] p-8 max-w-lg w-full shadow-2xl z-10"
+            >
+               <button 
+                 onClick={() => { setShowFoodModal(false); setStep(7); }}
+                 className="absolute top-4 right-4 text-emerald-accent/60 hover:text-emerald-accent"
+               >
+                 ✕
+               </button>
+               
+               <h2 className="text-3xl font-display font-bold text-cream mb-6 text-center">Nutrition Report</h2>
+               
+               {imagePreview && (
+                  <div className="w-full h-48 rounded-2xl overflow-hidden mb-6 border border-white/10">
+                    <img src={imagePreview} alt="Dish" className="w-full h-full object-cover" />
+                  </div>
+               )}
+
+               <div className="space-y-4">
+                 <p className="text-2xl font-bold text-cream text-center mb-6">{foodAnalysis.food_name}</p>
+                 
+                 <div className="flex justify-between items-center bg-moss/50 p-4 rounded-xl border border-white/5">
+                   <span className="text-emerald-accent/80 font-bold">Approx Calories</span>
+                   <span className="text-yellow-400 font-bold text-xl">{foodAnalysis.calories}</span>
+                 </div>
+                 
+                 <div className="flex justify-between items-center bg-moss/50 p-4 rounded-xl border border-white/5">
+                   <span className="text-emerald-accent/80 font-bold">Health Category</span>
+                   <span className="text-blue-400 font-bold text-lg">{foodAnalysis.health_category || foodAnalysis.health_rating || "Unknown"}</span>
+                 </div>
+
+                 <div className="flex justify-between items-center bg-moss/50 p-4 rounded-xl items-start border border-white/5">
+                   <span className="text-emerald-accent/80 font-bold shrink-0">Ayurvedic Nature</span>
+                   <span className="text-rose-400 font-bold text-right pl-4">{foodAnalysis.ayurvedic_nature || "Neutral"}</span>
+                 </div>
+                 
+                 {(foodAnalysis.suggestion || foodAnalysis.protein) && (
+                   <p className="text-sm text-cream/70 italic text-center mt-4 border-t border-white/5 pt-4">
+                     "{foodAnalysis.suggestion || 'Good choice for a balanced diet.'}"
+                   </p>
+                 )}
+               </div>
+
+               <button 
+                 onClick={() => { setShowFoodModal(false); setStep(7); }}
+                 className="w-full bg-emerald-accent text-forest mt-8 py-4 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-emerald-accent/90 transition-all shadow-xl"
+               >
+                 View Full Daily Routine <ArrowRight size={20} />
+               </button>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+      </div>
     </div>
   );
 }
