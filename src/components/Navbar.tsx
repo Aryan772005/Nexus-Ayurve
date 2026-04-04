@@ -52,12 +52,12 @@ export default function Navbar({ user }: NavbarProps) {
   };
 
   return (
-    <nav className="fixed w-full z-50 bg-transparent py-4 md:py-6 px-6 md:px-12 backdrop-blur-[4px]">
+    <nav className="fixed w-full z-50 bg-forest/95 border-b border-white/5 py-4 md:py-5 px-6 md:px-12 backdrop-blur-2xl shadow-sm transition-all">
       <div className="max-w-7xl mx-auto flex flex-col gap-4">
         {/* Main Nav */}
         <div className="flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2 group">
-            <div className="bg-emerald-accent p-2 rounded-xl group-hover:scale-110 transition-transform">
+            <div className="bg-emerald-accent p-2 rounded-xl group-hover:scale-110 transition-transform shadow-lg shadow-emerald-accent/20">
               <Leaf className="text-forest w-5 h-5" />
             </div>
             <span className="text-2xl font-display font-bold text-gradient">Ayurcare+</span>
@@ -98,13 +98,13 @@ export default function Navbar({ user }: NavbarProps) {
         </div>
 
         {/* Health Topics Ribbon (Logos) */}
-        <div className="border-t border-white/10 pt-4 flex gap-6 md:gap-10 overflow-x-auto scrollbar-hide">
+        <div className="border-t border-white/10 pt-4 pb-2 md:pt-5 md:pb-3 flex gap-6 md:gap-10 overflow-x-auto scrollbar-hide">
           {TOPICS.map(t => (
-            <Link key={t.id} to={`/topic/${t.id}`} className="flex items-center gap-2 group shrink-0">
-              <div className="bg-moss/40 border border-white/5 p-2 rounded-full group-hover:bg-emerald-accent/20 transition-colors">
-                <t.icon className="w-3.5 h-3.5 text-emerald-accent" />
+            <Link key={t.id} to={`/topic/${t.id}`} className="flex items-center gap-2.5 group shrink-0">
+              <div className="bg-moss/40 border border-white/5 p-2.5 rounded-2xl group-hover:bg-emerald-accent/20 group-hover:border-emerald-accent/30 transition-all shadow-sm">
+                <t.icon className="w-4 h-4 text-emerald-accent group-hover:scale-110 transition-transform" />
               </div>
-              <span className="text-[11px] uppercase tracking-wider text-cream/70 group-hover:text-emerald-accent font-bold transition-colors">
+              <span className="text-xs uppercase tracking-wider text-cream/70 group-hover:text-emerald-accent font-bold transition-colors">
                 {t.label}
               </span>
             </Link>
