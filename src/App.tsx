@@ -25,6 +25,7 @@ import ShopPage from './pages/ShopPage';
 import DiagnosisPage from './pages/DiagnosisPage';
 import HealthCoachPage from './pages/HealthCoachPage';
 import CalorieCheckerPage from './pages/CalorieCheckerPage';
+import MealAnalysisPage from './pages/MealAnalysisPage';
 
 
 export default function App() {
@@ -102,6 +103,7 @@ export default function App() {
               <Route path="/dashboard" element={<DashboardPage user={user!} />} />
               <Route path="/health-coach" element={<HealthCoachPage user={user} />} />
               <Route path="/calorie-checker" element={<CalorieCheckerPage />} />
+              <Route path="/meal-analysis" element={<MealAnalysisPage />} />
 
               <Route path="/chat" element={<ChatPage user={user} />} />
               <Route path="*" element={<Navigate to="/" replace />} />

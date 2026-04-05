@@ -33,7 +33,7 @@ const TOOL_GROUPS = [
     items: [
       { to: '/health-coach', label: 'AI Health Coach',   icon: Brain,         tag: 'AI',   tagColor: '#A78BFA', desc: '13-section wellness report' },
       { to: '/diagnosis',    label: 'AI Diagnosis',      icon: Sparkles,      tag: 'AI',   tagColor: '#A78BFA', desc: 'Symptom & dosha analysis' },
-      { to: '/diagnosis',    label: 'AI Analyse Meal',   icon: Camera,        tag: 'AI',   tagColor: '#F97316', desc: 'Scan & analyse your meal' },
+      { to: '/meal-analysis', label: 'AI Analyse Meal',   icon: Camera,        tag: 'AI',   tagColor: '#F97316', desc: 'Scan & analyse your meal' },
       { to: '/chat',         label: 'AI Chat',           icon: MessageSquare, tag: 'Live', tagColor: '#10B981', desc: 'Ask anything about health' },
     ],
   },
@@ -164,7 +164,7 @@ export default function Navbar({ user, onLogin }: NavbarProps) {
               ))}
               {/* AI Analyse Meal — special highlighted pill */}
               <Link
-                to="/diagnosis"
+                to="/meal-analysis"
                 className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-[13px] font-bold transition-all bg-orange-500/10 text-orange-400 border border-orange-500/20 hover:bg-orange-500/20 hover:text-orange-300"
               >
                 <Camera size={13} />
