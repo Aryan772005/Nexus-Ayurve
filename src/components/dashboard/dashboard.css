@@ -237,3 +237,46 @@
   .hero-card, .predict-card, .prakriti-card, .anomaly-card, .history-card, .feed-card { grid-column: span 1; }
   .stats-row { grid-column: span 1; grid-template-columns: 1fr; }
 }
+
+/* ─── LIGHT MODE DASHBOARD OVERRIDES ─── */
+body.light-mode .glass-card {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.85) 0%, rgba(240, 245, 240, 0.6) 100%);
+  border-color: rgba(16, 185, 129, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.04);
+}
+
+body.light-mode .glass-card:hover {
+  border-color: rgba(16, 185, 129, 0.3);
+  box-shadow: 0 8px 40px rgba(16, 185, 129, 0.1), 0 0 80px rgba(16, 185, 129, 0.05);
+}
+
+body.light-mode .stat-widget {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(245, 250, 245, 0.5));
+  border-color: rgba(16, 185, 129, 0.15);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
+}
+
+body.light-mode .stat-widget:hover {
+  border-color: rgba(16, 185, 129, 0.25);
+  box-shadow: 0 4px 24px rgba(16, 185, 129, 0.08);
+}
+
+body.light-mode .feed-item {
+  background: rgba(255, 255, 255, 0.7);
+  border-color: rgba(16, 185, 129, 0.1);
+}
+
+body.light-mode .feed-item:hover {
+  background: rgba(255, 255, 255, 0.9);
+  border-color: rgba(16, 185, 129, 0.2);
+}
+
+body.light-mode .dash-tab-bar {
+  background: rgba(255, 255, 255, 0.6);
+  border-color: rgba(16, 185, 129, 0.2);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+body.light-mode .invoice-row:hover {
+  background: rgba(16, 185, 129, 0.08);
+}
