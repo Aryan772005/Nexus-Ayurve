@@ -102,10 +102,10 @@ export default function Navbar({ user, onLogin }: NavbarProps) {
       {/* ── Main Navbar ── */}
       <nav className={`fixed w-full z-50 transition-all duration-300 ${isScrolled ? 'py-3 bg-forest/90 backdrop-blur-xl border-b border-white/5 shadow-xl shadow-black/10' : 'py-5 bg-transparent'}`}>
         <div className="max-w-[1440px] mx-auto px-6 xl:px-10">
-          <div className="flex items-center justify-between gap-4">
+          <div className="flex items-center gap-4">
 
-            {/* LEFT: Hamburger + Logo */}
-            <div className="flex items-center gap-3">
+            {/* LEFT: Hamburger + Logo — shrink-0 so it never gets squished */}
+            <div className="flex items-center gap-3 shrink-0">
               {/* All Tools Trigger */}
               <button
                 onClick={() => setShowPanel(true)}
@@ -135,18 +135,19 @@ export default function Navbar({ user, onLogin }: NavbarProps) {
                 <div className="bg-emerald-accent p-2 rounded-xl group-hover:scale-110 transition-transform shadow-lg shadow-emerald-accent/20">
                   <Leaf className="text-forest w-5 h-5" />
                 </div>
-                <span className="text-xl font-display font-bold text-gradient hidden sm:block">AyurCare+</span>
+                <span className="text-xl font-display font-bold text-gradient hidden md:block">AyurCare+</span>
               </Link>
             </div>
 
-            {/* CENTER: Quick nav links (desktop) */}
-            <div className="hidden lg:flex items-center gap-0.5">
+            {/* CENTER: flex-1 so it fills ALL remaining space between logo and actions */}
+            <div className="hidden lg:flex flex-1 items-center justify-center gap-0.5 min-w-0">
               {[
-                { to: '/dashboard',     label: 'Dashboard',    icon: LayoutDashboard },
-                { to: '/doctors',       label: 'Consult',      icon: Stethoscope     },
-                { to: '/shop',          label: 'Shop',         icon: ShoppingBag     },
-                { to: '/chat',          label: 'AI Chat',      icon: MessageSquare   },
-                { to: '/health-coach',  label: 'Health Coach', icon: Brain           },
+                { to: '/dashboard',    label: 'Dashboard',    icon: LayoutDashboard },
+                { to: '/doctors',      label: 'Consult',      icon: Stethoscope     },
+                { to: '/shop',         label: 'Shop',         icon: ShoppingBag     },
+                { to: '/chat',         label: 'AI Chat',      icon: MessageSquare   },
+                { to: '/health-coach', label: 'Health Coach', icon: Brain           },
+                { to: '/diagnosis',    label: 'AI Diagnosis', icon: Sparkles        },
               ].map(link => (
                 <Link
                   key={link.label}
@@ -171,8 +172,8 @@ export default function Navbar({ user, onLogin }: NavbarProps) {
               </Link>
             </div>
 
-            {/* RIGHT: Actions */}
-            <div className="flex items-center gap-2">
+            {/* RIGHT: Actions — shrink-0 so it never gets squished */}
+            <div className="flex items-center gap-2 shrink-0">
               <div className="hidden sm:block">
                 <LanguageSwitcher />
               </div>
