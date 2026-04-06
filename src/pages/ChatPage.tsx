@@ -85,12 +85,12 @@ export default function ChatPage({ user }: { user: FirebaseUser | null }) {
   };
 
   return (
-    <div className="h-screen w-full flex flex-col bg-[#121212] pt-[72px] relative overflow-hidden text-cream">
+    <div className="h-screen w-full flex flex-col bg-forest pt-[72px] relative overflow-hidden text-cream">
       {/* Background that fits AyurCare theme but sleek */}
-      <div className="absolute inset-0 -z-10" style={{background: 'linear-gradient(180deg, #0f1714 0%, #080c0a 100%)'}} />
+      <div className="absolute inset-0 -z-10 bg-gradient-to-b from-moss to-forest" />
       
       {/* Sleek Header */}
-      <header className="w-full shrink-0 flex items-center justify-center py-4 border-b border-white/5 bg-[#0a0f0d]/90 backdrop-blur-md z-40 relative">
+      <header className="w-full shrink-0 flex items-center justify-center py-4 border-b border-cream/5 bg-forest/90 backdrop-blur-md z-40 relative">
         <div className="flex flex-col items-center gap-1">
            <h1 className="text-xl font-bold font-display tracking-wide text-cream flex items-center gap-2">
              <Sparkles size={18} className="text-emerald-accent" /> Ayurcare Chat
@@ -105,7 +105,7 @@ export default function ChatPage({ user }: { user: FirebaseUser | null }) {
         {messages.map((msg, i) => (
           <div key={i} className={`flex w-full mb-6 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
             {msg.role === 'assistant' && (
-              <div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 bg-[#1a2e22] text-emerald-accent border border-[#234230] mt-1 mr-3 md:mr-4">
+              <div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 bg-moss text-emerald-accent border border-emerald-accent/20 mt-1 mr-3 md:mr-4">
                 <Sparkles size={16} />
               </div>
             )}
@@ -116,11 +116,11 @@ export default function ChatPage({ user }: { user: FirebaseUser | null }) {
               {msg.attachments && msg.attachments.length > 0 && (
                 <div className={`flex gap-2 mb-2 flex-wrap ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                   {msg.attachments.map((att, j) => (
-                    <div key={j} className="rounded-2xl overflow-hidden border border-white/10 shadow-lg">
+                    <div key={j} className="rounded-2xl overflow-hidden border border-cream/10 shadow-lg">
                       {att.type === 'image' && att.preview ? (
                         <img src={att.preview} alt={att.name} className="w-32 h-32 md:w-48 md:h-48 object-cover" />
                       ) : (
-                        <div className="flex items-center gap-2 bg-[#2a2a2a] px-3 py-2 text-xs text-cream">
+                        <div className="flex items-center gap-2 bg-moss px-3 py-2 text-xs text-cream">
                           <FileText size={14} className="text-emerald-accent" /> {att.name}
                         </div>
                       )}
@@ -131,7 +131,7 @@ export default function ChatPage({ user }: { user: FirebaseUser | null }) {
               
               {/* Message Bubble/Text */}
               {msg.role === 'user' ? (
-                <div className="bg-[#2a2a2a] text-cream px-5 py-3 rounded-2xl rounded-tr-sm whitespace-pre-wrap leading-relaxed inline-block max-w-full text-[15px]">
+                <div className="bg-moss text-cream px-5 py-3 rounded-2xl rounded-tr-sm whitespace-pre-wrap leading-relaxed inline-block max-w-full text-[15px] border border-cream/5">
                   {msg.content}
                 </div>
               ) : (
@@ -146,7 +146,7 @@ export default function ChatPage({ user }: { user: FirebaseUser | null }) {
         
         {isLoading && (
           <div className="flex w-full mb-6 justify-start">
-            <div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 bg-[#1a2e22] text-emerald-accent border border-[#234230] mt-1 mr-3 md:mr-4">
+            <div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 bg-moss text-emerald-accent border border-emerald-accent/20 mt-1 mr-3 md:mr-4">
               <Sparkles size={16} className="animate-spin-slow" />
             </div>
             <div className="flex-1 flex gap-1.5 items-center pl-2">
@@ -160,7 +160,7 @@ export default function ChatPage({ user }: { user: FirebaseUser | null }) {
       </div>
 
       {/* Input Area Fixed at Bottom */}
-      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-[#080c0a] via-[#080c0a]/95 to-transparent pt-12 pb-6 px-4 z-40 w-full flex justify-center">
+      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-forest via-forest/95 to-transparent pt-12 pb-6 px-4 z-40 w-full flex justify-center">
         
         <div className="w-full max-w-3xl relative">
           
@@ -170,27 +170,27 @@ export default function ChatPage({ user }: { user: FirebaseUser | null }) {
               {attachments.map((att, i) => (
                 <div key={i} className="relative group shadow-lg">
                   {att.preview ? (
-                    <img src={att.preview} alt="" className="w-14 h-14 rounded-2xl object-cover border border-white/10" />
+                    <img src={att.preview} alt="" className="w-14 h-14 rounded-2xl object-cover border border-cream/10" />
                   ) : (
-                    <div className="w-14 h-14 rounded-2xl bg-[#2a2a2a] border border-white/10 flex items-center justify-center">
+                    <div className="w-14 h-14 rounded-2xl bg-moss border border-cream/10 flex items-center justify-center">
                       <FileText size={20} className="text-cream" />
                     </div>
                   )}
-                  <button onClick={() => removeAttachment(i)} className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-black border border-white/20 rounded-full flex items-center justify-center">
-                    <X size={10} className="text-white" />
+                  <button onClick={() => removeAttachment(i)} className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-cream border border-forest/20 rounded-full flex items-center justify-center">
+                    <X size={10} className="text-forest" />
                   </button>
                 </div>
               ))}
             </div>
           )}
 
-          <div className="flex items-end gap-2 bg-[#2a2a2a] border border-white/10 rounded-3xl p-2 w-full focus-within:border-emerald-accent/50 focus-within:bg-[#303030] transition-colors shadow-xl">
+          <div className="flex items-end gap-2 bg-moss border border-cream/10 rounded-3xl p-2 w-full focus-within:border-emerald-accent/50 focus-within:bg-moss/90 transition-colors shadow-xl">
             {/* Hidden file input */}
             <input ref={fileRef} type="file" multiple accept="image/*,.pdf,.txt,.doc,.docx" onChange={handleFileSelect} className="hidden" />
             
             <button 
               onClick={() => fileRef.current?.click()} 
-              className="w-10 h-10 rounded-full flex items-center justify-center text-cream/60 hover:text-white bg-white/5 hover:bg-white/10 transition-colors shrink-0 mb-1 ml-1" 
+              className="w-10 h-10 rounded-full flex items-center justify-center text-cream/60 hover:text-cream bg-cream/5 hover:bg-cream/10 transition-colors shrink-0 mb-1 ml-1" 
               title="Attach files"
             >
               <Paperclip size={18} />
@@ -216,7 +216,7 @@ export default function ChatPage({ user }: { user: FirebaseUser | null }) {
             <button 
               onClick={handleSend}
               disabled={isLoading || (!input.trim() && attachments.length === 0)}
-              className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 mb-1 mr-1 transition-all disabled:opacity-30 disabled:bg-white/10 disabled:text-cream text-forest bg-white"
+              className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 mb-1 mr-1 transition-all disabled:opacity-30 disabled:bg-cream/10 disabled:text-cream/50 text-forest bg-cream"
             >
               <Send size={18} />
             </button>
