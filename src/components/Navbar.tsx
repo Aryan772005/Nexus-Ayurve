@@ -98,7 +98,7 @@ export default function Navbar({ user, onLogin }: NavbarProps) {
       <nav className={`fixed w-full z-50 transition-all duration-500 ${
         isScrolled
           ? 'py-3 backdrop-blur-2xl border-b shadow-xl shadow-black/10'
-          + ' ' + (document.body.classList.contains('light-mode')
+          + ' ' + (isLightMode
               ? 'bg-white/80 border-black/[0.06]'
               : 'bg-forest/80 border-white/[0.06]')
           : 'py-3 sm:py-5 bg-transparent border-b border-transparent'
