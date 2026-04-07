@@ -95,7 +95,14 @@ export default function Navbar({ user, onLogin }: NavbarProps) {
   return (
     <>
       {/* ── Main Navbar ── */}
-      <nav className={`fixed w-full z-50 transition-all duration-300 ${isScrolled ? 'py-3 bg-forest/90 backdrop-blur-xl border-b border-white/5 shadow-xl shadow-black/10' : 'py-3 sm:py-5 bg-transparent'}`}>
+      <nav className={`fixed w-full z-50 transition-all duration-500 ${
+        isScrolled
+          ? 'py-3 backdrop-blur-2xl border-b shadow-xl shadow-black/10'
+          + ' ' + (document.body.classList.contains('light-mode')
+              ? 'bg-white/80 border-black/[0.06]'
+              : 'bg-forest/80 border-white/[0.06]')
+          : 'py-3 sm:py-5 bg-transparent border-b border-transparent'
+      }`}>
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 xl:px-10">
           <div className="flex items-center justify-between sm:justify-start gap-4">
 
@@ -225,8 +232,12 @@ export default function Navbar({ user, onLogin }: NavbarProps) {
               animate={{ x: 0, opacity: 1 }}
               exit={{ x: '-100%', opacity: 0 }}
               transition={{ type: 'spring', damping: 28, stiffness: 280 }}
-              className="fixed top-0 left-0 h-full z-[201] flex flex-col bg-forest/95 backdrop-blur-3xl border-r border-emerald-accent/20 shadow-2xl"
-              style={{ width: 'min(360px, 85vw)' }}
+              className="fixed top-0 left-0 h-full z-[201] flex flex-col backdrop-blur-3xl border-r shadow-2xl"
+              style={{
+                width: 'min(360px, 85vw)',
+                background: 'rgba(10, 15, 13, 0.75)',
+                borderRight: '1px solid rgba(52, 211, 153, 0.15)',
+              }}  
             >
               {/* Panel Header */}
               <div className="flex flex-shrink-0 items-center justify-between px-6 pt-6 pb-5 border-b border-cream/[0.06]">

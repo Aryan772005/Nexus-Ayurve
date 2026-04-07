@@ -1,12 +1,17 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { Heart, Scale, Utensils, Activity, Sparkles, Brain, Target, MessageCircle } from 'lucide-react';
+import {
+  Heart, Scale, Utensils, Activity, Sparkles, Brain,
+  Target, MessageCircle, ArrowRight, ChevronRight,
+  Camera, Stethoscope, LayoutDashboard, ShoppingBag,
+  BookOpen, Zap, CheckCircle
+} from 'lucide-react';
 import { User as FirebaseUser } from 'firebase/auth';
 import { db } from '../lib/firebase';
 import { collection, addDoc } from 'firebase/firestore';
 
-// Expanded Indian Food Database
+// ─── Indian Food Database ───
 const indianFoods = [
   { name: "Dal Makhani (1 bowl)", cal: 300, protein: 12, type: "Heavy (Kapha increasing)" },
   { name: "Chapati (1 piece)", cal: 70, protein: 3, type: "Balanced (Tridoshic)" },
@@ -32,296 +37,457 @@ const indianFoods = [
   { name: "Rice Steamed (1 bowl)", cal: 200, protein: 4, type: "Cooling (Pitta pacifying)" },
   { name: "Raita (1 bowl)", cal: 80, protein: 4, type: "Cooling (Pitta pacifying)" },
   { name: "Gulab Jamun (2 pieces)", cal: 300, protein: 3, type: "Sweet (Vata pacifying)" },
-  { name: "Jalebi (3 pieces)", cal: 350, protein: 2, type: "Sweet & Hot (Kapha increasing)" },
   { name: "Chai (1 cup)", cal: 80, protein: 2, type: "Warming (Vata pacifying)" },
   { name: "Green Tea (1 cup)", cal: 5, protein: 0, type: "Light (Tridoshic detox)" },
-  { name: "Kadhi Pakora (1 bowl)", cal: 250, protein: 8, type: "Medium (Pitta pacifying)" },
-  { name: "Methi Thepla (2 pieces)", cal: 200, protein: 6, type: "Light (Tridoshic)" },
-  { name: "Dhokla (4 pieces)", cal: 160, protein: 6, type: "Light (Tridoshic)" },
 ];
 
+type ActiveTool = 'bmi' | 'heart' | 'calorie' | null;
+
 export default function ToolsPage({ user }: { user: FirebaseUser | null }) {
-  const [activeTool, setActiveTool] = useState<'bmi' | 'heart' | 'health-coach'>('bmi');
+  const [activeTool, setActiveTool] = useState<ActiveTool>(null);
   const navigate = useNavigate();
 
+  const tools = [
+    {
+      id: 'bmi' as ActiveTool,
+      label: 'BMI & Prakriti',
+      icon: Scale,
+      color: '#34D399',
+      glow: 'rgba(52,211,153,0.2)',
+      desc: 'Calculate your BMI and discover your dominant Ayurvedic dosha',
+      tag: 'Calculator',
+    },
+    {
+      id: 'heart' as ActiveTool,
+      label: 'Heart Monitor',
+      icon: Heart,
+      color: '#F87171',
+      glow: 'rgba(248,113,113,0.2)',
+      desc: 'Log and track your pulse rate with Ayurvedic dosha interpretation',
+      tag: 'Tracker',
+    },
+    {
+      id: 'calorie' as ActiveTool,
+      label: 'Calorie Checker',
+      icon: Utensils,
+      color: '#FBBF24',
+      glow: 'rgba(251,191,36,0.2)',
+      desc: 'Browse 25+ Indian dishes with calories, protein & Ayurvedic properties',
+      tag: 'Database',
+    },
+    {
+      id: null,
+      label: 'AI Health Coach',
+      icon: Brain,
+      color: '#A78BFA',
+      glow: 'rgba(167,139,250,0.2)',
+      desc: '13-section personalized wellness blueprint powered by AI',
+      tag: 'AI',
+      to: '/health-coach',
+    },
+    {
+      id: null,
+      label: 'AI Diagnosis',
+      icon: Sparkles,
+      color: '#10B981',
+      glow: 'rgba(16,185,129,0.2)',
+      desc: 'Instant symptom analysis with dosha mapping and remedy plan',
+      tag: 'AI',
+      to: '/diagnosis',
+    },
+    {
+      id: null,
+      label: 'AI Meal Analyser',
+      icon: Camera,
+      color: '#F97316',
+      glow: 'rgba(249,115,22,0.2)',
+      desc: 'Snap your meal and get instant nutritional + Ayurvedic analysis',
+      tag: 'AI',
+      to: '/meal-analysis',
+    },
+    {
+      id: null,
+      label: 'Consult Doctors',
+      icon: Stethoscope,
+      color: '#60A5FA',
+      glow: 'rgba(96,165,250,0.2)',
+      desc: 'Book a session with verified Ayurvedic physicians for just ₹1',
+      tag: '₹1',
+      to: '/doctors',
+    },
+    {
+      id: null,
+      label: 'Health Guides',
+      icon: BookOpen,
+      color: '#6B7280',
+      glow: 'rgba(107,114,128,0.2)',
+      desc: 'Explore Ayurvedic herbs, doshas, and wellness knowledge base',
+      tag: 'Learn',
+      to: '/guides',
+    },
+    {
+      id: null,
+      label: 'WhatsApp Connect',
+      icon: MessageCircle,
+      color: '#25D366',
+      glow: 'rgba(37,211,102,0.2)',
+      desc: 'Chat directly with AyurCare+ support on WhatsApp',
+      tag: 'Support',
+      to: null,
+      action: () => window.open('https://wa.me/919475002048?text=Hello%20AyurCare%2B', '_blank', 'noopener,noreferrer'),
+    },
+  ] as const;
+
   return (
-    <div className="min-h-screen pb-20 relative overflow-hidden">
-      <div className="fixed inset-0 -z-10" style={{backgroundImage: "url('/bg-page-dash.png')", backgroundSize: 'cover', backgroundPosition: 'center'}}>
-        <div className="absolute inset-0 page-bg-overlay" />
-      </div>
-      <header className="mb-12 text-center max-w-2xl mx-auto">
-        <h1 className="text-4xl md:text-5xl font-display font-bold text-gradient mb-4">Wellness Hub</h1>
-        <p className="text-emerald-accent/60 text-lg">Advanced AI-powered diagnostics and traditional Ayurvedic wisdom.</p>
-      </header>
-
-      <div className="flex justify-center gap-4 mb-12 flex-wrap">
-        <ToolTab active={activeTool === 'bmi'} onClick={() => setActiveTool('bmi')} icon={<Scale />} label="BMI & Prakriti" />
-        <ToolTab active={false} onClick={() => navigate('/calorie-checker')} icon={<Utensils />} label="Premium Calorie Check" />
-        <ToolTab active={activeTool === 'heart'} onClick={() => setActiveTool('heart')} icon={<Heart />} label="Heart Monitor" />
-        <ToolTab active={activeTool === 'health-coach'} onClick={() => setActiveTool('health-coach')} icon={<Target />} label="AI Health Coach" />
-        <ToolTab active={false} onClick={() => navigate('/diagnosis')} icon={<Sparkles />} label="AI Diagnosis" />
-        <ToolTab active={false} onClick={() => window.open('https://wa.me/919475002048?text=Hello%20AyurCare%2B%2C%20I%20need%20support.', '_blank', 'noopener,noreferrer')} icon={<MessageCircle />} label="WhatsApp Connect" />
+    <div className="min-h-screen relative overflow-hidden">
+      {/* Transparent background — shows body bg */}
+      <div className="fixed inset-0 -z-10 bg-cover bg-center bg-scroll" style={{ backgroundImage: "url('/bg-page-dash.png')" }}>
+        <div className="absolute inset-0 page-bg-overlay" style={{ opacity: 0.55 }} />
       </div>
 
-      <motion.div 
-        key={activeTool}
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="max-w-3xl mx-auto bg-moss/20 backdrop-blur-xl p-8 md:p-12 rounded-[40px] border border-white/5 shadow-2xl"
-      >
-        {activeTool === 'bmi' && <BMITool />}
-        {activeTool === 'heart' && <HeartTool user={user} />}
-        {activeTool === 'health-coach' && <HealthCoachTool navigate={navigate} />}
-      </motion.div>
+      {/* Ambient glow orbs */}
+      <div className="fixed inset-0 -z-10 pointer-events-none overflow-hidden">
+        <div className="absolute top-1/4 left-1/3 w-[500px] h-[500px] rounded-full blur-[120px] opacity-[0.07]"
+          style={{ background: 'radial-gradient(circle, #10B981, transparent)' }} />
+        <div className="absolute bottom-1/4 right-1/4 w-[300px] h-[300px] rounded-full blur-[90px] opacity-[0.05]"
+          style={{ background: 'radial-gradient(circle, #A78BFA, transparent)' }} />
+      </div>
+
+      <div className="min-h-screen pt-24 pb-20 px-4 md:px-8">
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}
+          className="text-center mb-14 max-w-2xl mx-auto"
+        >
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-emerald-accent/25 bg-emerald-accent/10 text-emerald-accent text-[11px] font-bold uppercase tracking-widest mb-6">
+            <Zap size={12} /> Wellness Hub
+          </div>
+          <h1 className="font-display font-bold text-cream mb-4"
+            style={{ fontSize: 'clamp(2rem, 6vw, 3.5rem)', letterSpacing: '-0.025em' }}>
+            All Your Health Tools
+          </h1>
+          <p className="text-cream/40 text-base leading-relaxed">
+            AI-powered diagnostics, traditional Ayurvedic calculators, and expert consultations — in one place.
+          </p>
+        </motion.div>
+
+        {/* Tools Grid */}
+        <div className="max-w-5xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-12">
+          {tools.map((tool, i) => {
+            const isInline = tool.id !== null;
+            return (
+              <motion.div key={i}
+                initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.06 }}>
+                <button
+                  onClick={() => {
+                    if (isInline) {
+                      setActiveTool(activeTool === tool.id ? null : tool.id);
+                    } else if ('action' in tool && tool.action) {
+                      (tool as any).action();
+                    } else if ('to' in tool && tool.to) {
+                      navigate(tool.to as string);
+                    }
+                  }}
+                  className={`group w-full text-left relative p-5 rounded-3xl transition-all duration-400 overflow-hidden border ${
+                    activeTool === tool.id && isInline
+                      ? 'border-emerald-accent/40 scale-[0.98]'
+                      : 'border-white/[0.07] hover:border-white/[0.15] hover:-translate-y-0.5'
+                  }`}
+                  style={{
+                    background: activeTool === tool.id && isInline
+                      ? `${tool.glow}`
+                      : 'rgba(10,15,13,0.45)',
+                    backdropFilter: 'blur(20px)',
+                    WebkitBackdropFilter: 'blur(20px)',
+                  }}
+                >
+                  {/* Hover radial glow */}
+                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none rounded-3xl"
+                    style={{ background: `radial-gradient(ellipse at 20% 20%, ${tool.glow} 0%, transparent 70%)` }} />
+
+                  <div className="relative flex items-start gap-4">
+                    {/* Icon */}
+                    <div className="w-11 h-11 rounded-2xl flex items-center justify-center flex-shrink-0 transition-transform duration-300 group-hover:scale-110"
+                      style={{ background: `${tool.color}18`, border: `1px solid ${tool.color}30` }}>
+                      <tool.icon size={20} style={{ color: tool.color }} />
+                    </div>
+
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-1">
+                        <h3 className="font-bold text-cream text-[15px] leading-none">{tool.label}</h3>
+                        <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full uppercase tracking-wider flex-shrink-0"
+                          style={{ background: `${tool.color}18`, color: tool.color }}>
+                          {tool.tag}
+                        </span>
+                      </div>
+                      <p className="text-cream/40 text-[12px] leading-relaxed">{tool.desc}</p>
+                    </div>
+
+                    <div className="flex-shrink-0 mt-1">
+                      {isInline ? (
+                        <motion.div
+                          animate={{ rotate: activeTool === tool.id ? 90 : 0 }}
+                          transition={{ duration: 0.2 }}>
+                          <ChevronRight size={16} className="text-cream/30 group-hover:text-emerald-accent transition-colors" />
+                        </motion.div>
+                      ) : (
+                        <ArrowRight size={16} className="text-cream/30 group-hover:text-emerald-accent transition-colors group-hover:translate-x-0.5" />
+                      )}
+                    </div>
+                  </div>
+                </button>
+              </motion.div>
+            );
+          })}
+        </div>
+
+        {/* Inline Tool Panel */}
+        <AnimatePresence>
+          {activeTool && (
+            <motion.div
+              key={activeTool}
+              initial={{ opacity: 0, y: 20, scale: 0.98 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 10, scale: 0.97 }}
+              transition={{ duration: 0.3, ease: 'easeOut' }}
+              className="max-w-2xl mx-auto rounded-3xl p-7 md:p-10 border border-white/[0.08]"
+              style={{
+                background: 'rgba(10,15,13,0.60)',
+                backdropFilter: 'blur(32px)',
+                WebkitBackdropFilter: 'blur(32px)',
+              }}
+            >
+              {activeTool === 'bmi'     && <BMITool />}
+              {activeTool === 'heart'   && <HeartTool user={user} />}
+              {activeTool === 'calorie' && <CalorieTool />}
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
     </div>
   );
 }
 
-function HealthCoachTool({ navigate }: { navigate: any }) {
-   return (
-     <div className="text-center py-8">
-        <div className="w-20 h-20 bg-emerald-accent/10 rounded-3xl flex items-center justify-center mx-auto mb-6 border border-emerald-accent/20">
-           <Brain size={40} className="text-emerald-accent" />
-        </div>
-        <h2 className="text-3xl font-display font-bold text-cream mb-4">AI Holistic Health Coach</h2>
-        <p className="text-emerald-accent/60 text-lg mb-8 max-w-md mx-auto">
-           Get personalized 13-section health analysis including Indian diet plans, hair/skin care, and Ayurvedic protocols.
-        </p>
-        <button 
-           onClick={() => navigate('/health-coach')}
-           className="px-10 py-4 bg-emerald-accent text-forest font-bold rounded-2xl hover:bg-emerald-accent/90 transition-all flex items-center gap-2 mx-auto shadow-lg shadow-emerald-accent/20"
-        >
-           Launch Full Coach <Sparkles size={18} />
-        </button>
-     </div>
-   );
-}
-
-function ToolTab({ active, onClick, icon, label }: any) {
-  return (
-    <button 
-      onClick={onClick}
-      className={`flex items-center gap-2 px-6 py-3 rounded-full font-bold transition-all ${
-        active 
-          ? 'bg-emerald-accent text-forest shadow-lg shadow-emerald-accent/20' 
-          : 'bg-forest border border-white/10 text-emerald-accent/60 hover:text-emerald-accent hover:border-emerald-accent/30'
-      }`}
-    >
-      {React.cloneElement(icon, { size: 18 })} {label}
-    </button>
-  );
-}
-
+// ─────────────────────────────────────────
+// BMI TOOL
+// ─────────────────────────────────────────
 function BMITool() {
-  const [weight, setWeight] = useState('');
-  const [height, setHeight] = useState('');
-  const [age, setAge] = useState('');
-  const [gender, setGender] = useState('male');
-  const [result, setResult] = useState<any>(null);
+  const [weight, setWeight]   = useState('');
+  const [height, setHeight]   = useState('');
+  const [age, setAge]         = useState('');
+  const [gender, setGender]   = useState('male');
+  const [result, setResult]   = useState<any>(null);
 
   const calculateBMI = () => {
     const w = parseFloat(weight);
     const h = parseFloat(height) / 100;
     if (!w || !h) return;
     const bmi = w / (h * h);
-    
-    let category = "Underweight";
-    let dosha = "Vata (Air & Space)";
-    let desc = "Slender build. You may experience dry skin and cold hands. Focus on warming, grounding foods like ghee, soups, and cooked grains.";
-    let color = "text-blue-400";
-    
+    let category = 'Underweight', dosha = 'Vata (Air & Space)',
+        desc = 'Slender build. Focus on warming, grounding foods like ghee, soups, and cooked grains.',
+        color = '#60A5FA';
     if (bmi >= 18.5 && bmi < 25) {
-      category = "Normal";
-      dosha = "Pitta (Fire & Water)";
-      desc = "Medium, well-proportioned build. Strong digestion and metabolism. Focus on cooling, refreshing foods like cucumber, coconut, and fresh dairy.";
-      color = "text-emerald-accent";
+      category = 'Normal'; dosha = 'Pitta (Fire & Water)'; color = '#34D399';
+      desc = 'Well-proportioned build. Strong digestion. Focus on cooling foods like cucumber, coconut, and fresh dairy.';
     } else if (bmi >= 25 && bmi < 30) {
-      category = "Overweight";
-      dosha = "Kapha (Earth & Water)";
-      desc = "Solid, sturdy build. Strong endurance but may have sluggish digestion. Focus on light, stimulating foods and regular exercise.";
-      color = "text-yellow-400";
+      category = 'Overweight'; dosha = 'Kapha (Earth & Water)'; color = '#FBBF24';
+      desc = 'Solid build. Focus on light, stimulating foods and regular cardio exercise.';
     } else if (bmi >= 30) {
-      category = "Obese";
-      dosha = "Kapha Dominant (Earth & Water)";
-      desc = "Heavy build. Consider consulting our doctors for a personalized Panchakarma detox and a Kapha-reducing diet plan.";
-      color = "text-rose-400";
+      category = 'Obese'; dosha = 'Kapha Dominant'; color = '#F87171';
+      desc = 'Consider a personalized Panchakarma detox and Kapha-reducing diet with our doctors.';
     }
-
     setResult({ val: bmi.toFixed(1), category, dosha, desc, color });
   };
 
+  const inputClass = "w-full p-4 rounded-2xl border border-white/[0.08] bg-white/[0.04] text-cream placeholder-cream/30 focus:border-emerald-accent/50 focus:outline-none transition-colors";
+
   return (
-    <div className="space-y-6">
-      <h2 className="text-2xl font-display text-cream font-bold">Ayurvedic BMI & Prakriti Calculator</h2>
-      <p className="text-emerald-accent/60 text-sm mb-6">Discover your dominant dosha and get personalized wellness advice.</p>
-      
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <label className="text-xs text-emerald-accent/50 uppercase font-bold tracking-wider px-2">Weight (kg)</label>
-          <input type="number" value={weight} onChange={e=>setWeight(e.target.value)} className="w-full mt-1 p-4 bg-forest/40 rounded-2xl border border-white/5 text-cream focus:border-emerald-accent outline-none" placeholder="e.g. 70" />
+    <div>
+      <div className="flex items-center gap-3 mb-6">
+        <div className="w-10 h-10 rounded-2xl bg-emerald-accent/15 border border-emerald-accent/30 flex items-center justify-center">
+          <Scale size={20} className="text-emerald-accent" />
         </div>
         <div>
-          <label className="text-xs text-emerald-accent/50 uppercase font-bold tracking-wider px-2">Height (cm)</label>
-          <input type="number" value={height} onChange={e=>setHeight(e.target.value)} className="w-full mt-1 p-4 bg-forest/40 rounded-2xl border border-white/5 text-cream focus:border-emerald-accent outline-none" placeholder="e.g. 175" />
+          <h2 className="font-display font-bold text-cream text-xl">BMI & Prakriti Calculator</h2>
+          <p className="text-cream/40 text-xs">Discover your dominant dosha</p>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-3 mb-4">
+        <div>
+          <label className="text-[10px] font-bold uppercase tracking-widest text-emerald-accent/60 mb-1.5 block">Weight (kg)</label>
+          <input type="number" value={weight} onChange={e => setWeight(e.target.value)} className={inputClass} placeholder="e.g. 70" />
         </div>
         <div>
-          <label className="text-xs text-emerald-accent/50 uppercase font-bold tracking-wider px-2">Age</label>
-          <input type="number" value={age} onChange={e=>setAge(e.target.value)} className="w-full mt-1 p-4 bg-forest/40 rounded-2xl border border-white/5 text-cream focus:border-emerald-accent outline-none" placeholder="e.g. 25" />
+          <label className="text-[10px] font-bold uppercase tracking-widest text-emerald-accent/60 mb-1.5 block">Height (cm)</label>
+          <input type="number" value={height} onChange={e => setHeight(e.target.value)} className={inputClass} placeholder="e.g. 175" />
         </div>
         <div>
-          <label className="text-xs text-emerald-accent/50 uppercase font-bold tracking-wider px-2">Gender</label>
-          <select value={gender} onChange={e=>setGender(e.target.value)} className="w-full mt-1 p-4 bg-forest/40 rounded-2xl border border-white/5 text-cream focus:border-emerald-accent outline-none">
+          <label className="text-[10px] font-bold uppercase tracking-widest text-emerald-accent/60 mb-1.5 block">Age</label>
+          <input type="number" value={age} onChange={e => setAge(e.target.value)} className={inputClass} placeholder="e.g. 25" />
+        </div>
+        <div>
+          <label className="text-[10px] font-bold uppercase tracking-widest text-emerald-accent/60 mb-1.5 block">Gender</label>
+          <select value={gender} onChange={e => setGender(e.target.value)} className={inputClass}>
             <option value="male">Male</option>
             <option value="female">Female</option>
           </select>
         </div>
       </div>
-      
-      <button onClick={calculateBMI} className="w-full bg-emerald-accent text-forest py-4 rounded-2xl font-bold mt-4 hover:bg-emerald-accent/90 transition-colors">Calculate BMI & Dosha</button>
 
-      {result && (
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mt-8 p-8 bg-emerald-accent/5 border border-emerald-accent/20 rounded-3xl">
-          <div className="flex justify-between items-center mb-6">
-            <div>
-              <p className="text-5xl font-display font-bold text-cream">{result.val}</p>
-              <p className={`text-sm font-bold mt-1 ${result.color}`}>{result.category}</p>
-            </div>
-            <div className="text-right">
-              <p className="text-xs text-emerald-accent/50 uppercase tracking-widest">Likely Dosha</p>
-              <p className="text-lg font-bold text-emerald-accent">{result.dosha}</p>
-            </div>
-          </div>
-          <p className="text-sm text-cream/70 leading-relaxed">{result.desc}</p>
-        </motion.div>
-      )}
-    </div>
-  );
-}
+      <button onClick={calculateBMI}
+        className="w-full py-4 rounded-2xl bg-emerald-accent text-forest font-bold text-sm hover:bg-emerald-accent/90 transition-all shadow-lg shadow-emerald-accent/20 flex items-center justify-center gap-2">
+        Calculate BMI & Dosha <Sparkles size={16} />
+      </button>
 
-function CalorieTool() {
-  const [food, setFood] = useState('');
-  const [showAll, setShowAll] = useState(false);
-
-  // Live filter: split search into words, match ANY word against food name
-  const getFilteredFoods = () => {
-    if (!food.trim()) return showAll ? indianFoods : [];
-    const words = food.toLowerCase().split(/\s+/);
-    return indianFoods.filter(item => {
-      const name = item.name.toLowerCase();
-      const type = item.type.toLowerCase();
-      return words.some(w => name.includes(w) || type.includes(w));
-    });
-  };
-
-  const filtered = getFilteredFoods();
-
-  return (
-    <div className="space-y-6">
-      <h2 className="text-2xl font-display text-cream font-bold">Indian Food Calorie Checker</h2>
-      <p className="text-emerald-accent/60 text-sm mb-6">Search 30+ Indian dishes to check calories, protein, and Ayurvedic properties.</p>
-      
-      <div>
-        <input type="text" value={food} onChange={e => setFood(e.target.value)} className="w-full p-4 bg-forest/40 rounded-2xl border border-white/5 text-cream focus:border-emerald-accent outline-none" placeholder="Start typing... e.g. Dal, Chicken, Sweet, Pitta..." />
-      </div>
-
-      {/* Quick picks */}
-      <div className="flex flex-wrap gap-2">
-        <span className="text-xs text-emerald-accent/40">Quick:</span>
-        {["Dal", "Biryani", "Roti", "Chai", "Paneer", "Samosa", "Dosa", "Rice"].map(tag => (
-          <button key={tag} onClick={() => setFood(tag)} className={`text-xs px-3 py-1 rounded-full border transition-colors ${food === tag ? 'bg-emerald-accent text-forest border-emerald-accent' : 'bg-forest/50 border-white/5 text-emerald-accent/60 hover:text-emerald-accent hover:border-emerald-accent/30'}`}>{tag}</button>
-        ))}
-        <button onClick={() => { setFood(''); setShowAll(!showAll); }} className="text-xs px-3 py-1 bg-forest/50 border border-white/5 rounded-full text-emerald-accent/60 hover:text-emerald-accent hover:border-emerald-accent/30 transition-colors">
-          {showAll ? 'Hide All' : 'Show All'}
-        </button>
-      </div>
-
-      {filtered.length > 0 && (
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-3 mt-4 max-h-[400px] overflow-y-auto pr-2 scrollbar-hide">
-          <p className="text-xs text-emerald-accent/40">{filtered.length} result{filtered.length !== 1 ? 's' : ''} found</p>
-          {filtered.map((r, i) => (
-            <div key={i} className="p-4 bg-forest/40 border border-white/5 rounded-2xl flex justify-between items-center hover:border-emerald-accent/20 transition-colors">
+      <AnimatePresence>
+        {result && (
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+            className="mt-6 p-6 rounded-2xl border"
+            style={{ background: `${result.color}10`, borderColor: `${result.color}30` }}>
+            <div className="flex items-center justify-between mb-4">
               <div>
-                <p className="font-bold text-cream">{r.name}</p>
-                <p className="text-xs text-emerald-accent/50 mt-1">{r.type}</p>
+                <p className="font-display font-bold text-cream text-5xl">{result.val}</p>
+                <p className="font-bold text-sm mt-1" style={{ color: result.color }}>{result.category}</p>
               </div>
-              <div className="text-right shrink-0 ml-4">
-                <p className="text-2xl font-display font-bold text-cream">{r.cal}</p>
-                <p className="text-[10px] text-emerald-accent/40 uppercase tracking-widest">kcal ・ {r.protein}g protein</p>
+              <div className="text-right">
+                <p className="text-[10px] uppercase tracking-widest text-cream/40 mb-1">Dominant Dosha</p>
+                <p className="font-bold text-base" style={{ color: result.color }}>{result.dosha}</p>
               </div>
             </div>
-          ))}
-        </motion.div>
-      )}
-
-      {food.trim() && filtered.length === 0 && (
-        <div className="text-center py-10 text-emerald-accent/40">No results found for "{food}". Try a different keyword.</div>
-      )}
+            <p className="text-cream/60 text-sm leading-relaxed">{result.desc}</p>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
 
+// ─────────────────────────────────────────
+// HEART TOOL
+// ─────────────────────────────────────────
 function HeartTool({ user }: { user: FirebaseUser | null }) {
   const [heartRate, setHeartRate] = useState('');
-  const [saved, setSaved] = useState(false);
+  const [saved, setSaved]         = useState(false);
 
-  const handleLogHeartRate = async () => {
-    if (!heartRate || !user) {
-      if(!user) alert("Please log in to save heart rate logs.");
-      return;
-    }
+  const handleLog = async () => {
+    if (!heartRate || !user) { if (!user) alert('Please log in to save heart rate logs.'); return; }
     try {
       const rate = Number(heartRate);
-      let status = 'normal';
-      if (rate < 60) status = 'low';
-      if (rate > 100) status = 'high';
-
       await addDoc(collection(db, 'heart_logs'), {
-        userId: user.uid,
-        heartRate: rate,
-        status,
-        timestamp: new Date().toISOString()
+        userId: user.uid, heartRate: rate,
+        status: rate < 60 ? 'low' : rate > 100 ? 'high' : 'normal',
+        timestamp: new Date().toISOString(),
       });
       setSaved(true);
       setTimeout(() => setSaved(false), 3000);
       setHeartRate('');
-    } catch (err) {
-      console.error("Heart rate logging failed:", err);
-    }
+    } catch (err) { console.error(err); }
   };
 
-  const getHeartAdvice = (rate: number) => {
-    if (!rate) return "";
-    if (rate < 60) return "Low pulse (Bradycardia). This may indicate Kapha imbalance. Consider warming herbs like ginger and ashwagandha.";
-    if (rate > 100) return "Elevated heart rate (Tachycardia). This may indicate Pitta imbalance. Try cooling pranayama and brahmi tea.";
-    return "Your heart rate is in the normal range. Your doshas appear balanced. Keep up your routine!";
-  };
+  const rate = Number(heartRate);
+  const advice = !rate ? null
+    : rate < 60  ? { msg: 'Low pulse (Bradycardia). May indicate Kapha imbalance. Try warming herbs like ginger.', color: '#60A5FA' }
+    : rate > 100 ? { msg: 'Elevated HR (Tachycardia). May indicate Pitta imbalance. Try cooling pranayama and brahmi tea.', color: '#F87171' }
+    : { msg: 'Heart rate is in the normal range. Doshas appear balanced. Keep up your routine!', color: '#34D399' };
 
   return (
-    <div className="space-y-6">
-      <h2 className="text-2xl font-display text-cream font-bold">Heart Rate Monitor</h2>
-      <p className="text-emerald-accent/60 text-sm mb-6">Track your pulse to understand your Vata, Pitta, and Kapha balance.</p>
-      
-      <div className="relative mb-6">
-        <input 
-          type="number" 
-          value={heartRate}
-          onChange={(e) => setHeartRate(e.target.value)}
-          placeholder="BPM"
-          className="w-full text-6xl font-serif text-center py-10 bg-forest/40 rounded-3xl border border-white/5 focus:border-emerald-accent/50 text-cream outline-none"
-        />
-        <span className="absolute bottom-4 right-8 text-emerald-accent/20 font-bold">BPM</span>
+    <div>
+      <div className="flex items-center gap-3 mb-6">
+        <div className="w-10 h-10 rounded-2xl bg-rose-400/15 border border-rose-400/30 flex items-center justify-center">
+          <Heart size={20} className="text-rose-400" />
+        </div>
+        <div>
+          <h2 className="font-display font-bold text-cream text-xl">Heart Rate Monitor</h2>
+          <p className="text-cream/40 text-xs">Track your pulse & dosha balance</p>
+        </div>
       </div>
 
-      {heartRate && (
-        <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-sm text-cream/70 bg-forest/50 p-4 rounded-2xl border border-white/5">
-          💡 {getHeartAdvice(Number(heartRate))}
-        </motion.p>
-      )}
+      <div className="relative mb-5">
+        <input type="number" value={heartRate} onChange={e => setHeartRate(e.target.value)}
+          placeholder="0" maxLength={3}
+          className="w-full text-center font-display font-bold text-cream py-8 rounded-3xl border border-white/[0.08] bg-white/[0.04] focus:border-rose-400/40 focus:outline-none transition-colors"
+          style={{ fontSize: 'clamp(3rem, 10vw, 5rem)', letterSpacing: '-0.05em' }} />
+        <span className="absolute bottom-5 right-8 text-cream/20 font-bold text-sm tracking-widest">BPM</span>
+      </div>
 
-      <button onClick={handleLogHeartRate} className="w-full bg-rose-500 text-white py-4 rounded-2xl font-bold hover:bg-rose-600 transition-all">Save & Log</button>
+      <AnimatePresence>
+        {advice && (
+          <motion.div initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }}
+            className="mb-5 p-4 rounded-2xl border text-sm leading-relaxed"
+            style={{ background: `${advice.color}10`, borderColor: `${advice.color}25`, color: `${advice.color}` }}>
+            💡 {advice.msg}
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-      {saved && <p className="text-center text-emerald-accent text-sm font-bold mt-4">✅ Saved successfully!</p>}
-      <p className="text-center text-xs text-emerald-accent/40 mt-4">View your full history in the Dashboard.</p>
+      <button onClick={handleLog}
+        className="w-full py-4 rounded-2xl bg-rose-500 text-white font-bold text-sm hover:bg-rose-600 transition-all flex items-center justify-center gap-2">
+        {saved ? <><CheckCircle size={16} /> Saved!</> : <><Heart size={16} /> Save & Log</>}
+      </button>
+      <p className="text-center text-[11px] text-cream/30 mt-3">View your full history in the Dashboard</p>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────
+// CALORIE TOOL
+// ─────────────────────────────────────────
+function CalorieTool() {
+  const [query, setQuery] = useState('');
+
+  const filtered = !query.trim()
+    ? indianFoods.slice(0, 8)
+    : indianFoods.filter(f =>
+        query.toLowerCase().split(/\s+/).some(w => f.name.toLowerCase().includes(w) || f.type.toLowerCase().includes(w))
+      );
+
+  return (
+    <div>
+      <div className="flex items-center gap-3 mb-6">
+        <div className="w-10 h-10 rounded-2xl bg-amber-400/15 border border-amber-400/30 flex items-center justify-center">
+          <Utensils size={20} className="text-amber-400" />
+        </div>
+        <div>
+          <h2 className="font-display font-bold text-cream text-xl">Indian Food Calorie DB</h2>
+          <p className="text-cream/40 text-xs">25+ dishes with Ayurvedic properties</p>
+        </div>
+      </div>
+
+      <input type="text" value={query} onChange={e => setQuery(e.target.value)}
+        placeholder="Search... Dal, Biryani, Pitta, Sweet..."
+        className="w-full p-4 rounded-2xl border border-white/[0.08] bg-white/[0.04] text-cream placeholder-cream/30 focus:border-amber-400/40 focus:outline-none transition-colors mb-4" />
+
+      {/* Quick tags */}
+      <div className="flex flex-wrap gap-1.5 mb-5">
+        {['Dal', 'Biryani', 'Roti', 'Paneer', 'Dosa', 'Chai', 'Pitta'].map(tag => (
+          <button key={tag} onClick={() => setQuery(tag)}
+            className="text-[11px] px-2.5 py-1 rounded-full border transition-colors"
+            style={query === tag
+              ? { background: 'rgba(251,191,36,0.2)', borderColor: 'rgba(251,191,36,0.4)', color: '#FBBF24' }
+              : { background: 'rgba(255,255,255,0.04)', borderColor: 'rgba(255,255,255,0.08)', color: 'rgba(248,250,252,0.5)' }
+            }>
+            {tag}
+          </button>
+        ))}
+      </div>
+
+      <div className="space-y-2 max-h-72 overflow-y-auto pr-1" style={{ scrollbarWidth: 'none' }}>
+        {filtered.map((f, i) => (
+          <motion.div key={i} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: i * 0.02 }}
+            className="flex items-center justify-between p-3.5 rounded-2xl border border-white/[0.06] bg-white/[0.03] hover:border-amber-400/20 transition-colors">
+            <div>
+              <p className="font-bold text-cream text-sm">{f.name}</p>
+              <p className="text-[11px] text-amber-400/70 mt-0.5">{f.type}</p>
+            </div>
+            <div className="text-right flex-shrink-0 ml-4">
+              <p className="font-display font-bold text-cream text-xl">{f.cal}</p>
+              <p className="text-[10px] text-cream/30 uppercase tracking-wider">kcal · {f.protein}g</p>
+            </div>
+          </motion.div>
+        ))}
+      </div>
     </div>
   );
 }
