@@ -1,3 +1,5 @@
+export const maxDuration = 60; // Set maximum execution time for this function to 60 seconds
+
 export default async function handler(req: any, res: any) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -13,7 +15,7 @@ export default async function handler(req: any, res: any) {
     process.env.NVIDIA_KEY ||
     process.env.NVIDIA_PI_KEY ||
     ''
-  ).trim().replace(/^[\"'Bearer ]+|[\"']+$/g, '').trim();
+  ).trim().replace(/^["'Bearer ]+|["']+$/g, '').trim();
 
   if (!rawKey) {
     return res.status(401).json({ error: 'NVIDIA API key not configured in Vercel environment variables.' });
@@ -55,7 +57,7 @@ Use this exact structure:
     };
 
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 8000); // 8s timeout (Vercel limit is 10s)
+    const timeout = setTimeout(() => controller.abort(), 50000); // 50s timeout
 
     let response: Response;
     try {

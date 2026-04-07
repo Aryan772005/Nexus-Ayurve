@@ -35,7 +35,7 @@ export default function MealAnalysisPage() {
       const img = new Image();
       img.onload = () => {
         const canvas = document.createElement('canvas');
-        const MAX = 800;
+        const MAX = 512;
         let { width, height } = img;
         if (width > height) {
           if (width > MAX) { height = Math.round(height * MAX / width); width = MAX; }

@@ -110,7 +110,7 @@ export default function ChatPage({ user }: { user: FirebaseUser | null }) {
               </div>
             )}
             
-            <div className={`max-w-[85%] md:max-w-[75%] ${msg.role === 'user' ? '' : 'text-cream/90 flex-1 min-w-0'}`}>
+            <div className={`max-w-[85%] md:max-w-[75%] ${msg.role === 'user' ? '' : 'text-cream opacity-90 flex-1 min-w-0'}`}>
               
               {/* Attachment Previews */}
               {msg.attachments && msg.attachments.length > 0 && (
@@ -201,7 +201,7 @@ export default function ChatPage({ user }: { user: FirebaseUser | null }) {
               onChange={e => setInput(e.target.value)}
               onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); }}}
               placeholder="Message Ayurcare Chat..."
-              className="flex-1 bg-transparent border-none p-3 text-[15px] text-cream outline-none resize-none min-h-[46px] max-h-[150px] overflow-y-auto"
+              className="flex-1 bg-transparent border-none p-3 text-[15px] text-cream outline-none resize-none min-h-[46px] max-h-[150px] overflow-y-auto placeholder-cream/50"
               rows={1}
               style={{
                  height: "46px"
@@ -216,7 +216,7 @@ export default function ChatPage({ user }: { user: FirebaseUser | null }) {
             <button 
               onClick={handleSend}
               disabled={isLoading || (!input.trim() && attachments.length === 0)}
-              className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 mb-1 mr-1 transition-all disabled:opacity-30 disabled:bg-cream/10 disabled:text-cream/50 text-forest bg-cream"
+              className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 mb-1 mr-1 transition-all disabled:opacity-30 disabled:bg-cream disabled:bg-opacity-10 disabled:text-cream disabled:text-opacity-50 text-forest bg-cream"
             >
               <Send size={18} />
             </button>
