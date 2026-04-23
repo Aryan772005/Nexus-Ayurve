@@ -1,11 +1,11 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { X, Mail, Lock, User, Eye, EyeOff } from 'lucide-react';
 import { loginWithGoogle, signUpWithEmail, loginWithEmail } from '../lib/firebase';
 
 const VideoPanel = React.memo(() => (
   <div className="hidden md:block relative w-5/12 flex-shrink-0 overflow-hidden">
     <video
-      src="/hero-video.mp4"
+      src="/nexus-ayurve-hero.mp4"
       autoPlay
       muted
       loop

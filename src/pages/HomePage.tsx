@@ -1,4 +1,4 @@
-﻿import React, { useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import {
   Sparkles, Heart, Calendar, ChevronRight, Star, Users, Award,
@@ -58,7 +58,7 @@ export default function HomePage({ onLogin, user }: { onLogin: () => void, user:
             className="absolute inset-0 w-full h-full object-cover"
             style={{ transform: 'translateZ(0)', willChange: 'transform', backfaceVisibility: 'hidden' }}
           >
-            <source src="/hero-video.mp4" type="video/mp4" />
+            <source src="/nexus-ayurve-hero.mp4" type="video/mp4" />
           </video>
 
           {/* Simple overlays — no extra layers */}
@@ -96,11 +96,11 @@ export default function HomePage({ onLogin, user }: { onLogin: () => void, user:
             className="font-display font-bold leading-none mb-5"
             style={{ fontSize: 'clamp(3.5rem, 13vw, 9.5rem)', letterSpacing: '-0.025em' }}
           >
-            <span className="text-cream drop-shadow-2xl">Ayur</span>
+            <span className="text-cream drop-shadow-2xl">Nexus </span>
             <span style={{
               background: 'linear-gradient(130deg, #34D399 0%, #10B981 50%, #6EE7B7 100%)',
               WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
-            }}>Care+</span>
+            }}>Ayurve</span>
           </motion.h1>
 
           {/* Subtitle */}
