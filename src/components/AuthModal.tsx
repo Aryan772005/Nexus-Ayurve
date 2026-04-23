@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { X, Mail, Lock, User, Eye, EyeOff } from 'lucide-react';
 import { loginWithGoogle, signUpWithEmail, loginWithEmail } from '../lib/firebase';
+import { auditLogin, auditLogout, auditSignup, auditFailed } from '../utils/hipaaAudit';
+import HIPAABadge from './HIPAABadge';
 
 const VideoPanel = React.memo(() => (
   <div className="hidden md:block relative w-5/12 flex-shrink-0 overflow-hidden">
@@ -23,6 +25,10 @@ const VideoPanel = React.memo(() => (
       <p className="text-white/50 text-xs mt-1">
         Your Ayurvedic wellness companion
       </p>
+      {/* HIPAA minimal badge on video panel */}
+      <div className="mt-3">
+        <HIPAABadge variant="minimal" />
+      </div>
     </div>
   </div>
 ));
@@ -45,12 +51,18 @@ export default function AuthModal({ onClose }: { onClose: () => void }) {
       if (mode === 'signup') {
         if (!name.trim()) { setError('Name is required'); setLoading(false); return; }
         if (password.length < 6) { setError('Password must be at least 6 characters'); setLoading(false); return; }
-        await signUpWithEmail(email, password, name);
+        const result = await signUpWithEmail(email, password, name);
+        // HIPAA Audit — signup event, no PHI logged
+        await auditSignup(result.user.uid);
       } else {
-        await loginWithEmail(email, password);
+        const result = await loginWithEmail(email, password);
+        // HIPAA Audit — login event, no PHI logged
+        await auditLogin(result.user.uid);
       }
       onClose();
     } catch (err: any) {
+      // HIPAA Audit — failed auth attempt, no credentials logged
+      await auditFailed();
       const code = err.code || '';
       if (code === 'auth/email-already-in-use') setError('This email is already registered. Try logging in.');
       else if (code === 'auth/invalid-credential' || code === 'auth/wrong-password') setError('Invalid email or password.');
@@ -65,9 +77,12 @@ export default function AuthModal({ onClose }: { onClose: () => void }) {
   const handleGoogle = async () => {
     setError('');
     try {
-      await loginWithGoogle();
+      const result = await loginWithGoogle();
+      // HIPAA Audit — Google login, no PHI logged
+      await auditLogin(result.user.uid);
       onClose();
     } catch (err: any) {
+      await auditFailed();
       setError(err.message || 'Google login failed.');
     }
   };
@@ -97,11 +112,16 @@ export default function AuthModal({ onClose }: { onClose: () => void }) {
           <h2 className="text-2xl font-display font-bold text-cream mb-1">
             {mode === 'login' ? 'Welcome Back' : 'Create Account'}
           </h2>
-          <p className="text-emerald-accent/50 text-sm mb-7">
+          <p className="text-emerald-accent/50 text-sm mb-4">
             {mode === 'login'
               ? 'Sign in to continue your wellness journey'
               : 'Start your Ayurvedic health journey today'}
           </p>
+
+          {/* HIPAA Full compliance badge — expandable */}
+          <div className="mb-5">
+            <HIPAABadge variant="full" />
+          </div>
 
           {/* Google Button */}
           <button
