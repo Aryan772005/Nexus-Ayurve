@@ -8,7 +8,7 @@ import { auditLogin, auditSignup, auditFailed } from '../utils/hipaaAudit';
 const VideoPanel = React.memo(() => (
   <div className="hidden md:flex relative w-[42%] flex-shrink-0 overflow-hidden flex-col">
     <video
-      src="/nexus-ayurve-hero.mp4"
+      src="/nexusdd.mp4"
       autoPlay muted loop playsInline
       className="absolute inset-0 w-full h-full object-cover"
       style={{ filter: 'brightness(0.55) saturate(1.2)', transform: 'translateZ(0)' }}

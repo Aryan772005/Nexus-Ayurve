@@ -9,18 +9,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  // API Key Fix
-  let apiKey = (
-    process.env.NVIDIA_API_KEY ||
-    process.env.NIVIDIA_API_KEY ||
-    process.env.NVIDIA_KEY ||
-    ''
-  ).trim().replace(/^[\"']|[\"']$/g, '');
-
-  if (apiKey.startsWith('Bearer ')) apiKey = apiKey.substring(7).trim();
+  // Groq API Key
+  const apiKey = (process.env.GROQ_API_KEY || '').trim();
 
   if (!apiKey) {
-    return res.status(500).json({ error: 'NVIDIA_API_KEY not configured.' });
+    return res.status(500).json({ error: 'GROQ_API_KEY not configured. Get a free key at https://console.groq.com' });
   }
 
   // Safe body parsing
@@ -87,9 +80,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   try {
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 9000); // 9s timeout for Vercel Hobby
+    const timeout = setTimeout(() => controller.abort(), 20000); // 20s timeout
 
-    const response = await fetch('https://integrate.api.nvidia.com/v1/chat/completions', {
+    const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
       signal: controller.signal,
       headers: {
@@ -97,13 +90,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'meta/llama-3.1-8b-instruct',
+        model: 'llama-3.1-8b-instant',
         messages: [
           { role: 'system', content: SYSTEM_PROMPT },
           { role: 'user', content: USER_PROMPT },
         ],
-        temperature: 0.2, // Lower temperature for more stable JSON
-        max_tokens: 1500, // Reduced slightly to save time
+        temperature: 0.2,
+        max_tokens: 1200,
       }),
     });
 

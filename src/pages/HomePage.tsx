@@ -58,7 +58,7 @@ export default function HomePage({ onLogin, user }: { onLogin: () => void, user:
             className="absolute inset-0 w-full h-full object-cover"
             style={{ transform: 'translateZ(0)', willChange: 'transform', backfaceVisibility: 'hidden' }}
           >
-            <source src="/nexus-ayurve-hero.mp4" type="video/mp4" />
+            <source src="/nexusdd.mp4" type="video/mp4" />
           </video>
 
           {/* Simple overlays — no extra layers */}

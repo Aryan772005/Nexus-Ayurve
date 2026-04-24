@@ -31,37 +31,14 @@ app.use("/api/appointments", appointmentRoutes);
 app.use("/api/heart-rate", heartRateRoutes);
 app.use("/api/analyze-symptoms", aiRoutes);
 
-// Chat route for local development — uses Google Gemini AI
+// Chat route for local development
 app.post("/api/chat", async (req, res) => {
-  const { message } = req.body;
-  if (!message) return res.status(400).json({ error: "Missing message" });
-
-  const geminiKey = (process.env.GEMINI_API_KEY || "").trim();
-  if (!geminiKey) {
-    return res.status(500).json({
-      error: "GEMINI_API_KEY is not set in your .env file. Add it to enable the AI chatbot."
-    });
-  }
-
   try {
-    const { GoogleGenAI } = await import("@google/genai");
-    const ai = new GoogleGenAI({ apiKey: geminiKey });
-
-    const systemPrompt = `You are a knowledgeable and compassionate Ayurvedic health assistant for Nexus Ayurve. 
-Provide helpful advice based on Ayurvedic principles including dosha balancing (Vata, Pitta, Kapha), herbal remedies, yoga, pranayama, and diet recommendations. 
-Always be warm, professional, and use bullet points for lists. 
-Recommend consulting a qualified Ayurvedic doctor for serious conditions.`;
-
-    const result = await ai.models.generateContent({
-      model: "gemini-2.0-flash",
-      contents: `${systemPrompt}\n\nUser query: ${message}\n\nRespond helpfully with Ayurvedic guidance.`,
-    });
-
-    const aiText = result.text || "I couldn't generate a response. Please try again.";
-    res.json({ reply: aiText });
-  } catch (error: any) {
-    console.error("Gemini chat error:", error?.message || error);
-    res.status(500).json({ error: error?.message || "AI service error. Please try again." });
+    const handlerModule = await import("./api/chat.ts") as any;
+    await handlerModule.default(req, res);
+  } catch (err) {
+    console.error("Local chat handler failed:", err);
+    res.status(500).json({ error: "Failed to run chat function locally" });
   }
 });
 
