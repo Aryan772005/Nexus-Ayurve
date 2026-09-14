@@ -14,6 +14,18 @@
       "use": "@vercel/node"
     },
     {
+      "src": "api/ayurcoach-food-scan.ts",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "api/ayurcoach-label-scan.ts",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "api/ayurcoach-chat.ts",
+      "use": "@vercel/node"
+    },
+    {
       "src": "package.json",
       "use": "@vercel/static-build",
       "config": {
@@ -53,6 +65,18 @@
     {
       "source": "/api/health-coach",
       "destination": "/api/health-coach.ts"
+    },
+    {
+      "source": "/api/ayurcoach-food-scan",
+      "destination": "/api/ayurcoach-food-scan.ts"
+    },
+    {
+      "source": "/api/ayurcoach-label-scan",
+      "destination": "/api/ayurcoach-label-scan.ts"
+    },
+    {
+      "source": "/api/ayurcoach-chat",
+      "destination": "/api/ayurcoach-chat.ts"
     },
     {
       "source": "/api/(.*)",

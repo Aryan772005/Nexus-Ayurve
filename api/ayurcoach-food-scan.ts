@@ -1,22 +1,7 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
-import fs from 'fs';
-import path from 'path';
+import foodDbData from '../src/data/foods_dosha_db.json';
 
 export const maxDuration = 60;
-
-// Load local database
-function getLocalFoodDb() {
-  try {
-    const dbPath = path.resolve(process.cwd(), 'src', 'data', 'foods_dosha_db.json');
-    if (fs.existsSync(dbPath)) {
-      const raw = fs.readFileSync(dbPath, 'utf-8');
-      return JSON.parse(raw);
-    }
-  } catch (err) {
-    console.error('Error reading local food database:', err);
-  }
-  return { foods: [] };
-}
 
 export default async function handler(req: any, res: any) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -27,7 +12,7 @@ export default async function handler(req: any, res: any) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
   const geminiKey = (process.env.GEMINI_API_KEY || '').trim();
-  const localDb = getLocalFoodDb();
+  const localDb = foodDbData;
 
   try {
     const { imageBase64, userDosha } = req.body;

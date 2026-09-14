@@ -206,8 +206,14 @@ export default function AyurCoachPage() {
       clearTimeout(timer1);
       clearTimeout(timer2);
 
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Scan analysis failed');
+      let data: any = null;
+      try {
+        data = await res.json();
+      } catch {
+        const text = await res.text().catch(() => '');
+        throw new Error(text.includes('500') || text.includes('error') ? 'Server is compiling scan data. Please retry in a few seconds.' : 'Could not parse scan response.');
+      }
+      if (!res.ok) throw new Error(data?.error || 'Scan analysis failed');
 
       setFreshResult(data);
       incrementScanCount();
@@ -236,8 +242,14 @@ export default function AyurCoachPage() {
         })
       });
 
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Label scan failed');
+      let data: any = null;
+      try {
+        data = await res.json();
+      } catch {
+        const text = await res.text().catch(() => '');
+        throw new Error(text.includes('500') || text.includes('error') ? 'Server is updating food database. Please retry in a moment.' : 'Could not parse response.');
+      }
+      if (!res.ok) throw new Error(data?.error || 'Label scan failed');
 
       setPackagedResult(data);
       incrementScanCount();

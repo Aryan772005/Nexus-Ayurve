@@ -1,21 +1,10 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
-import fs from 'fs';
-import path from 'path';
+import foodDbData from '../src/data/foods_dosha_db.json';
 
 export const maxDuration = 60;
 
 function getRedFlagsDb() {
-  try {
-    const dbPath = path.resolve(process.cwd(), 'src', 'data', 'foods_dosha_db.json');
-    if (fs.existsSync(dbPath)) {
-      const raw = fs.readFileSync(dbPath, 'utf-8');
-      const data = JSON.parse(raw);
-      return data.packaged_red_flags || [];
-    }
-  } catch (err) {
-    console.error('Error reading packaged red flags:', err);
-  }
-  return [];
+  return foodDbData.packaged_red_flags || [];
 }
 
 export default async function handler(req: any, res: any) {
