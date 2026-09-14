@@ -85,7 +85,7 @@ Guidelines:
   // Try Gemini with retry
   if (geminiKey) {
     const genAI = new GoogleGenerativeAI(geminiKey);
-    const model = genAI.getGenerativeModel({ model: 'gemini-3.6-flash' });
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
 
     let fullPrompt = `${systemPrompt}\n\n`;
     if (Array.isArray(history)) {
@@ -101,6 +101,11 @@ Guidelines:
         const reply = result.response.text();
         if (reply) return res.status(200).json({ reply });
       } catch (gemErr: any) {
+        const is429 = gemErr?.status === 429 || gemErr?.message?.includes('429') || gemErr?.message?.includes('quota');
+        if (is429) {
+          console.warn('Gemini quota hit on chat, using local fallback.');
+          break; // Skip retries — quota won't recover in seconds
+        }
         if (attempt < 2) {
           await new Promise(r => setTimeout(r, 700 * (attempt + 1)));
         }

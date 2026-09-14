@@ -6,6 +6,7 @@ import {
   Calendar, User, Barcode, ShieldAlert, Check, X, Info, Zap, Coffee,
   ExternalLink, Lock, CheckCheck
 } from 'lucide-react';
+import { KNOWN_PACKAGED_SNACKS } from '../data/foods_dosha_db';
 
 // Types
 type TabType = 'scan' | 'chat' | 'routine' | 'profile';
@@ -206,12 +207,15 @@ export default function AyurCoachPage() {
       clearTimeout(timer1);
       clearTimeout(timer2);
 
+      const text = await res.text();
       let data: any = null;
       try {
-        data = await res.json();
+        data = JSON.parse(text);
       } catch {
-        const text = await res.text().catch(() => '');
-        throw new Error(text.includes('500') || text.includes('error') ? 'Server is compiling scan data. Please retry in a few seconds.' : 'Could not parse scan response.');
+        if (text.includes('A server error occurred') || text.includes('FUNCTION_INVOCATION')) {
+          throw new Error('AI Vision server is temporarily compiling. Please retry in a few seconds.');
+        }
+        throw new Error('Could not parse food scan response.');
       }
       if (!res.ok) throw new Error(data?.error || 'Scan analysis failed');
 
@@ -229,6 +233,29 @@ export default function AyurCoachPage() {
     if (!checkCanScan()) return;
     setPackagedResult(null);
     setPackagedError(null);
+
+    const cleanBarcode = barcodeVal ? barcodeVal.trim().replace(/[^0-9]/g, '') : '';
+
+    // Instant local response for known Indian snacks (Maggi, Haldiram, Parle-G, etc.)
+    if (cleanBarcode && KNOWN_PACKAGED_SNACKS[cleanBarcode]) {
+      const cached = KNOWN_PACKAGED_SNACKS[cleanBarcode];
+      setPackagedResult({
+        scan_mode: 'barcode',
+        product_name: cached.product_name,
+        brand: cached.brand,
+        ingredients_detected: cached.ingredients_text,
+        flagged_ingredients: cached.flagged_ingredients,
+        ayurvedic_verdict: cached.ayurvedic_verdict,
+        dosha_impact: cached.dosha_impact,
+        primary_concern: cached.primary_concern,
+        healthier_snack_alternatives: cached.healthier_snack_alternatives,
+        student_tip: cached.student_tip
+      });
+      incrementScanCount();
+      setIsScanningPackaged(false);
+      return;
+    }
+
     setIsScanningPackaged(true);
 
     try {
@@ -242,12 +269,15 @@ export default function AyurCoachPage() {
         })
       });
 
+      const text = await res.text();
       let data: any = null;
       try {
-        data = await res.json();
+        data = JSON.parse(text);
       } catch {
-        const text = await res.text().catch(() => '');
-        throw new Error(text.includes('500') || text.includes('error') ? 'Server is updating food database. Please retry in a moment.' : 'Could not parse response.');
+        if (text.includes('A server error occurred') || text.includes('FUNCTION_INVOCATION')) {
+          throw new Error('AI Engine Timeout. The server is busy, please retry in a moment.');
+        }
+        throw new Error('Could not parse package response.');
       }
       if (!res.ok) throw new Error(data?.error || 'Label scan failed');
 
@@ -291,8 +321,14 @@ export default function AyurCoachPage() {
         })
       });
 
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Failed to get remedy');
+      const text = await res.text();
+      let data: any = null;
+      try {
+        data = JSON.parse(text);
+      } catch {
+        throw new Error('Could not parse chat response.');
+      }
+      if (!res.ok) throw new Error(data?.error || 'Failed to get remedy');
 
       setChatMessages(prev => [...prev, { role: 'assistant', text: data.reply }]);
     } catch (err: any) {

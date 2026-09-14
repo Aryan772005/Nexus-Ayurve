@@ -15,11 +15,17 @@
     },
     {
       "src": "api/ayurcoach-food-scan.ts",
-      "use": "@vercel/node"
+      "use": "@vercel/node",
+      "config": {
+        "includeFiles": ["src/data/**", "api/**"]
+      }
     },
     {
       "src": "api/ayurcoach-label-scan.ts",
-      "use": "@vercel/node"
+      "use": "@vercel/node",
+      "config": {
+        "includeFiles": ["src/data/**", "api/**"]
+      }
     },
     {
       "src": "api/ayurcoach-chat.ts",
