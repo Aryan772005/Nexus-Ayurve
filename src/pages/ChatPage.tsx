@@ -230,15 +230,22 @@ export default function ChatPage({ user }: { user: FirebaseUser | null }) {
 
       if (!res.ok) {
         const errData = await res.json().catch(() => ({ error: `HTTP ${res.status}` }));
-        throw new Error(errData.error || `Server error ${res.status}`);
+        const raw = errData.error || '';
+        if (raw.includes('429') || raw.includes('quota')) {
+          throw new Error('Our Ayurvedic assistant is experiencing high traffic. Please retry in a few seconds.');
+        }
+        throw new Error(raw || 'Unable to connect to assistant');
       }
 
       const data = await res.json();
-      const aiText = data.reply || "I couldn't generate a response. Please try again.";
+      const aiText = data.reply || "Namaste! I am here to guide you. Please share what symptoms or lifestyle guidance you need.";
       setMessages(prev => [...prev, { role: 'assistant', content: aiText }]);
-    } catch (err) {
-      const errorMsg = err instanceof Error ? err.message : 'Unknown error';
-      setMessages(prev => [...prev, { role: 'assistant', content: `⚠️ Error: ${errorMsg}` }]);
+    } catch (err: any) {
+      const errorMsg = err?.message || 'Please try again in a moment.';
+      const cleanMsg = errorMsg.includes('GoogleGenerativeAI') 
+        ? 'Our Ayurvedic assistant is temporarily busy. Please ask your question again in a moment.'
+        : errorMsg;
+      setMessages(prev => [...prev, { role: 'assistant', content: `🌿 ${cleanMsg}` }]);
     } finally {
       setIsLoading(false);
     }
