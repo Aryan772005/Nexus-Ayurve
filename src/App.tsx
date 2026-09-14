@@ -26,6 +26,7 @@ import DiagnosisPage from './pages/DiagnosisPage';
 import HealthCoachPage from './pages/HealthCoachPage';
 import CalorieCheckerPage from './pages/CalorieCheckerPage';
 import MealAnalysisPage from './pages/MealAnalysisPage';
+import AyurCoachPage from './pages/AyurCoachPage';
 
 
 export default function App() {
@@ -104,6 +105,7 @@ export default function App() {
               <Route path="/health-coach" element={<HealthCoachPage user={user} />} />
               <Route path="/calorie-checker" element={<CalorieCheckerPage />} />
               <Route path="/meal-analysis" element={<MealAnalysisPage />} />
+              <Route path="/ayurcoach" element={<AyurCoachPage />} />
 
               <Route path="/chat" element={<ChatPage user={user} />} />
               <Route path="*" element={<Navigate to="/" replace />} />

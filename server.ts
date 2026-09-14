@@ -34,7 +34,7 @@ app.use("/api/analyze-symptoms", aiRoutes);
 // Chat route for local development
 app.post("/api/chat", async (req, res) => {
   try {
-    const handlerModule = await import("./api/chat.ts") as any;
+    const handlerModule = await import(`./api/chat.ts?t=${Date.now()}`) as any;
     await handlerModule.default(req, res);
   } catch (err) {
     console.error("Local chat handler failed:", err);
@@ -42,11 +42,10 @@ app.post("/api/chat", async (req, res) => {
   }
 });
 
-
 // Food Analyze route for local development
 app.post("/api/food-analyze", async (req, res) => {
   try {
-    const handlerModule = await import("./api/food-analyze.ts") as any;
+    const handlerModule = await import(`./api/food-analyze.ts?t=${Date.now()}`) as any;
     await handlerModule.default(req, res);
   } catch (err) {
     console.error("Local dev handler failed:", err);
@@ -57,11 +56,42 @@ app.post("/api/food-analyze", async (req, res) => {
 // Health Coach route for local development
 app.post("/api/health-coach", async (req, res) => {
   try {
-    const handlerModule = await import("./api/health-coach.ts") as any;
+    const handlerModule = await import(`./api/health-coach.ts?t=${Date.now()}`) as any;
     await handlerModule.default(req, res);
   } catch (err) {
     console.error("Health coach handler failed:", err);
     res.status(500).json({ error: "Failed to run health coach locally" });
+  }
+});
+
+// AyurCoach Routes
+app.post("/api/ayurcoach-food-scan", async (req, res) => {
+  try {
+    const handlerModule = await import(`./api/ayurcoach-food-scan.ts?t=${Date.now()}`) as any;
+    await handlerModule.default(req, res);
+  } catch (err) {
+    console.error("AyurCoach food scan handler failed:", err);
+    res.status(500).json({ error: "Failed to run food scan function locally" });
+  }
+});
+
+app.post("/api/ayurcoach-label-scan", async (req, res) => {
+  try {
+    const handlerModule = await import(`./api/ayurcoach-label-scan.ts?t=${Date.now()}`) as any;
+    await handlerModule.default(req, res);
+  } catch (err) {
+    console.error("AyurCoach label scan handler failed:", err);
+    res.status(500).json({ error: "Failed to run label scan function locally" });
+  }
+});
+
+app.post("/api/ayurcoach-chat", async (req, res) => {
+  try {
+    const handlerModule = await import(`./api/ayurcoach-chat.ts?t=${Date.now()}`) as any;
+    await handlerModule.default(req, res);
+  } catch (err) {
+    console.error("AyurCoach chat handler failed:", err);
+    res.status(500).json({ error: "Failed to run AyurCoach chat locally" });
   }
 });
 

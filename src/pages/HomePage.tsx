@@ -1,9 +1,9 @@
 import React, { useRef, useState } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import {
-  Sparkles, Heart, Calendar, ChevronRight, Star, Users, Award,
+  Heart, Calendar, ChevronRight, Star, Users, Award,
   Leaf, Quote, Shield, ShoppingBag, ExternalLink, ArrowRight,
-  Brain, Camera, Stethoscope, Zap, Play, Volume2, VolumeX
+  Brain, Camera, Stethoscope, Zap, Play, Volume2, VolumeX, Activity
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
@@ -26,7 +26,7 @@ export default function HomePage({ onLogin, user }: { onLogin: () => void, user:
   };
 
   const tools = [
-    { to: '/diagnosis',    label: 'AI Diagnosis',   icon: Sparkles,    color: '#10B981', glow: 'rgba(16,185,129,0.25)',  desc: 'Symptom & dosha analysis' },
+    { to: '/diagnosis',    label: 'AI Diagnosis',   icon: Activity,    color: '#10B981', glow: 'rgba(16,185,129,0.25)',  desc: 'Symptom & dosha analysis' },
     { to: '/health-coach', label: 'Health Coach',   icon: Brain,       color: '#A78BFA', glow: 'rgba(167,139,250,0.25)', desc: '13-section wellness report' },
     { to: '/meal-analysis',label: 'Meal Analyser',  icon: Camera,      color: '#F97316', glow: 'rgba(249,115,22,0.25)',  desc: 'Scan & analyse your food' },
     { to: '/doctors',      label: 'Expert Doctors', icon: Stethoscope, color: '#60A5FA', glow: 'rgba(96,165,250,0.25)',  desc: 'Consult Ayurvedic doctors for ₹1' },
@@ -61,13 +61,12 @@ export default function HomePage({ onLogin, user }: { onLogin: () => void, user:
             <source src="/nexusdd.mp4" type="video/mp4" />
           </video>
 
-          {/* Simple overlays — no extra layers */}
-          <div className="absolute inset-0 bg-gradient-to-b from-forest/70 via-transparent to-forest" style={{ transform: 'translateZ(0)' }} />
-          <div className="absolute inset-0 bg-gradient-to-r from-forest/40 via-transparent to-forest/40" />
+          {/* Subtle overlays — keep video vivid */}
+          <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, rgba(0,0,0,0.25) 0%, transparent 40%, rgba(0,0,0,0.55) 100%)', transform: 'translateZ(0)' }} />
+          <div className="absolute inset-0" style={{ background: 'linear-gradient(to right, rgba(0,0,0,0.15) 0%, transparent 50%, rgba(0,0,0,0.15) 100%)' }} />
           {/* Film-grain only on desktop — skip on mobile for perf */}
           <div className="absolute inset-0 opacity-[0.03] pointer-events-none hidden md:block" style={{
-            backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.05) 2px, rgba(255,255,255,0.05) 4px)',
-          }} />
+            backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.05) 2px, rgba(255,255,255,0.05) 4px)' }} />
         </motion.div>
 
         {/* Mute toggle */}
@@ -99,8 +98,7 @@ export default function HomePage({ onLogin, user }: { onLogin: () => void, user:
             <span className="text-cream drop-shadow-2xl">Nexus </span>
             <span style={{
               background: 'linear-gradient(130deg, #34D399 0%, #10B981 50%, #6EE7B7 100%)',
-              WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
-            }}>Ayurve</span>
+              WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Ayurve</span>
           </motion.h1>
 
           {/* Subtitle */}
@@ -180,15 +178,14 @@ export default function HomePage({ onLogin, user }: { onLogin: () => void, user:
           <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
             className="text-center mb-16">
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-accent/10 border border-emerald-accent/20 text-emerald-accent text-[11px] font-bold uppercase tracking-widest mb-6">
-              <Sparkles size={12} /> AI-Powered Suite
+               AI-Powered Suite
             </div>
             <h2 className="font-display font-bold text-cream mb-5"
               style={{ fontSize: 'clamp(2rem, 6vw, 4rem)', letterSpacing: '-0.025em', lineHeight: 1.1 }}>
               Everything in one<br />
               <span style={{
                 background: 'linear-gradient(130deg, #34D399, #6EE7B7)',
-                WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
-              }}>wellness platform</span>
+                WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>wellness platform</span>
             </h2>
             <p className="text-cream/35 text-lg max-w-lg mx-auto">
               Ancient Ayurvedic knowledge, supercharged with modern AI.
@@ -407,8 +404,7 @@ export default function HomePage({ onLogin, user }: { onLogin: () => void, user:
             Start Healing<br />
             <span style={{
               background: 'linear-gradient(135deg, #34D399, #6EE7B7)',
-              WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
-            }}>Today</span>
+              WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Today</span>
           </h2>
           <p className="text-cream/35 text-base mb-10 max-w-md mx-auto">
             Join thousands balancing their doshas, tracking vitals, and consulting Ayurvedic experts.

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Mail, Lock, User, Eye, EyeOff, ShieldCheck, Leaf, Sparkles } from 'lucide-react';
+import { X, Mail, Lock, User, Eye, EyeOff, ShieldCheck, Leaf, Activity } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { loginWithGoogle, signUpWithEmail, loginWithEmail } from '../lib/firebase';
 import { auditLogin, auditSignup, auditFailed } from '../utils/hipaaAudit';
@@ -81,8 +81,7 @@ function InputField({
         style={{
           background: 'rgba(255,255,255,0.04)',
           border: '1px solid rgba(255,255,255,0.07)',
-          fontFamily: 'var(--font-sans)',
-        }}
+          fontFamily: 'var(--font-sans)' }}
         onFocus={e => {
           e.currentTarget.style.border = '1px solid rgba(0,217,126,0.4)';
           e.currentTarget.style.background = 'rgba(0,217,126,0.04)';
@@ -166,8 +165,7 @@ export default function AuthModal({ onClose }: { onClose: () => void }) {
         className="relative w-full max-w-3xl flex rounded-[28px] overflow-hidden"
         style={{
           minHeight: '540px',
-          boxShadow: '0 32px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.06)',
-        }}
+          boxShadow: '0 32px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.06)' }}
         onClick={e => e.stopPropagation()}
       >
         {/* Left panel */}
@@ -202,8 +200,7 @@ export default function AuthModal({ onClose }: { onClose: () => void }) {
                   fontFamily: 'var(--font-display)',
                   color: mode === m ? '#080C10' : 'rgba(232,237,245,0.4)',
                   background: mode === m ? 'linear-gradient(135deg, #00D97E, #00B868)' : 'transparent',
-                  boxShadow: mode === m ? '0 4px 16px rgba(0,217,126,0.35)' : 'none',
-                }}
+                  boxShadow: mode === m ? '0 4px 16px rgba(0,217,126,0.35)' : 'none' }}
               >
                 {m === 'login' ? 'Sign In' : 'Create Account'}
               </button>
@@ -230,8 +227,7 @@ export default function AuthModal({ onClose }: { onClose: () => void }) {
               background: 'rgba(255,255,255,0.06)',
               border: '1px solid rgba(255,255,255,0.1)',
               color: 'rgba(232,237,245,0.85)',
-              fontFamily: 'var(--font-display)',
-            }}
+              fontFamily: 'var(--font-display)' }}
             onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.1)'; }}
             onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.06)'; }}
           >

@@ -2,11 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import {
   Leaf, LogOut, Sun, Moon, Activity,
-  Shield, ShoppingBag, Sparkles, X,
+  Shield, ShoppingBag, X,
   LayoutDashboard, Stethoscope, MessageSquare,
   Brain, ArrowUpRight, Camera, Zap, ChevronDown,
-  HeartPulse, Utensils, BookOpen, Wrench,
-} from 'lucide-react';
+  HeartPulse, Utensils, BookOpen, Wrench, Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { logout } from '../lib/firebase';
 import { User as FirebaseUser } from 'firebase/auth';
@@ -25,18 +24,17 @@ const TOOL_GROUPS = [
       { to: '/dashboard',    label: 'My Dashboard',     icon: LayoutDashboard, tag: 'Live',  desc: 'Health stats & invoices',      color: '#00D97E' },
       { to: '/doctors',      label: 'Consult Experts',  icon: Stethoscope,     tag: '₹1',    desc: 'Book an Ayurvedic doctor',      color: '#60A5FA' },
       { to: '/shop',         label: 'Herbal Shop',       icon: ShoppingBag,     tag: 'New',   desc: 'Ayurvedic medicines & herbs',   color: '#FCD34D' },
-    ],
-  },
+    ] },
   {
     label: 'AI Tools',
     color: '#A78BFA',
     items: [
+      { to: '/ayurcoach',     label: 'AyurCoach App',      icon: Sparkles,        tag: 'New',  desc: 'AI food & dosha coach for youth', color: '#D97736' },
       { to: '/health-coach',  label: 'AI Health Coach',   icon: Brain,         tag: 'AI',   desc: '13-section wellness report',    color: '#A78BFA' },
-      { to: '/diagnosis',     label: 'AI Diagnosis',       icon: Sparkles,      tag: 'AI',   desc: 'Symptom & dosha analysis',      color: '#A78BFA' },
+      { to: '/diagnosis',     label: 'AI Diagnosis',       icon: Activity,      tag: 'AI',   desc: 'Symptom & dosha analysis',      color: '#A78BFA' },
       { to: '/meal-analysis', label: 'AI Meal Analyser',   icon: Camera,        tag: 'AI',   desc: 'Scan & analyse your meal',      color: '#FB923C' },
       { to: '/chat',          label: 'Nexus AI Chat',      icon: MessageSquare, tag: 'Live', desc: 'Ask anything about health',     color: '#00D97E' },
-    ],
-  },
+    ] },
   {
     label: 'Wellness',
     color: '#F87171',
@@ -44,17 +42,17 @@ const TOOL_GROUPS = [
       { to: '/tools',           label: 'BMI & Heart',      icon: HeartPulse, tag: 'Tool', desc: 'BMI + heart monitor',             color: '#F87171' },
       { to: '/calorie-checker', label: 'Calorie Checker',  icon: Utensils,   tag: 'Tool', desc: 'Indian food database',            color: '#FB923C' },
       { to: '/guides',          label: 'Health Guides',    icon: BookOpen,   tag: 'Edu',  desc: 'Ayurvedic knowledge base',        color: '#94A3B8' },
-    ],
-  },
+    ] },
 ];
 
 const NAV_LINKS = [
+  { to: '/ayurcoach',    label: 'AyurCoach',    icon: Sparkles        },
   { to: '/dashboard',    label: 'Dashboard',    icon: LayoutDashboard },
   { to: '/doctors',      label: 'Consult',      icon: Stethoscope     },
   { to: '/shop',         label: 'Shop',         icon: ShoppingBag     },
   { to: '/chat',         label: 'AI Chat',      icon: MessageSquare   },
   { to: '/health-coach', label: 'Coach',        icon: Brain           },
-  { to: '/diagnosis',    label: 'Diagnose',     icon: Sparkles        },
+  { to: '/diagnosis',    label: 'Diagnose',     icon: Activity        },
 ];
 
 export default function Navbar({ user, onLogin }: NavbarProps) {
@@ -105,9 +103,7 @@ export default function Navbar({ user, onLogin }: NavbarProps) {
       <nav
         className={`fixed w-full z-50 transition-all duration-300 ${
           isScrolled
-            ? 'py-2 border-b ' + (isLight
-                ? 'bg-white/90 border-black/[0.07] shadow-lg shadow-black/5'
-                : 'bg-[#080C10]/85 border-white/[0.05] shadow-2xl shadow-black/30')
+            ? 'py-2 border-b bg-white/90 border-black/[0.07] shadow-lg shadow-black/5'
             : 'py-3 bg-transparent border-b border-transparent'
         } backdrop-blur-2xl`}
       >
@@ -275,10 +271,9 @@ export default function Navbar({ user, onLogin }: NavbarProps) {
               className="fixed top-0 left-0 h-full z-[201] flex flex-col border-r"
               style={{
                 width: 'min(360px, 88vw)',
-                background: 'rgba(8,12,16,0.96)',
+                background: 'rgba(255,255,255,0.96)',
                 backdropFilter: 'blur(40px) saturate(1.4)',
-                borderColor: 'rgba(0,217,126,0.12)',
-              }}
+                borderColor: 'var(--color-border-accent)' }}
             >
               {/* Ambient glow top */}
               <div className="absolute top-0 left-0 right-0 h-48 pointer-events-none"
@@ -357,15 +352,13 @@ export default function Navbar({ user, onLogin }: NavbarProps) {
                             style={isActive(item.to) ? {
                               background: `linear-gradient(135deg, ${item.color}22, ${item.color}10)`,
                               border: `1px solid ${item.color}33`,
-                              boxShadow: `0 4px 20px ${item.color}20`,
-                            } : {}}
+                              boxShadow: `0 4px 20px ${item.color}20` } : {}}
                           >
                             {/* Icon */}
                             <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 transition-transform group-hover:scale-110"
                               style={{
                                 background: `${item.color}15`,
-                                border: `1px solid ${item.color}25`,
-                              }}>
+                                border: `1px solid ${item.color}25` }}>
                               <item.icon size={16} style={{ color: item.color }} />
                             </div>
                             {/* Text */}
@@ -382,8 +375,7 @@ export default function Navbar({ user, onLogin }: NavbarProps) {
                               style={{
                                 background: `${item.color}15`,
                                 color: item.color,
-                                border: `1px solid ${item.color}25`,
-                              }}>
+                                border: `1px solid ${item.color}25` }}>
                               {item.tag}
                             </span>
                           </Link>
@@ -429,8 +421,7 @@ export default function Navbar({ user, onLogin }: NavbarProps) {
                       border: '1px solid rgba(244,63,94,0.25)',
                       color: 'rgba(251,113,133,0.9)',
                       background: 'rgba(244,63,94,0.05)',
-                      fontFamily: 'var(--font-display)',
-                    }}
+                      fontFamily: 'var(--font-display)' }}
                     onMouseEnter={e => {
                       (e.currentTarget as HTMLButtonElement).style.background = 'rgba(244,63,94,0.12)';
                     }}

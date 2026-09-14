@@ -1,6 +1,6 @@
 ﻿import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShoppingCart, Star, ExternalLink, Search, Filter, X, Check, Minus, Plus, Package, Truck, Shield, Sparkles } from 'lucide-react';
+import { ShoppingCart, Star, ExternalLink, Search, Filter, X, Check, Minus, Plus, Package, Truck, Shield, Activity } from 'lucide-react';
 import { User as FirebaseUser } from 'firebase/auth';
 import { doc, setDoc, onSnapshot, addDoc, collection } from 'firebase/firestore';
 import { db } from '../lib/firebase';
@@ -52,8 +52,7 @@ const MEDICINES: Medicine[] = [
     description: "Traditional Ayurvedic formula combining Amla, Haritaki & Bibhitaki for complete digestive wellness and natural detoxification.",
     benefits: ["Improves digestion", "Natural detox", "Supports gut health"],
     dosage: "2 tablets before bedtime with warm water",
-    link: "https://www.1mg.com/search/all?name=triphala",
-  },
+    link: "https://www.1mg.com/search/all?name=triphala" },
   {
     id: 3,
     name: "Chyawanprash — Immunity Booster",
@@ -83,8 +82,7 @@ const MEDICINES: Medicine[] = [
     description: "Brahmi (Bacopa Monnieri) capsules to enhance memory, focus, and cognitive function. Ideal for students and professionals.",
     benefits: ["Sharpens memory", "Improves concentration", "Reduces mental fatigue"],
     dosage: "1 capsule twice daily after meals",
-    link: "https://www.1mg.com/search/all?name=brahmi",
-  },
+    link: "https://www.1mg.com/search/all?name=brahmi" },
   {
     id: 5,
     name: "Tulsi Drops — Holy Basil Extract",
@@ -98,8 +96,7 @@ const MEDICINES: Medicine[] = [
     description: "Pure Tulsi extract drops for daily immunity support. Made from 5 varieties of sacred Tulsi grown organically in India.",
     benefits: ["Daily immunity boost", "Respiratory health", "Natural antioxidant"],
     dosage: "5 drops in tea or warm water, twice daily",
-    link: "https://www.1mg.com/search/all?name=tulsi+drops",
-  },
+    link: "https://www.1mg.com/search/all?name=tulsi+drops" },
   {
     id: 6,
     name: "Shilajit Gold Resin",
@@ -129,8 +126,7 @@ const MEDICINES: Medicine[] = [
     description: "High-potency Curcumin extract with Piperine for maximum absorption. Powerful natural anti-inflammatory for joint health.",
     benefits: ["Joint pain relief", "Anti-inflammatory", "Antioxidant support"],
     dosage: "1 capsule twice daily after meals",
-    link: "https://www.1mg.com/search/all?name=turmeric+curcumin",
-  },
+    link: "https://www.1mg.com/search/all?name=turmeric+curcumin" },
   {
     id: 8,
     name: "Neem Capsules — Skin & Detox",
@@ -144,8 +140,7 @@ const MEDICINES: Medicine[] = [
     description: "Pure Neem leaf extract capsules for clear skin, blood purification, and natural detoxification. Certified organic.",
     benefits: ["Clear skin", "Blood purification", "Natural detox"],
     dosage: "1 capsule twice daily before meals",
-    link: "https://www.1mg.com/search/all?name=neem+capsules",
-  },
+    link: "https://www.1mg.com/search/all?name=neem+capsules" },
 ];
 
 const CATEGORIES = ["All", "Stress & Energy", "Immunity", "Digestion", "Brain Health", "Joint & Pain", "Skin & Detox"];
@@ -248,9 +243,7 @@ export default function ShopPage({ user, onLogin }: { user: FirebaseUser | null,
           name: c.medicine.name,
           brand: c.medicine.brand,
           qty: c.qty,
-          price: c.medicine.price,
-        })),
-      });
+          price: c.medicine.price })) });
       // Clear cart in Firestore
       await setDoc(doc(db, 'users', user.uid), { cart: [] }, { merge: true });
       setCart([]);
@@ -299,8 +292,7 @@ export default function ShopPage({ user, onLogin }: { user: FirebaseUser | null,
                   padding: '36px 28px',
                   maxWidth: '420px',
                   width: '100%',
-                  boxShadow: '0 24px 64px rgba(0,0,0,0.6)',
-                }}
+                  boxShadow: '0 24px 64px rgba(0,0,0,0.6)' }}
                 onClick={e => e.stopPropagation()}
               >
                 {orderSaved ? (
@@ -309,8 +301,7 @@ export default function ShopPage({ user, onLogin }: { user: FirebaseUser | null,
                       width: 72, height: 72, borderRadius: '50%',
                       background: 'rgba(52,211,153,0.15)', border: '2px solid rgba(52,211,153,0.4)',
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      margin: '0 auto 16px',
-                    }}>
+                      margin: '0 auto 16px' }}>
                       <Check style={{ color: '#34d399', width: 36, height: 36 }} />
                     </div>
                     <h2 style={{ fontSize: 20, fontWeight: 800, color: '#ecfdf5', marginBottom: 8 }}>Order Recorded! 🎉</h2>
@@ -343,8 +334,7 @@ export default function ShopPage({ user, onLogin }: { user: FirebaseUser | null,
                         style={{
                           flex: 1, background: 'rgba(255,255,255,0.05)', color: 'rgba(255,255,255,0.6)',
                           border: '1px solid rgba(255,255,255,0.1)', borderRadius: 12, padding: '11px',
-                          fontSize: 13, fontWeight: 700, cursor: 'pointer',
-                        }}
+                          fontSize: 13, fontWeight: 700, cursor: 'pointer' }}
                       >
                         Cancel
                       </button>
@@ -356,8 +346,7 @@ export default function ShopPage({ user, onLogin }: { user: FirebaseUser | null,
                           background: checkoutProcessing ? 'rgba(52,211,153,0.4)' : 'linear-gradient(135deg, #34d399, #059669)',
                           color: '#052e16', border: 'none', borderRadius: 12, padding: '11px',
                           fontSize: 13, fontWeight: 800, cursor: checkoutProcessing ? 'not-allowed' : 'pointer',
-                          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
-                        }}
+                          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}
                       >
                         {checkoutProcessing ? 'Saving Order…' : '✓ Confirm & Buy on 1mg'}
                       </button>
@@ -524,7 +513,7 @@ export default function ShopPage({ user, onLogin }: { user: FirebaseUser | null,
       <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}
         className="max-w-5xl mx-auto mt-8 md:mt-16 p-5 md:p-8 rounded-[20px] md:rounded-3xl bg-moss/30 border border-white/5 text-center"
       >
-        <Sparkles className="text-emerald-accent mx-auto mb-3 md:mb-4 w-6 h-6 md:w-[28px] md:h-[28px]" />
+        
         <h3 className="text-lg md:text-xl font-display font-bold text-cream mb-1.5 md:mb-2">Secure & Authentic</h3>
         <p className="text-cream/50 text-[11px] md:text-sm max-w-xl mx-auto leading-relaxed">
           All purchases are securely processed through our certified pharmacy partners.

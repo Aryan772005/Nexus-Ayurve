@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Brain, Sparkles, Target, Zap, Activity, Shield,
+  Brain, Target, Zap, Activity, Shield,
   ArrowRight, Apple, Heart, Stethoscope, Droplets, Info, AlertTriangle,
   Flame, ShieldAlert, Utensils, Smile, CheckCircle
 } from 'lucide-react';
@@ -37,8 +37,7 @@ export default function HealthCoachPage({ user }: { user: FirebaseUser | null })
     bpm: '72',
     caloriesToday: '1200',
     skinType: 'Combination',
-    hairCondition: 'Normal',
-  });
+    hairCondition: 'Normal' });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
@@ -255,7 +254,7 @@ export default function HealthCoachPage({ user }: { user: FirebaseUser | null })
                       <div className="flex flex-col md:flex-row gap-4 justify-between items-start md:items-center bg-white/5 rounded-2xl p-6 border border-emerald-accent/20">
                         <div>
                           <h2 className="text-2xl font-display font-bold text-cream flex items-center gap-2">
-                             <Sparkles className="text-amber-400" size={24} /> Optimal Wellness Blueprint
+                              Optimal Wellness Blueprint
                           </h2>
                           <p className="text-emerald-accent/70 mt-1">Personalized holistic analysis powered by Ayurvedic Intelligence.</p>
                         </div>
@@ -398,21 +397,21 @@ export default function HealthCoachPage({ user }: { user: FirebaseUser | null })
                           <div className="bg-blue-600/10 border border-blue-500/20 p-5 rounded-2xl relative overflow-hidden group hover:bg-blue-600/20 transition-all">
                              <div className="absolute -top-6 -right-6 w-16 h-16 bg-blue-500/10 rounded-full blur-xl group-hover:scale-150 transition-transform" />
                              <h4 className="text-blue-400 font-bold text-xs uppercase tracking-widest mb-2 flex items-center gap-2">
-                               <Sparkles size={14} /> Tip: Hair
+                                Tip: Hair
                              </h4>
                              <p className="text-blue-100/80 text-sm leading-relaxed">{report.tips.hair}</p>
                           </div>
                           <div className="bg-pink-600/10 border border-pink-500/20 p-5 rounded-2xl relative overflow-hidden group hover:bg-pink-600/20 transition-all">
                              <div className="absolute -top-6 -right-6 w-16 h-16 bg-pink-500/10 rounded-full blur-xl group-hover:scale-150 transition-transform" />
                              <h4 className="text-pink-400 font-bold text-xs uppercase tracking-widest mb-2 flex items-center gap-2">
-                               <Sparkles size={14} /> Tip: Skin
+                                Tip: Skin
                              </h4>
                              <p className="text-pink-100/80 text-sm leading-relaxed">{report.tips.skin}</p>
                           </div>
                           <div className="bg-emerald-600/10 border border-emerald-500/20 p-5 rounded-2xl relative overflow-hidden group hover:bg-emerald-600/20 transition-all">
                              <div className="absolute -top-6 -right-6 w-16 h-16 bg-emerald-500/10 rounded-full blur-xl group-hover:scale-150 transition-transform" />
                              <h4 className="text-emerald-400 font-bold text-xs uppercase tracking-widest mb-2 flex items-center gap-2">
-                               <Sparkles size={14} /> Tip: Health
+                                Tip: Health
                              </h4>
                              <p className="text-emerald-100/80 text-sm leading-relaxed">{report.tips.health}</p>
                           </div>

@@ -1,0 +1,328 @@
+{
+  "foods": [
+    {
+      "name": "Samosa",
+      "aliases": ["aloo samosa", "singara", "punjabi samosa"],
+      "category": "Snacks & Street Food",
+      "dosha_effect": {
+        "vata": "decreases",
+        "pitta": "increases",
+        "kapha": "increases"
+      },
+      "nature": "Heavy (Guru), Oily (Snigdha), Heating (Ushna)",
+      "health_rating": "Indulgent",
+      "healthier_alternative": "Air-fried or baked sweet potato & pea samosa with mint-coriander chutney instead of sweet tamarind sugar syrup.",
+      "reason": "Deep frying in refined oil and refined flour (maida) severely aggravates Pitta (acidity) and Kapha (sluggish digestion), while creating Ama (metabolic toxins)."
+    },
+    {
+      "name": "Chole Bhature",
+      "aliases": ["chana bhatura", "bhatura chana"],
+      "category": "North Indian Meals",
+      "dosha_effect": {
+        "vata": "neutral",
+        "pitta": "increases",
+        "kapha": "increases"
+      },
+      "nature": "Extremely Heavy (Ati-Guru), Fermented, Heating",
+      "health_rating": "Indulgent",
+      "healthier_alternative": "Chole with whole wheat tandoori roti or roasted multigrain kulcha with soaked chickpeas cooked with cumin, ajwain and hing.",
+      "reason": "Fermented maida fried in oil combined with dense chickpeas taxes Mandagni (weak digestive fire) leading to bloating and sluggishness."
+    },
+    {
+      "name": "Khichdi",
+      "aliases": ["moong dal khichdi", "dal khichdi", "ayurvedic khichdi"],
+      "category": "Healing & Daily Meals",
+      "dosha_effect": {
+        "vata": "decreases",
+        "pitta": "decreases",
+        "kapha": "decreases"
+      },
+      "nature": "Tridoshic (Sama), Light (Laghu), Nourishing (Sattvic)",
+      "health_rating": "Healthy",
+      "healthier_alternative": "Already the gold standard of Ayurvedic food! Add 1 tsp A2 cow ghee and tempered cumin for peak digestion.",
+      "reason": "Yellow split moong dal and aged rice cooked with turmeric, cumin, and rock salt is universally balancing, easily assimilable, and cleanses the gut."
+    },
+    {
+      "name": "Paratha",
+      "aliases": ["aloo paratha", "paneer paratha", "gobi paratha"],
+      "category": "Breakfast & Breads",
+      "dosha_effect": {
+        "vata": "decreases",
+        "pitta": "increases",
+        "kapha": "increases"
+      },
+      "nature": "Heavy, Nourishing, Warming",
+      "health_rating": "Moderate",
+      "healthier_alternative": "Methi (fenugreek) or palak paratha roasted with minimal pure ghee on an iron tawa rather than swimming in refined oil.",
+      "reason": "Adding bitter greens like methi cuts the heavy Kapha nature of wheat, and roasted ghee digests much cleaner than burned seed oils."
+    },
+    {
+      "name": "Idli Sambar",
+      "aliases": ["steamed idli", "idly", "idli with sambhar"],
+      "category": "South Indian Breakfast",
+      "dosha_effect": {
+        "vata": "decreases",
+        "pitta": "neutral",
+        "kapha": "neutral"
+      },
+      "nature": "Light (Laghu), Fermented, Tridoshic when mild",
+      "health_rating": "Healthy",
+      "healthier_alternative": "Ragi or oats idli with freshly made vegetable-rich sambar; reduce red chilies and tamarind to keep Pitta calm.",
+      "reason": "Steam cooking makes idli extremely gentle on Agni. Sambar provides protein from toor dal and vitamins from drumsticks and gourds."
+    },
+    {
+      "name": "Dosa",
+      "aliases": ["masala dosa", "plain dosa", "paper roast"],
+      "category": "South Indian Meals",
+      "dosha_effect": {
+        "vata": "decreases",
+        "pitta": "increases",
+        "kapha": "neutral"
+      },
+      "nature": "Fermented, Crispy, Heating if oily/spicy",
+      "health_rating": "Moderate",
+      "healthier_alternative": "Moong dal chilla (Pesarattu) or Neer dosa prepared with minimal sesame oil or ghee.",
+      "reason": "Heavily fried restaurant dosas with spicy potato stuffing and sour fermentation can trigger acidity (Pitta). Moong chilla digests much faster."
+    },
+    {
+      "name": "Biryani",
+      "aliases": ["chicken biryani", "mutton biryani", "veg biryani"],
+      "category": "Rich Rice Meals",
+      "dosha_effect": {
+        "vata": "decreases",
+        "pitta": "increases",
+        "kapha": "increases"
+      },
+      "nature": "Heavy, Highly Spiced (Tikshna), Heating (Ushna)",
+      "health_rating": "Indulgent",
+      "healthier_alternative": "Home-cooked brown rice or quinoa pulao with mild spices (green cardamom, bay leaf, cinnamon) and lots of fresh veggies.",
+      "reason": "Excessive red chili, fried onions (birista) and heavy animal fat irritate the stomach lining and cause post-meal lethargy (Tamas)."
+    },
+    {
+      "name": "Poha",
+      "aliases": ["kanda poha", "flattened rice", "batata poha"],
+      "category": "Light Breakfast",
+      "dosha_effect": {
+        "vata": "decreases",
+        "pitta": "decreases",
+        "kapha": "decreases"
+      },
+      "nature": "Light (Laghu), Dry (Ruksha), Mildly Warming",
+      "health_rating": "Healthy",
+      "healthier_alternative": "Add extra roasted peanuts, curry leaves, grated ginger, and a generous squeeze of lemon to balance dryness.",
+      "reason": "Beaten rice is easy to digest. Curry leaves support pancreatic enzymes and ginger kindles digestive fire (Deepana)."
+    },
+    {
+      "name": "Maggi Noodles",
+      "aliases": ["instant noodles", "2 minute noodles", "ramen"],
+      "category": "Packaged & Instant",
+      "dosha_effect": {
+        "vata": "increases",
+        "pitta": "increases",
+        "kapha": "increases"
+      },
+      "nature": "Dry, Processed, Heavy, Ama-forming",
+      "health_rating": "Indulgent",
+      "healthier_alternative": "Millet or whole-wheat vermicelli (semiya upma) with peas, carrots, ginger, and homemade curry powder.",
+      "reason": "Fried maida cakes laden with palm oil, high sodium, and flavor enhancers (INS 627/631) clog bodily channels (Srotas) and trigger sluggishness."
+    },
+    {
+      "name": "Pav Bhaji",
+      "aliases": ["bombay pav bhaji", "butter pav bhaji"],
+      "category": "Street Food",
+      "dosha_effect": {
+        "vata": "neutral",
+        "pitta": "increases",
+        "kapha": "increases"
+      },
+      "nature": "Extremely Heating (Ushna), Acidic (Amla), Oily",
+      "health_rating": "Indulgent",
+      "healthier_alternative": "Whole-wheat toasted pav with mixed vegetable mash (pumpkin, cauliflower, carrots, peas) made with pure ghee and no synthetic food coloring.",
+      "reason": "Commercial pav contains potassium bromate/maida, and the bhaji typically uses excessive butter and harsh garam masala that provokes Pitta."
+    },
+    {
+      "name": "Palak Paneer",
+      "aliases": ["spinach paneer", "saag paneer"],
+      "category": "Curries & Gravies",
+      "dosha_effect": {
+        "vata": "decreases",
+        "pitta": "decreases",
+        "kapha": "increases"
+      },
+      "nature": "Cooling Spinach, Dense & Heavy Paneer",
+      "health_rating": "Healthy",
+      "healthier_alternative": "Cook spinach with tofu or light homemade cow-milk paneer; add garlic, ginger and pinch of black pepper to lighten digestion.",
+      "reason": "Spinach is rich in chlorophyll and cooling for Pitta, while paneer supplies protein. Black pepper is essential to avoid Kapha accumulation."
+    },
+    {
+      "name": "Rajma Chawal",
+      "aliases": ["kidney beans with rice", "punjabi rajma"],
+      "category": "Comfort Meals",
+      "dosha_effect": {
+        "vata": "increases",
+        "pitta": "neutral",
+        "kapha": "increases"
+      },
+      "nature": "Heavy (Guru), Astringent, Grounding",
+      "health_rating": "Moderate",
+      "healthier_alternative": "Soak kidney beans overnight with a pinch of baking soda, boil with ginger and hing (asafoetida), and pair with jeera rice.",
+      "reason": "Kidney beans have tough skins and complex oligosaccharides that cause gas (Vata). Ginger and hing neutralize vata-aggravating flatulence."
+    },
+    {
+      "name": "Upma",
+      "aliases": ["rava upma", "sooji upma"],
+      "category": "Breakfast",
+      "dosha_effect": {
+        "vata": "decreases",
+        "pitta": "decreases",
+        "kapha": "neutral"
+      },
+      "nature": "Warm, Moist, Nourishing",
+      "health_rating": "Healthy",
+      "healthier_alternative": "Dalia (cracked wheat) or quinoa upma with carrots, beans, curry leaves and roasted mustard seeds.",
+      "reason": "Warm semolina cooked with ghee and spices is deeply grounding for Vata and stabilizes blood glucose throughout the morning."
+    },
+    {
+      "name": "Curd Rice",
+      "aliases": ["thayir sadam", "dahi chawal"],
+      "category": "South Indian Staples",
+      "dosha_effect": {
+        "vata": "decreases",
+        "pitta": "decreases",
+        "kapha": "increases"
+      },
+      "nature": "Cooling (Sheeta), Heavy, Gut-Nourishing",
+      "health_rating": "Healthy",
+      "healthier_alternative": "Use fresh, sweet homemade curd (not sour) tempered with ginger, mustard seeds, and curry leaves. Avoid eating after sunset.",
+      "reason": "Fresh curd rice cools burning digestive sensations in Pitta. Ayurveda cautions against eating curd at night as it blocks micro-channels."
+    },
+    {
+      "name": "Chai with Parle-G",
+      "aliases": ["tea and biscuits", "masala chai with cookies"],
+      "category": "Snacks & Drinks",
+      "dosha_effect": {
+        "vata": "increases",
+        "pitta": "increases",
+        "kapha": "increases"
+      },
+      "nature": "Heating, High Sugar, Processed",
+      "health_rating": "Indulgent",
+      "healthier_alternative": "Ginger-cardamom herbal tea or golden milk sweetened with jaggery, paired with roasted makhana (foxnuts) or soaked almonds.",
+      "reason": "Refined sugar, empty carbohydrates, and excess black tea caffeine create rapid blood sugar spikes followed by crashes that destabilize Vata."
+    },
+    {
+      "name": "Pakora",
+      "aliases": ["bhajiya", "onion pakoda", "paneer pakora"],
+      "category": "Fried Snacks",
+      "dosha_effect": {
+        "vata": "decreases",
+        "pitta": "increases",
+        "kapha": "increases"
+      },
+      "nature": "Deep Fried, Heavy, Heating",
+      "health_rating": "Indulgent",
+      "healthier_alternative": "Tawa-roasted spiced besan chilla strips or roasted air-fried vegetable fritters with mint-amla dip.",
+      "reason": "Reheated cooking oils produce oxidative stress and aggravate Rakta (blood tissue) and Pitta, triggering skin breakouts and acid reflux."
+    },
+    {
+      "name": "Dal Tadka",
+      "aliases": ["yellow dal", "toor dal", "arhar dal"],
+      "category": "Daily Staples",
+      "dosha_effect": {
+        "vata": "decreases",
+        "pitta": "decreases",
+        "kapha": "decreases"
+      },
+      "nature": "Light, Nourishing, Sattvic",
+      "health_rating": "Healthy",
+      "healthier_alternative": "Temper with pure cow ghee, cumin, garlic, and turmeric for maximum bio-availability of protein.",
+      "reason": "Easily digestible plant protein that balances all bodily tissues (Dhatus) when tempered with anti-inflammatory spices."
+    },
+    {
+      "name": "Bhelpuri",
+      "aliases": ["bhel", "chaat", "sukha bhel"],
+      "category": "Street Food",
+      "dosha_effect": {
+        "vata": "increases",
+        "pitta": "increases",
+        "kapha": "neutral"
+      },
+      "nature": "Dry, Light, Sour, Spicy",
+      "health_rating": "Moderate",
+      "healthier_alternative": "Sprouted moong chaat with chopped cucumbers, pomegranate, roasted cumin, and mint water (Pani Puri style).",
+      "reason": "Puffed rice and dry sev increase Vata dryness in the colon, while sour tamarind paste increases Pitta heat."
+    },
+    {
+      "name": "Vada Pav",
+      "aliases": ["batata vada with pav", "mumbai burger"],
+      "category": "Street Food",
+      "dosha_effect": {
+        "vata": "neutral",
+        "pitta": "increases",
+        "kapha": "increases"
+      },
+      "nature": "Heavy, Fried, Fermented",
+      "health_rating": "Indulgent",
+      "healthier_alternative": "Pan-seared spiced potato-oat patty tucked in whole-grain bun with fresh green garlic-coriander chutney.",
+      "reason": "Combination of deep-fried starch with white bread creates an intense glycemic load and slows metabolic rate."
+    },
+    {
+      "name": "Gulab Jamun",
+      "aliases": ["jamun", "sweet dumpling"],
+      "category": "Desserts",
+      "dosha_effect": {
+        "vata": "decreases",
+        "pitta": "increases",
+        "kapha": "increases"
+      },
+      "nature": "Extremely Heavy, Dense, Deeply Sweet (Ati-Madhura)",
+      "health_rating": "Indulgent",
+      "healthier_alternative": "Steamed Sandesh or date-and-fig ladoos (Khajoor roll) rolled in crushed pistachios.",
+      "reason": "Deep fried milk solids soaked in refined sugar syrup cause immediate insulin spikes and create heavy Ama in the lymphatic system."
+    }
+  ],
+  "packaged_red_flags": [
+    {
+      "ingredient": "Maida (Refined Wheat Flour)",
+      "identifiers": ["maida", "refined wheat flour", "bleached flour"],
+      "risk": "High",
+      "ayurvedic_impact": "Sticky (Pichhila), heavy (Guru), causes severe constipation and blocks the micro-channels (Srotas).",
+      "better_swap": "Whole wheat, ragi, jowar, or oats."
+    },
+    {
+      "ingredient": "Palm Oil / Palmolein",
+      "identifiers": ["palm oil", "palmolein", "hydrogenated palm", "fractionated palm"],
+      "risk": "High",
+      "ayurvedic_impact": "Extremely heavy to metabolize; aggravates Kapha and triggers Vidaha (internal inflammation).",
+      "better_swap": "Cold-pressed mustard oil, sesame oil, or pure cow ghee."
+    },
+    {
+      "ingredient": "High Fructose Corn Syrup / Invert Syrup",
+      "identifiers": ["high fructose corn syrup", "invert syrup", "liquid glucose", "corn syrup"],
+      "risk": "High",
+      "ayurvedic_impact": "Unnatural sweet rasa that over-stimulates Kapha and fatty tissue (Meda Dhatu).",
+      "better_swap": "Raw honey, desi khand, or organic jaggery."
+    },
+    {
+      "ingredient": "INS 621 (MSG / Monosodium Glutamate)",
+      "identifiers": ["ins 621", "msg", "monosodium glutamate", "flavor enhancer 621"],
+      "risk": "Moderate",
+      "ayurvedic_impact": "Hyper-excites the nervous system (Vata) and induces artificial thirst and Pitta irritability.",
+      "better_swap": "Naturally umami spices like roasted cumin, rock salt, and nutritional yeast."
+    },
+    {
+      "ingredient": "Synthetic Food Colors (Tartrazine / Sunset Yellow)",
+      "identifiers": ["ins 102", "ins 110", "tartrazine", "sunset yellow", "artificial color"],
+      "risk": "High",
+      "ayurvedic_impact": "Acts as Garavisha (slow chemical toxin) accumulating in the liver (Yakrit).",
+      "better_swap": "Natural colors derived from turmeric, beetroot, and saffron."
+    },
+    {
+      "ingredient": "Artificial Preservatives (BHA / BHT / Sodium Benzoate)",
+      "identifiers": ["ins 320", "ins 321", "bha", "bht", "ins 211", "sodium benzoate"],
+      "risk": "High",
+      "ayurvedic_impact": "Dampens digestive fire (Mandagni) and disrupts the gut microbiome flora.",
+      "better_swap": "Natural preservation via rock salt, turmeric, and airtight glass storage."
+    }
+  ]
+}

@@ -3,9 +3,8 @@ import { Link } from 'react-router-dom';
 import {
   Leaf, ShieldCheck, Phone, Mail, MapPin,
   LayoutDashboard, Stethoscope, ShoppingBag,
-  Brain, Sparkles, MessageSquare, HeartPulse,
-  ArrowUpRight, Github, ExternalLink,
-} from 'lucide-react';
+  Brain, Activity, MessageSquare, HeartPulse,
+  ArrowUpRight, Github, ExternalLink } from 'lucide-react';
 
 const FOOTER_LINKS = {
   Platform: [
@@ -23,8 +22,7 @@ const FOOTER_LINKS = {
   Wellness: [
     { to: '/calorie-checker', label: 'Calorie Checker' },
     { to: '/guides',          label: 'Health Guides'   },
-  ],
-};
+  ] };
 
 const BADGES = [
   { label: 'HIPAA Secured', color: '#00D97E', bg: 'rgba(0,217,126,0.08)', border: 'rgba(0,217,126,0.2)' },
@@ -37,9 +35,8 @@ export default function Footer() {
     <footer
       className="relative border-t mt-auto overflow-hidden"
       style={{
-        background: 'linear-gradient(180deg, #080C10 0%, #05080C 100%)',
-        borderColor: 'rgba(255,255,255,0.05)',
-      }}
+        background: 'linear-gradient(180deg, var(--color-forest) 0%, var(--color-moss) 100%)',
+        borderColor: 'var(--color-border)' }}
     >
       {/* Ambient glow */}
       <div

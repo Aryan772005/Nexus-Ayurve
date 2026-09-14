@@ -2,13 +2,11 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { User as FirebaseUser } from 'firebase/auth';
 import {
-  Shield, Activity, Brain, Zap, Heart, TrendingUp, Sparkles,
-  AlertTriangle, CheckCircle, Flame, Moon, ArrowRight, Clock,
+  Shield, Activity, Brain, Zap, Heart, TrendingUp, AlertTriangle, CheckCircle, Flame, Moon, ArrowRight, Clock,
   ReceiptText, BarChart2, Download, FileText, Eye,
   CreditCard, Package, Stethoscope,
   Calendar, IndianRupee, LayoutDashboard, Loader2,
-  ShoppingBag, UserCircle,
-} from 'lucide-react';
+  ShoppingBag, UserCircle } from 'lucide-react';
 import { WellnessRing, MiniLineChart, RadarChart, HistoryChart } from '../components/dashboard/DashboardCharts';
 import { BarChart, MultiLineChart, DonutChart } from '../components/dashboard/AnalyticsCharts';
 import { useUserDashboard, DashInvoice } from '../hooks/useUserDashboard';
@@ -175,12 +173,10 @@ export default function DashboardPage({ user }: { user: FirebaseUser | null }) {
   const fadeUp = (delay = 0) => ({
     initial: { opacity: 0, y: 20 },
     animate: { opacity: 1, y: 0 },
-    transition: { delay, duration: 0.5, ease: [0.22, 1, 0.36, 1] },
-  });
+    transition: { delay, duration: 0.5, ease: [0.22, 1, 0.36, 1] } });
   const slideIn = {
     initial: { opacity: 0, y: 16 }, animate: { opacity: 1, y: 0 },
-    exit: { opacity: 0, y: -16 }, transition: { duration: 0.35 },
-  };
+    exit: { opacity: 0, y: -16 }, transition: { duration: 0.35 } };
 
   // Loading skeleton
   if (loading) {
@@ -447,7 +443,7 @@ export default function DashboardPage({ user }: { user: FirebaseUser | null }) {
                   onClick={() => navigate('/health-coach')}
                   className="w-full mt-4 md:mt-6 py-3 md:py-4 rounded-xl bg-forest/40 border border-white/5 text-emerald-accent text-[10px] md:text-xs font-bold uppercase tracking-widest hover:bg-emerald-accent/10 transition-all flex items-center justify-center gap-1.5 md:gap-2 group"
                 >
-                  Launch AI Health Blueprint <Sparkles size={12} className="md:w-[14px] md:h-[14px] group-hover:animate-spin" />
+                  Launch AI Health Blueprint 
                 </button>
               </motion.div>
 

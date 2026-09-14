@@ -1,4 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   // CORS
@@ -8,13 +9,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
-
-  // Groq API Key
-  const apiKey = (process.env.GROQ_API_KEY || '').trim();
-
-  if (!apiKey) {
-    return res.status(500).json({ error: 'GROQ_API_KEY not configured. Get a free key at https://console.groq.com' });
-  }
 
   // Safe body parsing
   const body = req.body || {};
@@ -78,15 +72,42 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 `;
 
+  const geminiKey = (process.env.GEMINI_API_KEY || '').trim();
+  const groqKey = (process.env.GROQ_API_KEY || '').trim();
+
+  // Try Gemini first if configured
+  if (geminiKey) {
+    try {
+      const genAI = new GoogleGenerativeAI(geminiKey);
+      const model = genAI.getGenerativeModel({ model: 'gemini-3.6-flash' });
+      const prompt = `${SYSTEM_PROMPT}\n\n${USER_PROMPT}`;
+      const result = await model.generateContent(prompt);
+      let output = result.response.text().trim();
+      output = output.replace(/```(?:json)?\n?|```/g, '').trim();
+      const jsonMatch = output.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        let jsonText = jsonMatch[0];
+        jsonText = jsonText.replace(/:\s*(\d+(?:\.\d+)?\s*(?:g|kcal|mg|kg|ml|mcg|IU|cup|item|cal|calories))\b/gi, ': "$1"');
+        return res.status(200).json(JSON.parse(jsonText));
+      }
+    } catch (gErr: any) {
+      console.error('Gemini health coach error, trying Groq fallback:', gErr?.message || gErr);
+    }
+  }
+
+  if (!groqKey) {
+    return res.status(500).json({ error: 'Neither GEMINI_API_KEY nor GROQ_API_KEY is configured.' });
+  }
+
   try {
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 20000); // 20s timeout
+    const timeout = setTimeout(() => controller.abort(), 20000);
 
     const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
       signal: controller.signal,
       headers: {
-        Authorization: `Bearer ${apiKey}`,
+        Authorization: `Bearer ${groqKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
@@ -113,25 +134,21 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const data = await response.json();
     let output = data.choices?.[0]?.message?.content || '';
 
-    // Regex-based JSON extraction (finds the first { and last })
     let jsonText = output.trim();
     const jsonMatch = output.match(/\{[\s\S]*\}/);
     if (jsonMatch) {
       jsonText = jsonMatch[0];
     }
 
-    // Repair common LLM JSON errors: unquoted values with units like 120 g or 2500 kcal
-    // This finds patterns like : 120g or : 120 g and replaces with : "120g"
     jsonText = jsonText.replace(/:\s*(\d+(?:\.\d+)?\s*(?:g|kcal|mg|kg|ml|mcg|IU|cup|item|cal|calories))\b/gi, ': "$1"');
 
-    // JSON Safe Parse
     let parsed;
     try {
       parsed = JSON.parse(jsonText);
     } catch {
       return res.status(500).json({
         error: 'AI response parsing failed',
-        raw: output, // Return full output for debugging
+        raw: output,
       });
     }
 

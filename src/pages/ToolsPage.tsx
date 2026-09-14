@@ -2,7 +2,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import {
-  Heart, Scale, Utensils, Activity, Sparkles, Brain,
+  Heart, Scale, Utensils, Activity, Brain,
   Target, MessageCircle, ArrowRight, ChevronRight,
   Camera, Stethoscope, LayoutDashboard, ShoppingBag,
   BookOpen, Zap, CheckCircle
@@ -55,8 +55,7 @@ export default function ToolsPage({ user }: { user: FirebaseUser | null }) {
       color: '#34D399',
       glow: 'rgba(52,211,153,0.2)',
       desc: 'Calculate your BMI and discover your dominant Ayurvedic dosha',
-      tag: 'Calculator',
-    },
+      tag: 'Calculator' },
     {
       id: 'heart' as ActiveTool,
       label: 'Heart Monitor',
@@ -64,8 +63,7 @@ export default function ToolsPage({ user }: { user: FirebaseUser | null }) {
       color: '#F87171',
       glow: 'rgba(248,113,113,0.2)',
       desc: 'Log and track your pulse rate with Ayurvedic dosha interpretation',
-      tag: 'Tracker',
-    },
+      tag: 'Tracker' },
     {
       id: 'calorie' as ActiveTool,
       label: 'Calorie Checker',
@@ -73,8 +71,7 @@ export default function ToolsPage({ user }: { user: FirebaseUser | null }) {
       color: '#FBBF24',
       glow: 'rgba(251,191,36,0.2)',
       desc: 'Browse 25+ Indian dishes with calories, protein & Ayurvedic properties',
-      tag: 'Database',
-    },
+      tag: 'Database' },
     {
       id: null,
       label: 'AI Health Coach',
@@ -83,18 +80,16 @@ export default function ToolsPage({ user }: { user: FirebaseUser | null }) {
       glow: 'rgba(167,139,250,0.2)',
       desc: '13-section personalized wellness blueprint powered by AI',
       tag: 'AI',
-      to: '/health-coach',
-    },
+      to: '/health-coach' },
     {
       id: null,
       label: 'AI Diagnosis',
-      icon: Sparkles,
+      icon: Activity,
       color: '#10B981',
       glow: 'rgba(16,185,129,0.2)',
       desc: 'Instant symptom analysis with dosha mapping and remedy plan',
       tag: 'AI',
-      to: '/diagnosis',
-    },
+      to: '/diagnosis' },
     {
       id: null,
       label: 'AI Meal Analyser',
@@ -103,8 +98,7 @@ export default function ToolsPage({ user }: { user: FirebaseUser | null }) {
       glow: 'rgba(249,115,22,0.2)',
       desc: 'Snap your meal and get instant nutritional + Ayurvedic analysis',
       tag: 'AI',
-      to: '/meal-analysis',
-    },
+      to: '/meal-analysis' },
     {
       id: null,
       label: 'Consult Doctors',
@@ -113,8 +107,7 @@ export default function ToolsPage({ user }: { user: FirebaseUser | null }) {
       glow: 'rgba(96,165,250,0.2)',
       desc: 'Book a session with verified Ayurvedic physicians for just ₹1',
       tag: '₹1',
-      to: '/doctors',
-    },
+      to: '/doctors' },
     {
       id: null,
       label: 'Health Guides',
@@ -123,8 +116,7 @@ export default function ToolsPage({ user }: { user: FirebaseUser | null }) {
       glow: 'rgba(107,114,128,0.2)',
       desc: 'Explore Ayurvedic herbs, doshas, and wellness knowledge base',
       tag: 'Learn',
-      to: '/guides',
-    },
+      to: '/guides' },
     {
       id: null,
       label: 'WhatsApp Connect',
@@ -134,8 +126,7 @@ export default function ToolsPage({ user }: { user: FirebaseUser | null }) {
       desc: 'Chat directly with Nexus Ayurve support on WhatsApp',
       tag: 'Support',
       to: null,
-      action: () => window.open('https://wa.me/919475002048?text=Hello%20Nexus Ayurve%2B', '_blank', 'noopener,noreferrer'),
-    },
+      action: () => window.open('https://wa.me/919475002048?text=Hello%20Nexus Ayurve%2B', '_blank', 'noopener,noreferrer') },
   ] as const;
 
   return (
@@ -199,8 +190,7 @@ export default function ToolsPage({ user }: { user: FirebaseUser | null }) {
                       ? `${tool.glow}`
                       : 'var(--bg-card-subtle)',
                     backdropFilter: 'blur(20px)',
-                    WebkitBackdropFilter: 'blur(20px)',
-                  }}
+                    WebkitBackdropFilter: 'blur(20px)' }}
                 >
                   {/* Hover radial glow */}
                   <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none rounded-3xl"
@@ -255,8 +245,7 @@ export default function ToolsPage({ user }: { user: FirebaseUser | null }) {
               style={{
                 background: 'var(--bg-card)',
                 backdropFilter: 'blur(32px)',
-                WebkitBackdropFilter: 'blur(32px)',
-              }}
+                WebkitBackdropFilter: 'blur(32px)' }}
             >
               {activeTool === 'bmi'     && <BMITool />}
               {activeTool === 'heart'   && <HeartTool user={user} />}
@@ -338,7 +327,7 @@ function BMITool() {
 
       <button onClick={calculateBMI}
         className="w-full py-4 rounded-2xl bg-emerald-accent text-forest font-bold text-sm hover:bg-emerald-accent/90 transition-all shadow-lg shadow-emerald-accent/20 flex items-center justify-center gap-2">
-        Calculate BMI & Dosha <Sparkles size={16} />
+        Calculate BMI & Dosha 
       </button>
 
       <AnimatePresence>
@@ -378,8 +367,7 @@ function HeartTool({ user }: { user: FirebaseUser | null }) {
       await addDoc(collection(db, 'heart_logs'), {
         userId: user.uid, heartRate: rate,
         status: rate < 60 ? 'low' : rate > 100 ? 'high' : 'normal',
-        timestamp: new Date().toISOString(),
-      });
+        timestamp: new Date().toISOString() });
       setSaved(true);
       setTimeout(() => setSaved(false), 3000);
       setHeartRate('');

@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import {
-  Send, Sparkles, Paperclip, X, FileText,
+  Send, Activity, Paperclip, X, FileText,
   ShieldCheck, Lock, Eye, EyeOff, Info, CheckCircle2, AlertTriangle
 } from 'lucide-react';
 import { User as FirebaseUser } from 'firebase/auth';
@@ -260,7 +260,7 @@ export default function ChatPage({ user }: { user: FirebaseUser | null }) {
           <div className="flex-1" />
           <div className="flex flex-col items-center gap-0.5">
             <h1 className="text-xl font-bold font-display tracking-wide text-cream flex items-center gap-2">
-              <Sparkles size={18} className="text-emerald-accent" /> Nexus Ayurve Chat
+               Nexus Ayurve Chat
             </h1>
             <p className="text-[10px] text-emerald-accent/60 uppercase tracking-widest">Powered by AI Health Coach</p>
           </div>
@@ -282,7 +282,7 @@ export default function ChatPage({ user }: { user: FirebaseUser | null }) {
             <div key={i} className={`flex w-full mb-6 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
               {msg.role === 'assistant' && (
                 <div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 bg-moss text-emerald-accent border border-emerald-accent/20 mt-1 mr-3 md:mr-4">
-                  <Sparkles size={16} />
+                  
                 </div>
               )}
 
@@ -331,7 +331,7 @@ export default function ChatPage({ user }: { user: FirebaseUser | null }) {
           {isLoading && (
             <div className="flex w-full mb-6 justify-start">
               <div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 bg-moss text-emerald-accent border border-emerald-accent/20 mt-1 mr-3 md:mr-4">
-                <Sparkles size={16} className="animate-spin-slow" />
+                
               </div>
               <div className="flex-1 flex gap-1.5 items-center pl-2">
                 <span className="w-2 h-2 rounded-full bg-emerald-accent/60 animate-bounce" />

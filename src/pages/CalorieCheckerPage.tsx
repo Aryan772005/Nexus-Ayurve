@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Utensils, Zap, Flame, Info, ChevronRight, X, Sparkles, Scale, Heart, Apple, Coffee, Pizza, Cherry as CherryIcon } from 'lucide-react';
+import { Search, Utensils, Zap, Flame, Info, ChevronRight, X, Activity, Scale, Heart, Apple, Coffee, Pizza, Cherry as CherryIcon } from 'lucide-react';
 
 const indianFoods = [
   { name: "Dal Makhani (1 bowl)", cal: 300, protein: 12, carbs: 35, fats: 15, type: "Heavy (Kapha increasing)", nature: "Warming" },
@@ -201,7 +201,7 @@ export default function CalorieCheckerPage() {
                   <Info size={40} />
                </div>
                <h3 className="text-blue-400 font-bold text-sm uppercase tracking-widest mb-2 flex items-center gap-2">
-                  <Sparkles size={14} /> Ayurvedic Tip
+                   Ayurvedic Tip
                </h3>
                <p className="text-blue-100/70 text-sm leading-relaxed">
                   Avoid drinking chilled water during meals as it douses the digestive fire (**Agni**). Opt for lukewarm water or herbal tea.

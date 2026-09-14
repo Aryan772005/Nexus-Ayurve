@@ -1,4 +1,6 @@
-export const maxDuration = 60; // Set maximum execution time for this function to 60 seconds
+import { GoogleGenerativeAI } from '@google/generative-ai';
+
+export const maxDuration = 60;
 
 export default async function handler(req: any, res: any) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -8,103 +10,129 @@ export default async function handler(req: any, res: any) {
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  // Resolve API key
-  let rawKey = (
-    process.env.NVIDIA_API_KEY ||
-    process.env.NIVIDIA_API_KEY ||
-    process.env.NVIDIA_KEY ||
-    process.env.NVIDIA_PI_KEY ||
-    ''
-  ).trim().replace(/^["'Bearer ]+|["']+$/g, '').trim();
-
-  if (!rawKey) {
-    return res.status(401).json({ error: 'NVIDIA API key not configured in Vercel environment variables.' });
+  const geminiKey = (process.env.GEMINI_API_KEY || '').trim();
+  if (!geminiKey) {
+    return res.status(401).json({ error: 'GEMINI_API_KEY not configured in .env file.' });
   }
 
   try {
     const { imageBase64 } = req.body;
     if (!imageBase64) return res.status(400).json({ error: 'No image provided' });
 
-    // Ensure the image is a proper data URL (NVIDIA requires full data URI)
-    const imageUrl = imageBase64.startsWith('data:')
-      ? imageBase64
-      : `data:image/jpeg;base64,${imageBase64}`;
+    const base64Data = imageBase64.startsWith('data:')
+      ? imageBase64.split(',')[1]
+      : imageBase64;
+    const mimeType = imageBase64.startsWith('data:image/png') ? 'image/png' : 'image/jpeg';
 
-    const promptText = `You are a nutrition expert. Analyze this food image and return ONLY valid JSON (no markdown, no explanation).
-Use this exact structure:
+    const genAI = new GoogleGenerativeAI(geminiKey);
+    const model = genAI.getGenerativeModel({ model: 'gemini-3.6-flash' });
+
+    const promptText = `You are a premier clinical nutritionist and Ayurvedic Vaidya (physician).
+Carefully inspect this food image and generate a comprehensive nutritional and Ayurvedic breakdown.
+Strictly return ONLY a valid raw JSON object (no markdown, no backticks, no explanatory text).
+
+Required JSON structure:
 {
-  "food_name": "Name of the dish",
-  "calories": "Estimated kilocalories as a number e.g. 350 kcal",
-  "health_category": "Healthy / Moderate / Unhealthy",
-  "ayurvedic_nature": "Vata-balancing / Pitta-balancing / Kapha-balancing / Tridoshic",
-  "suggestion": "One brief Ayurvedic tip for this meal (max 2 sentences)"
+  "food_name": "Accurate name of the dish or meal",
+  "portion_size": "Estimated portion/serving size (e.g. 1 bowl ~250g, 2 pieces)",
+  "calories": "Total estimated energy with unit (e.g. 380 kcal)",
+  "health_category": "Healthy / Moderate / Indulgent",
+  "ayurvedic_nature": "Short summary (e.g. Pitta-pacifying & Deeply Nourishing)",
+  "macros": {
+    "protein": "e.g. 16g",
+    "carbs": "e.g. 48g",
+    "fats": "e.g. 14g",
+    "fiber": "e.g. 6g"
+  },
+  "vitamins": [
+    {
+      "name": "e.g. Vitamin A / Vitamin C / Vitamin B12 / Folate",
+      "amount": "e.g. 420 mcg / 25 mg",
+      "daily_value": "e.g. 45%",
+      "benefit": "Brief clinical health benefit for energy, immunity, or skin"
+    }
+  ],
+  "minerals": [
+    {
+      "name": "e.g. Iron / Calcium / Magnesium / Potassium / Zinc",
+      "amount": "e.g. 3.8 mg / 250 mg",
+      "daily_value": "e.g. 21%",
+      "benefit": "Specific functional benefit like hemoglobin, bones, or electrolytes"
+    }
+  ],
+  "ayurvedic_profile": {
+    "dominant_dosha": "Tridoshic / Vata-pacifying / Pitta-pacifying / Kapha-pacifying",
+    "dosha_effect": "Clear sentence detailing how this meal affects Vata, Pitta, and Kapha",
+    "rasa": ["Sweet (Madhura)", "Pungent (Katu)", "Astringent (Kashaya)"],
+    "virya": "Sheeta (Cooling) or Ushna (Heating)",
+    "vipaka": "Madhura (Sweet) or Katu (Pungent) or Amla (Sour)",
+    "agni_impact": "How it impacts digestive fire (e.g. Easy on Agni, kindle digestive fire)"
+  },
+  "key_ingredients": ["Ingredient 1", "Ingredient 2", "Ingredient 3"],
+  "suggestion": "One or two practical Ayurvedic recommendations (spices, timing, or complementary food pairing)"
 }`;
 
-    const payload = {
-      model: 'meta/llama-3.2-11b-vision-instruct',
-      messages: [
-        {
-          role: 'user',
-          content: [
-            { type: 'text', text: promptText },
-            { type: 'image_url', image_url: { url: imageUrl } },
-          ],
-        },
-      ],
-      temperature: 0.1,
-      max_tokens: 400,
-      stream: false,
-    };
-
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 50000); // 50s timeout
-
-    let response: Response;
-    try {
-      response = await fetch('https://integrate.api.nvidia.com/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${rawKey}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload),
-        signal: controller.signal,
-      });
-    } finally {
-      clearTimeout(timeout);
+    let result: any = null;
+    let lastError: any = null;
+    for (let attempt = 0; attempt < 3; attempt++) {
+      try {
+        result = await model.generateContent([
+          promptText,
+          { inlineData: { mimeType, data: base64Data } },
+        ]);
+        if (result) break;
+      } catch (err: any) {
+        lastError = err;
+        if (attempt < 2) {
+          await new Promise((r) => setTimeout(r, 800 * (attempt + 1)));
+        }
+      }
+    }
+    if (!result) {
+      throw lastError || new Error('Failed to generate meal analysis');
     }
 
-    if (!response.ok) {
-      const errText = await response.text();
-      console.error('NVIDIA API error:', response.status, errText.slice(0, 300));
-      // Friendly error messages for common NVIDIA status codes
-      if (response.status === 401) return res.status(401).json({ error: 'Invalid NVIDIA API key. Please check Vercel environment variables.' });
-      if (response.status === 429) return res.status(429).json({ error: 'NVIDIA API rate limit reached. Please wait a moment and try again.' });
-      if (response.status === 402) return res.status(402).json({ error: 'NVIDIA API credits exhausted. Please top up your NVIDIA account.' });
-      return res.status(response.status).json({ error: `AI service error (${response.status}). Please try again.` });
-    }
-
-    const data = await response.json();
-    let aiText: string = data.choices?.[0]?.message?.content || '';
-
-    // Strip markdown code fences if present
+    let aiText = result.response.text().trim();
     aiText = aiText.replace(/```(?:json)?\n?|```/g, '').trim();
 
-    // Extract the first JSON object
     const jsonMatch = aiText.match(/\{[\s\S]*\}/);
     if (!jsonMatch) {
-      console.error('No JSON found in AI response:', aiText.slice(0, 300));
-      return res.status(500).json({ error: 'AI returned an unexpected response. Please try again.' });
+      return res.status(500).json({ error: 'AI returned an unexpected response format. Please try again.' });
     }
 
     const parsed = JSON.parse(jsonMatch[0]);
-    return res.status(200).json(parsed);
+
+    // Normalize data structure in case model flattens or alters field names slightly
+    const normalized = {
+      food_name: parsed.food_name || 'Detected Meal',
+      portion_size: parsed.portion_size || '1 serving',
+      calories: parsed.calories || (parsed.calorie ? `${parsed.calorie} kcal` : 'N/A'),
+      health_category: parsed.health_category || 'Healthy',
+      ayurvedic_nature: parsed.ayurvedic_nature || parsed.nature || 'Balanced',
+      macros: {
+        protein: parsed.macros?.protein || parsed.protein || 'N/A',
+        carbs: parsed.macros?.carbs || parsed.carbs || 'N/A',
+        fats: parsed.macros?.fats || parsed.fats || parsed.fat || 'N/A',
+        fiber: parsed.macros?.fiber || parsed.fiber || 'N/A',
+      },
+      vitamins: Array.isArray(parsed.vitamins) ? parsed.vitamins : [],
+      minerals: Array.isArray(parsed.minerals) ? parsed.minerals : [],
+      ayurvedic_profile: {
+        dominant_dosha: parsed.ayurvedic_profile?.dominant_dosha || parsed.ayurvedic_nature || 'Tridoshic',
+        dosha_effect: parsed.ayurvedic_profile?.dosha_effect || parsed.ayurvedic_nature || '',
+        rasa: Array.isArray(parsed.ayurvedic_profile?.rasa) ? parsed.ayurvedic_profile.rasa : [],
+        virya: parsed.ayurvedic_profile?.virya || 'Neutral',
+        vipaka: parsed.ayurvedic_profile?.vipaka || 'Sweet (Madhura)',
+        agni_impact: parsed.ayurvedic_profile?.agni_impact || 'Balanced digestion',
+      },
+      key_ingredients: Array.isArray(parsed.key_ingredients) ? parsed.key_ingredients : [],
+      suggestion: parsed.suggestion || parsed.ayurvedic_tip || '',
+    };
+
+    return res.status(200).json(normalized);
 
   } catch (error: any) {
-    if (error.name === 'AbortError') {
-      return res.status(504).json({ error: 'Analysis timed out. Please try a smaller image or try again.' });
-    }
-    console.error('Food analyze error:', error);
-    return res.status(500).json({ error: error.message || 'Failed to analyse image.' });
+    console.error('Food analyze error:', error?.message || error);
+    return res.status(500).json({ error: error?.message || 'Failed to analyse image.' });
   }
 }
