@@ -96,10 +96,17 @@ export default function MealAnalysisPage() {
         body: JSON.stringify({ imageBase64: base64 }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Analysis failed');
+      if (!res.ok) {
+        const rawErr = data.error || '';
+        if (rawErr.includes('429') || rawErr.includes('quota')) {
+          throw new Error('Google AI free tier reached its per-minute rate limit. Please wait 30 seconds and try again.');
+        }
+        throw new Error(rawErr || 'Analysis failed');
+      }
       setResult(data);
     } catch (err: any) {
-      setError(err.message || 'Failed to analyse meal. Please try again.');
+      const msg = err?.message || 'Failed to analyse meal. Please try again.';
+      setError(msg.includes('GoogleGenerativeAI') ? 'Google AI is temporarily busy. Please retry in a few moments.' : msg);
     } finally {
       setIsAnalyzing(false);
     }
