@@ -17,6 +17,7 @@ import FloatingWhatsAppButton from './components/FloatingWhatsAppButton';
 import CartDrawer from './components/CartDrawer';
 import PrescriptionModal from './components/PrescriptionModal';
 import LocationModal from './components/LocationModal';
+import MobileBottomNav from './components/MobileBottomNav';
 import { CartProvider } from './context/CartContext';
 import HomePage from './pages/HomePage';
 import DashboardPage from './pages/DashboardPage';
@@ -94,7 +95,7 @@ export default function App() {
         <ScrollToTop />
         <Navbar user={user} onLogin={() => setShowAuth(true)} />
         
-        <main className="flex-1 relative z-0">
+        <main className="flex-1 relative z-0 pb-16 md:pb-0">
           <AnimatePresence mode="wait">
             <Routes>
               <Route path="/" element={<HomePage onLogin={() => setShowAuth(true)} user={user} />} />
@@ -121,6 +122,7 @@ export default function App() {
         <CartDrawer />
         <PrescriptionModal />
         <LocationModal />
+        <MobileBottomNav />
         <FloatingChatButton />
         <FloatingWhatsAppButton />
         {showAuth && <AuthModal onClose={() => setShowAuth(false)} />}

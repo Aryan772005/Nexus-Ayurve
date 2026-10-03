@@ -100,8 +100,8 @@ export default function HomePage({ onLogin, user }: { onLogin: () => void; user:
           1. HERO CAROUSEL BANNER (Tata 1mg Style)
       ══════════════════════════════════════════════ */}
       <section className="relative overflow-hidden bg-white border-b border-slate-200">
-        <div className="max-w-7xl mx-auto px-4 py-4 md:py-6">
-          <div className="relative rounded-3xl overflow-hidden shadow-md border border-slate-200 aspect-[16/9] sm:aspect-[21/9] md:aspect-[24/9] min-h-[360px] md:min-h-[420px] bg-slate-950">
+        <div className="max-w-7xl mx-auto px-2 sm:px-4 py-2 sm:py-4 md:py-6">
+          <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden shadow-md border border-slate-200 aspect-[16/10] sm:aspect-[21/9] md:aspect-[24/9] min-h-[300px] sm:min-h-[360px] md:min-h-[420px] bg-slate-950">
             <AnimatePresence mode="wait">
               {heroSlides.map((slide, idx) => {
                 if (idx !== currentSlide) return null;
@@ -122,39 +122,39 @@ export default function HomePage({ onLogin, user }: { onLogin: () => void; user:
                     />
 
                     {/* Gradient Overlay for Crisp Text Readability */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-slate-950/90 via-slate-950/60 to-transparent sm:to-slate-950/15" />
+                    <div className="absolute inset-0 bg-gradient-to-r from-slate-950/95 via-slate-950/70 to-transparent sm:to-slate-950/15" />
 
                     {/* Banner Content */}
-                    <div className="relative h-full flex flex-col justify-center px-6 sm:px-12 md:px-16 max-w-2xl text-white z-10 space-y-3.5">
-                      <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/20 border border-emerald-400/30 text-emerald-300 text-xs font-bold w-fit backdrop-blur-md">
-                        <Sparkles size={13} className="text-amber-300" />
+                    <div className="relative h-full flex flex-col justify-center px-4 sm:px-12 md:px-16 max-w-2xl text-white z-10 space-y-2.5 sm:space-y-3.5">
+                      <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 sm:py-1 rounded-full bg-emerald-500/20 border border-emerald-400/30 text-emerald-300 text-[10px] sm:text-xs font-bold w-fit backdrop-blur-md">
+                        <Sparkles size={11} className="text-amber-300" />
                         {slide.badge}
                       </div>
 
-                      <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight leading-tight font-display">
+                      <h2 className="text-lg sm:text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight leading-snug sm:leading-tight font-display">
                         {slide.title}
                       </h2>
 
-                      <p className="text-xs sm:text-sm md:text-base text-slate-200 line-clamp-2 max-w-xl">
+                      <p className="text-[11px] sm:text-sm md:text-base text-slate-200 line-clamp-2 max-w-xl">
                         {slide.subtitle}
                       </p>
 
-                      <div className="inline-block px-3 py-1 rounded-lg bg-amber-400/20 border border-amber-300/30 text-amber-300 text-xs font-bold w-fit">
+                      <div className="inline-block px-2.5 py-0.5 rounded-md bg-amber-400/20 border border-amber-300/30 text-amber-300 text-[10px] sm:text-xs font-bold w-fit">
                         {slide.offer}
                       </div>
 
-                      <div className="flex flex-wrap items-center gap-3 pt-2">
+                      <div className="flex flex-wrap items-center gap-2 sm:gap-3 pt-1 sm:pt-2">
                         {slide.primaryCta.link ? (
                           <Link
                             to={slide.primaryCta.link}
-                            className="px-6 py-2.5 sm:py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs sm:text-sm transition shadow-lg shadow-emerald-900/30 active:scale-95"
+                            className="px-4 sm:px-6 py-2 sm:py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs sm:text-sm transition shadow-lg shadow-emerald-900/30 active:scale-95"
                           >
                             {slide.primaryCta.label}
                           </Link>
                         ) : (
                           <button
                             onClick={slide.primaryCta.action}
-                            className="px-6 py-2.5 sm:py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs sm:text-sm transition shadow-lg shadow-emerald-900/30 active:scale-95"
+                            className="px-4 sm:px-6 py-2 sm:py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs sm:text-sm transition shadow-lg shadow-emerald-900/30 active:scale-95"
                           >
                             {slide.primaryCta.label}
                           </button>
@@ -164,14 +164,14 @@ export default function HomePage({ onLogin, user }: { onLogin: () => void; user:
                           slide.secondaryCta.link ? (
                             <Link
                               to={slide.secondaryCta.link}
-                              className="px-5 py-2.5 sm:py-3 rounded-xl bg-white/10 hover:bg-white/20 text-white border border-white/20 font-bold text-xs sm:text-sm backdrop-blur-md transition"
+                              className="hidden sm:inline-block px-5 py-2.5 sm:py-3 rounded-xl bg-white/10 hover:bg-white/20 text-white border border-white/20 font-bold text-xs sm:text-sm backdrop-blur-md transition"
                             >
                               {slide.secondaryCta.label}
                             </Link>
                           ) : (
                             <button
                               onClick={slide.secondaryCta.action}
-                              className="px-5 py-2.5 sm:py-3 rounded-xl bg-white/10 hover:bg-white/20 text-white border border-white/20 font-bold text-xs sm:text-sm backdrop-blur-md transition"
+                              className="hidden sm:inline-block px-5 py-2.5 sm:py-3 rounded-xl bg-white/10 hover:bg-white/20 text-white border border-white/20 font-bold text-xs sm:text-sm backdrop-blur-md transition"
                             >
                               {slide.secondaryCta.label}
                             </button>
@@ -188,26 +188,26 @@ export default function HomePage({ onLogin, user }: { onLogin: () => void; user:
             <button
               onClick={prevSlide}
               aria-label="Previous slide"
-              className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-slate-900/40 hover:bg-slate-900/70 text-white flex items-center justify-center backdrop-blur-sm transition z-20"
+              className="absolute left-1.5 sm:left-3 top-1/2 -translate-y-1/2 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-slate-900/50 hover:bg-slate-900/80 text-white flex items-center justify-center backdrop-blur-sm transition z-20"
             >
-              <ChevronLeft size={22} />
+              <ChevronLeft size={18} />
             </button>
             <button
               onClick={nextSlide}
               aria-label="Next slide"
-              className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-slate-900/40 hover:bg-slate-900/70 text-white flex items-center justify-center backdrop-blur-sm transition z-20"
+              className="absolute right-1.5 sm:right-3 top-1/2 -translate-y-1/2 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-slate-900/50 hover:bg-slate-900/80 text-white flex items-center justify-center backdrop-blur-sm transition z-20"
             >
-              <ChevronRight size={22} />
+              <ChevronRight size={18} />
             </button>
 
             {/* Carousel Dots */}
-            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2 z-20">
+            <div className="absolute bottom-2.5 sm:bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-1.5 sm:gap-2 z-20">
               {heroSlides.map((_, i) => (
                 <button
                   key={i}
                   onClick={() => setCurrentSlide(i)}
-                  className={`h-2 rounded-full transition-all ${
-                    currentSlide === i ? 'w-8 bg-emerald-400' : 'w-2 bg-white/40 hover:bg-white/70'
+                  className={`h-1.5 sm:h-2 rounded-full transition-all ${
+                    currentSlide === i ? 'w-6 sm:w-8 bg-emerald-400' : 'w-1.5 sm:w-2 bg-white/40 hover:bg-white/70'
                   }`}
                 />
               ))}
@@ -219,17 +219,17 @@ export default function HomePage({ onLogin, user }: { onLogin: () => void; user:
       {/* ══════════════════════════════════════════════
           2. QUICK SERVICES STRIP (Tata 1mg Quick Pills)
       ══════════════════════════════════════════════ */}
-      <section className="max-w-7xl mx-auto px-4 -mt-2 md:-mt-3 relative z-20">
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+      <section className="max-w-7xl mx-auto px-2 sm:px-4 -mt-2 sm:-mt-3 relative z-20">
+        <div className="grid grid-cols-3 sm:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-3">
           {quickServices.map((service, index) => {
             const Content = (
-              <div className="bg-white p-3.5 rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-md hover:border-emerald-400 hover:-translate-y-0.5 transition-all flex items-center gap-3 cursor-pointer group">
-                <div className={`w-11 h-11 rounded-xl ${service.color} text-white flex items-center justify-center shadow-xs shrink-0 group-hover:scale-105 transition-transform`}>
-                  <service.icon size={20} />
+              <div className="bg-white p-2.5 sm:p-3.5 rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-md hover:border-emerald-400 hover:-translate-y-0.5 transition-all flex flex-col sm:flex-row items-center text-center sm:text-left gap-1.5 sm:gap-3 cursor-pointer group">
+                <div className={`w-9 h-9 sm:w-11 sm:h-11 rounded-xl ${service.color} text-white flex items-center justify-center shadow-xs shrink-0 group-hover:scale-105 transition-transform`}>
+                  <service.icon size={18} />
                 </div>
                 <div className="min-w-0">
-                  <h4 className="text-xs font-bold text-slate-900 truncate leading-snug">{service.label}</h4>
-                  <p className="text-[10px] text-slate-500 font-medium truncate">{service.text}</p>
+                  <h4 className="text-[11px] sm:text-xs font-bold text-slate-900 truncate leading-tight">{service.label}</h4>
+                  <p className="text-[9px] sm:text-[10px] text-slate-400 font-medium truncate hidden sm:block">{service.text}</p>
                 </div>
               </div>
             );
@@ -247,49 +247,53 @@ export default function HomePage({ onLogin, user }: { onLogin: () => void; user:
         </div>
       </section>
 
+
       {/* ══════════════════════════════════════════════
           3. UPLOAD PRESCRIPTION BANNER (1mg Signature)
       ══════════════════════════════════════════════ */}
-      <section className="max-w-7xl mx-auto px-4 py-8">
-        <div className="bg-gradient-to-r from-emerald-900 via-teal-900 to-slate-900 rounded-3xl p-6 md:p-8 text-white shadow-xl relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6">
+      {/* ══════════════════════════════════════════════
+          3. UPLOAD PRESCRIPTION BANNER (1mg Signature)
+      ══════════════════════════════════════════════ */}
+      <section className="max-w-7xl mx-auto px-2 sm:px-4 py-4 sm:py-8">
+        <div className="bg-gradient-to-r from-emerald-900 via-teal-900 to-slate-900 rounded-2xl sm:rounded-3xl p-4 sm:p-8 text-white shadow-xl relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-4 sm:gap-6">
           {/* Background herbal motif */}
           <div className="absolute -right-10 -bottom-10 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
 
-          <div className="space-y-3 max-w-xl z-10">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-bold border border-emerald-400/30">
-              <FileText size={14} />
+          <div className="space-y-2 sm:space-y-3 max-w-xl z-10 w-full text-left">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 sm:py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-[10px] sm:text-xs font-bold border border-emerald-400/30">
+              <FileText size={13} />
               Quick Order with Prescription
             </div>
-            <h3 className="text-2xl sm:text-3xl font-bold font-display leading-tight">
+            <h3 className="text-lg sm:text-2xl md:text-3xl font-bold font-display leading-snug sm:leading-tight">
               Don't have time to search medicines? Just upload your prescription!
             </h3>
-            <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+            <p className="text-[11px] sm:text-sm text-slate-300 leading-relaxed">
               Our registered Ayurvedic Vaidyas & pharmacists will verify your prescription, arrange genuine handcrafted formulations, and deliver to <strong className="text-white">{city} ({pincode})</strong>.
             </p>
 
-            <div className="flex flex-wrap items-center gap-4 text-xs text-emerald-200 pt-1">
-              <span className="flex items-center gap-1.5">
-                <CheckCircle2 size={15} className="text-emerald-400" /> 100% Genuine Medicines
+            <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-[10px] sm:text-xs text-emerald-200 pt-1">
+              <span className="flex items-center gap-1">
+                <CheckCircle2 size={13} className="text-emerald-400" /> 100% Genuine
               </span>
-              <span className="flex items-center gap-1.5">
-                <CheckCircle2 size={15} className="text-emerald-400" /> Free Doctor Verification
+              <span className="flex items-center gap-1">
+                <CheckCircle2 size={13} className="text-emerald-400" /> Vaidya Verified
               </span>
-              <span className="flex items-center gap-1.5">
-                <CheckCircle2 size={15} className="text-emerald-400" /> Express Doorstep Delivery
+              <span className="flex items-center gap-1">
+                <CheckCircle2 size={13} className="text-emerald-400" /> Doorstep Delivery
               </span>
             </div>
           </div>
 
-          <div className="z-10 flex flex-col sm:flex-row items-center gap-3 shrink-0">
+          <div className="z-10 flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-3 w-full sm:w-auto shrink-0">
             <button
               onClick={openPrescription}
-              className="px-8 py-3.5 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold text-sm transition shadow-lg shadow-emerald-500/20 active:scale-95 flex items-center gap-2"
+              className="w-full sm:w-auto px-6 sm:px-8 py-2.5 sm:py-3.5 rounded-xl sm:rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold text-xs sm:text-sm transition shadow-lg shadow-emerald-500/20 active:scale-95 flex items-center justify-center gap-2"
             >
-              Upload Prescription Now <ArrowRight size={16} />
+              Upload Prescription Now <ArrowRight size={15} />
             </button>
             <Link
               to="/doctors"
-              className="px-6 py-3.5 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold text-xs sm:text-sm transition text-center"
+              className="w-full sm:w-auto px-5 sm:px-6 py-2.5 sm:py-3.5 rounded-xl sm:rounded-2xl bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold text-xs sm:text-sm transition text-center"
             >
               Consult Doctor for ₹1
             </Link>
@@ -300,44 +304,44 @@ export default function HomePage({ onLogin, user }: { onLogin: () => void; user:
       {/* ══════════════════════════════════════════════
           4. SHOP BY CATEGORY (Roundels with Real Photos)
       ══════════════════════════════════════════════ */}
-      <section className="max-w-7xl mx-auto px-4 py-8">
-        <div className="flex items-center justify-between mb-6">
+      <section className="max-w-7xl mx-auto px-2 sm:px-4 py-4 sm:py-8">
+        <div className="flex items-center justify-between mb-3 sm:mb-6">
           <div>
-            <h3 className="text-xl sm:text-2xl font-bold text-slate-900 font-display">
-              Shop by Ayurvedic Health Need
+            <h3 className="text-base sm:text-2xl font-bold text-slate-900 font-display">
+              Shop by Health Need
             </h3>
-            <p className="text-xs sm:text-sm text-slate-500">
-              Authentic handcrafted herbal formulations categorised by traditional Chikitsa
+            <p className="text-[11px] sm:text-sm text-slate-500">
+              Handcrafted formulations categorised by traditional Chikitsa
             </p>
           </div>
           <Link
             to="/shop"
-            className="text-xs sm:text-sm font-bold text-emerald-700 hover:text-emerald-800 flex items-center gap-1"
+            className="text-[11px] sm:text-sm font-bold text-emerald-700 hover:text-emerald-800 flex items-center gap-1"
           >
-            View All <ChevronRight size={16} />
+            View All <ChevronRight size={14} />
           </Link>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+        <div className="grid grid-cols-3 sm:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-4">
           {CATEGORIES_WITH_IMAGES.map((cat, i) => (
             <Link
               key={i}
               to={`/shop?category=${encodeURIComponent(cat.name)}`}
-              className="bg-white rounded-3xl p-4 border border-slate-200/80 shadow-xs hover:shadow-lg hover:border-emerald-500 hover:-translate-y-1 transition-all duration-300 text-center flex flex-col items-center group"
+              className="bg-white rounded-2xl sm:rounded-3xl p-2 sm:p-4 border border-slate-200/80 shadow-xs hover:shadow-lg hover:border-emerald-500 hover:-translate-y-0.5 transition-all duration-300 text-center flex flex-col items-center group"
             >
               {/* Circular Real Image with Herb */}
-              <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden border-2 border-emerald-100 p-1 mb-3 group-hover:border-emerald-500 transition-colors shadow-xs bg-slate-50">
+              <div className="w-18 h-18 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-full overflow-hidden border-2 border-emerald-100 p-0.5 sm:p-1 mb-1.5 sm:mb-3 group-hover:border-emerald-500 transition-colors shadow-xs bg-slate-50">
                 <img
                   src={cat.image}
                   alt={cat.name}
                   className="w-full h-full object-cover rounded-full group-hover:scale-110 transition-transform duration-500"
                 />
               </div>
-              <h4 className="text-xs sm:text-sm font-bold text-slate-900 leading-snug group-hover:text-emerald-700 transition">
+              <h4 className="text-[11px] sm:text-xs md:text-sm font-bold text-slate-900 leading-tight group-hover:text-emerald-700 transition truncate w-full">
                 {cat.name}
               </h4>
-              <p className="text-[11px] text-slate-400 mt-1 line-clamp-1">{cat.desc}</p>
-              <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full mt-2">
+              <p className="text-[10px] text-slate-400 mt-0.5 line-clamp-1 hidden sm:block">{cat.desc}</p>
+              <span className="text-[9px] sm:text-[10px] font-bold text-emerald-700 bg-emerald-50 px-1.5 sm:px-2 py-0.2 sm:py-0.5 rounded-full mt-1 sm:mt-2">
                 {cat.count}
               </span>
             </Link>
@@ -348,30 +352,30 @@ export default function HomePage({ onLogin, user }: { onLogin: () => void; user:
       {/* ══════════════════════════════════════════════
           5. DEALS OF THE DAY / FEATURED MEDICINES (1mg Grid)
       ══════════════════════════════════════════════ */}
-      <section className="max-w-7xl mx-auto px-4 py-8">
-        <div className="flex items-center justify-between mb-6">
+      <section className="max-w-7xl mx-auto px-2 sm:px-4 py-4 sm:py-8">
+        <div className="flex items-center justify-between mb-4 sm:mb-6">
           <div>
-            <div className="flex items-center gap-2 mb-1">
-              <span className="px-2.5 py-0.5 rounded-md bg-rose-100 text-rose-700 text-xs font-bold uppercase tracking-wider">
+            <div className="flex items-center gap-1.5 mb-0.5 sm:mb-1">
+              <span className="px-2 py-0.5 rounded-md bg-rose-100 text-rose-700 text-[10px] sm:text-xs font-bold uppercase tracking-wider">
                 Deals of the Day
               </span>
-              <span className="text-xs text-slate-400 flex items-center gap-1">
-                <Clock size={13} /> Ends in 8h 42m
+              <span className="text-[10px] sm:text-xs text-slate-400 flex items-center gap-1">
+                <Clock size={12} /> 8h 42m
               </span>
             </div>
-            <h3 className="text-xl sm:text-2xl font-bold text-slate-900 font-display">
-              Handcrafted Ayurvedic Formulations
+            <h3 className="text-base sm:text-2xl font-bold text-slate-900 font-display">
+              Handcrafted Medicines
             </h3>
           </div>
           <Link
             to="/shop"
-            className="text-xs sm:text-sm font-bold text-emerald-700 hover:text-emerald-800 flex items-center gap-1"
+            className="text-[11px] sm:text-sm font-bold text-emerald-700 hover:text-emerald-800 flex items-center gap-1"
           >
-            See All Deals <ChevronRight size={16} />
+            See All Deals <ChevronRight size={14} />
           </Link>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-4">
           {PRODUCTS.slice(0, 8).map((product) => {
             const qtyInCart = getProductCartQty(product.id);
             const discountPercent = Math.round(
@@ -381,56 +385,56 @@ export default function HomePage({ onLogin, user }: { onLogin: () => void; user:
             return (
               <div
                 key={product.id}
-                className="bg-white rounded-3xl border border-slate-200/90 shadow-xs hover:shadow-xl hover:border-emerald-400 transition-all duration-300 flex flex-col justify-between p-3.5 sm:p-4 group relative"
+                className="bg-white rounded-2xl sm:rounded-3xl border border-slate-200/90 shadow-xs hover:shadow-xl hover:border-emerald-400 transition-all duration-300 flex flex-col justify-between p-2.5 sm:p-4 group relative"
               >
                 {/* Badge */}
                 {product.badge && (
-                  <span className="absolute top-3 left-3 z-10 px-2.5 py-0.5 rounded-full bg-emerald-600 text-white text-[10px] font-bold shadow-xs">
+                  <span className="absolute top-2 left-2 sm:top-3 sm:left-3 z-10 px-2 py-0.2 sm:px-2.5 sm:py-0.5 rounded-full bg-emerald-600 text-white text-[9px] sm:text-[10px] font-bold shadow-xs">
                     {product.badge}
                   </span>
                 )}
 
                 {/* Product Image */}
-                <div className="relative aspect-square rounded-2xl overflow-hidden bg-slate-50 mb-3 border border-slate-100">
+                <div className="relative aspect-square rounded-xl sm:rounded-2xl overflow-hidden bg-slate-50 mb-2 sm:mb-3 border border-slate-100">
                   <img
                     src={product.image}
                     alt={product.name}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
-                  <div className="absolute bottom-2 right-2 flex items-center gap-1 px-2 py-0.5 rounded-full bg-black/60 backdrop-blur-sm text-white text-[11px] font-bold">
-                    <Star size={11} className="text-amber-400 fill-amber-400" />
+                  <div className="absolute bottom-1.5 right-1.5 sm:bottom-2 sm:right-2 flex items-center gap-0.5 sm:gap-1 px-1.5 py-0.5 rounded-full bg-black/60 backdrop-blur-sm text-white text-[10px] sm:text-[11px] font-bold">
+                    <Star size={10} className="text-amber-400 fill-amber-400" />
                     <span>{product.rating}</span>
                   </div>
                 </div>
 
                 {/* Content */}
-                <div className="space-y-1 flex-1">
-                  <p className="text-[10px] font-bold text-emerald-700 uppercase tracking-wider">
+                <div className="space-y-0.5 sm:space-y-1 flex-1">
+                  <p className="text-[9px] sm:text-[10px] font-bold text-emerald-700 uppercase tracking-wider truncate">
                     {product.brand}
                   </p>
                   <h4 className="text-xs sm:text-sm font-bold text-slate-900 leading-snug line-clamp-2 group-hover:text-emerald-700 transition">
                     {product.name}
                   </h4>
-                  <p className="text-[11px] text-slate-400">{product.packSize}</p>
+                  <p className="text-[10px] sm:text-[11px] text-slate-400 truncate">{product.packSize}</p>
 
-                  <div className="flex items-center gap-1.5 text-[10px] text-emerald-700 font-semibold pt-1">
-                    <Truck size={12} />
-                    <span>{product.deliveryTime}</span>
+                  <div className="flex items-center gap-1 text-[9px] sm:text-[10px] text-emerald-700 font-semibold pt-0.5">
+                    <Truck size={11} />
+                    <span className="truncate">{product.deliveryTime}</span>
                   </div>
                 </div>
 
                 {/* Price and Cart Action */}
-                <div className="pt-3 mt-2 border-t border-slate-100 flex items-center justify-between gap-2">
+                <div className="pt-2 sm:pt-3 mt-1.5 sm:mt-2 border-t border-slate-100 flex items-center justify-between gap-1.5 sm:gap-2">
                   <div>
-                    <div className="flex items-baseline gap-1.5">
-                      <span className="text-base sm:text-lg font-bold text-slate-900 font-display">
+                    <div className="flex items-baseline gap-1">
+                      <span className="text-sm sm:text-lg font-bold text-slate-900 font-display">
                         ₹{product.price}
                       </span>
-                      <span className="text-[11px] text-slate-400 line-through">
+                      <span className="text-[10px] sm:text-[11px] text-slate-400 line-through">
                         ₹{product.originalPrice}
                       </span>
                     </div>
-                    <span className="text-[10px] font-bold text-emerald-600">
+                    <span className="text-[9px] sm:text-[10px] font-bold text-emerald-600">
                       {discountPercent}% OFF
                     </span>
                   </div>
@@ -439,26 +443,26 @@ export default function HomePage({ onLogin, user }: { onLogin: () => void; user:
                   {qtyInCart === 0 ? (
                     <button
                       onClick={() => addToCart(product)}
-                      className="px-4 py-1.5 rounded-xl border-2 border-emerald-600 text-emerald-700 font-extrabold text-xs hover:bg-emerald-600 hover:text-white transition active:scale-95"
+                      className="px-3 sm:px-4 py-1 sm:py-1.5 rounded-lg sm:rounded-xl border-2 border-emerald-600 text-emerald-700 font-extrabold text-[11px] sm:text-xs hover:bg-emerald-600 hover:text-white transition active:scale-95"
                     >
                       ADD
                     </button>
                   ) : (
-                    <div className="flex items-center border border-emerald-600 rounded-xl bg-emerald-50 overflow-hidden">
+                    <div className="flex items-center border border-emerald-600 rounded-lg sm:rounded-xl bg-emerald-50 overflow-hidden">
                       <button
                         onClick={() => updateQty(product.id, qtyInCart - 1)}
-                        className="px-2 py-1 text-emerald-800 hover:bg-emerald-200 transition"
+                        className="px-1.5 sm:px-2 py-0.5 sm:py-1 text-emerald-800 hover:bg-emerald-200 transition"
                       >
-                        <Minus size={13} />
+                        <Minus size={11} />
                       </button>
-                      <span className="px-2 py-0.5 text-xs font-bold text-emerald-900 bg-white">
+                      <span className="px-1.5 sm:px-2 py-0.5 text-[11px] sm:text-xs font-bold text-emerald-900 bg-white">
                         {qtyInCart}
                       </span>
                       <button
                         onClick={() => updateQty(product.id, qtyInCart + 1)}
-                        className="px-2 py-1 text-emerald-800 hover:bg-emerald-200 transition"
+                        className="px-1.5 sm:px-2 py-0.5 sm:py-1 text-emerald-800 hover:bg-emerald-200 transition"
                       >
-                        <Plus size={13} />
+                        <Plus size={11} />
                       </button>
                     </div>
                   )}
@@ -469,79 +473,83 @@ export default function HomePage({ onLogin, user }: { onLogin: () => void; user:
         </div>
       </section>
 
+
       {/* ══════════════════════════════════════════════
           6. POPULAR HEALTH CHECKUPS / LAB TESTS (1mg Style)
       ══════════════════════════════════════════════ */}
-      <section className="max-w-7xl mx-auto px-4 py-10">
-        <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+      {/* ══════════════════════════════════════════════
+          6. POPULAR HEALTH CHECKUPS / LAB TESTS (1mg Style)
+      ══════════════════════════════════════════════ */}
+      <section className="max-w-7xl mx-auto px-2 sm:px-4 py-4 sm:py-10">
+        <div className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-8 border border-slate-200 shadow-sm">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 mb-4 sm:mb-6">
             <div>
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-sky-100 text-sky-800 text-xs font-bold mb-2">
-                <Activity size={13} />
+              <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 sm:py-1 rounded-full bg-sky-100 text-sky-800 text-[10px] sm:text-xs font-bold mb-1.5 sm:mb-2">
+                <Activity size={12} />
                 NABL & ICMR Certified Diagnostics
               </div>
-              <h3 className="text-xl sm:text-2xl font-bold text-slate-900 font-display">
+              <h3 className="text-base sm:text-2xl font-bold text-slate-900 font-display">
                 Popular Health Checkup Packages
               </h3>
-              <p className="text-xs sm:text-sm text-slate-500">
-                Preventive health packages with 100% Free Home Sample Collection & 24h Digital Reports
+              <p className="text-[11px] sm:text-sm text-slate-500">
+                100% Free Home Sample Collection & 24h Digital Reports
               </p>
             </div>
             <Link
               to="/shop?filter=lab-tests"
-              className="px-5 py-2.5 rounded-xl border border-sky-300 text-sky-700 hover:bg-sky-50 font-bold text-xs sm:text-sm transition w-fit"
+              className="px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl border border-sky-300 text-sky-700 hover:bg-sky-50 font-bold text-xs sm:text-sm transition w-fit"
             >
               View All Health Packages
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
             {LAB_PACKAGES.map((pkg) => (
               <div
                 key={pkg.id}
-                className="rounded-2xl border border-slate-200 p-5 bg-slate-50/50 hover:bg-white hover:border-sky-400 hover:shadow-lg transition-all duration-300 flex flex-col justify-between"
+                className="rounded-2xl border border-slate-200 p-4 sm:p-5 bg-slate-50/50 hover:bg-white hover:border-sky-400 hover:shadow-lg transition-all duration-300 flex flex-col justify-between"
               >
                 <div>
                   {pkg.tag && (
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-sky-700 bg-sky-100 px-2 py-0.5 rounded-md mb-2 inline-block">
+                    <span className="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-sky-700 bg-sky-100 px-2 py-0.5 rounded-md mb-2 inline-block">
                       {pkg.tag}
                     </span>
                   )}
-                  <h4 className="text-sm font-bold text-slate-900 leading-snug mb-1">
+                  <h4 className="text-xs sm:text-sm font-bold text-slate-900 leading-snug mb-1">
                     {pkg.title}
                   </h4>
-                  <p className="text-xs text-slate-500 line-clamp-2 mb-3">
+                  <p className="text-[11px] sm:text-xs text-slate-500 line-clamp-2 mb-3">
                     {pkg.subtitle}
                   </p>
 
-                  <div className="bg-white p-2.5 rounded-xl border border-slate-100 space-y-1.5 text-xs text-slate-600 mb-3">
-                    <p className="font-bold text-emerald-800">Includes {pkg.testsCount} Vital Parameters:</p>
-                    <ul className="text-[11px] text-slate-500 space-y-0.5 list-disc pl-4">
+                  <div className="bg-white p-2.5 rounded-xl border border-slate-100 space-y-1 text-xs text-slate-600 mb-3">
+                    <p className="font-bold text-emerald-800 text-[11px]">Includes {pkg.testsCount} Vital Parameters:</p>
+                    <ul className="text-[10px] sm:text-[11px] text-slate-500 space-y-0.5 list-disc pl-4">
                       {pkg.parameters.slice(0, 3).map((param, pi) => (
                         <li key={pi} className="truncate">{param}</li>
                       ))}
                     </ul>
                   </div>
 
-                  <div className="space-y-1 text-[11px] text-slate-500">
+                  <div className="space-y-0.5 text-[10px] sm:text-[11px] text-slate-500">
                     <p>🧪 <strong>Sample:</strong> {pkg.sampleType}</p>
                     <p>⚡ <strong>Report:</strong> {pkg.reportTime}</p>
                   </div>
                 </div>
 
-                <div className="pt-4 mt-4 border-t border-slate-200 flex items-center justify-between">
+                <div className="pt-3 sm:pt-4 mt-3 sm:mt-4 border-t border-slate-200 flex items-center justify-between">
                   <div>
-                    <div className="flex items-baseline gap-1.5">
-                      <span className="text-lg font-bold text-slate-900 font-display">₹{pkg.price}</span>
-                      <span className="text-xs text-slate-400 line-through">₹{pkg.originalPrice}</span>
+                    <div className="flex items-baseline gap-1">
+                      <span className="text-base sm:text-lg font-bold text-slate-900 font-display">₹{pkg.price}</span>
+                      <span className="text-[10px] sm:text-xs text-slate-400 line-through">₹{pkg.originalPrice}</span>
                     </div>
-                    <span className="text-[10px] font-bold text-emerald-600">
+                    <span className="text-[9px] sm:text-[10px] font-bold text-emerald-600">
                       {Math.round(((pkg.originalPrice - pkg.price) / pkg.originalPrice) * 100)}% OFF
                     </span>
                   </div>
                   <Link
                     to="/shop?filter=lab-tests"
-                    className="px-4 py-2 rounded-xl bg-sky-600 hover:bg-sky-700 text-white font-bold text-xs transition active:scale-95 shadow-sm shadow-sky-600/20"
+                    className="px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-xl bg-sky-600 hover:bg-sky-700 text-white font-bold text-xs transition active:scale-95 shadow-sm shadow-sky-600/20"
                   >
                     Book Now
                   </Link>
@@ -555,76 +563,76 @@ export default function HomePage({ onLogin, user }: { onLogin: () => void; user:
       {/* ══════════════════════════════════════════════
           7. TOP AYURVEDIC DOCTORS (1mg Doctor Consult)
       ══════════════════════════════════════════════ */}
-      <section className="max-w-7xl mx-auto px-4 py-8">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+      <section className="max-w-7xl mx-auto px-2 sm:px-4 py-4 sm:py-8">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 mb-4 sm:mb-6">
           <div>
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold mb-2">
-              <Stethoscope size={13} />
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 sm:py-1 rounded-full bg-emerald-100 text-emerald-800 text-[10px] sm:text-xs font-bold mb-1.5 sm:mb-2">
+              <Stethoscope size={12} />
               Specialist BAMS & MD Ayurveda Practitioners
             </div>
-            <h3 className="text-xl sm:text-2xl font-bold text-slate-900 font-display">
+            <h3 className="text-base sm:text-2xl font-bold text-slate-900 font-display">
               Consult Top Ayurvedic Doctors Online
             </h3>
-            <p className="text-xs sm:text-sm text-slate-500">
+            <p className="text-[11px] sm:text-sm text-slate-500">
               Verified clinical experts with 10+ years experience. Instant video/audio consultations.
             </p>
           </div>
           <Link
             to="/doctors"
-            className="text-xs sm:text-sm font-bold text-emerald-700 hover:text-emerald-800 flex items-center gap-1"
+            className="text-[11px] sm:text-sm font-bold text-emerald-700 hover:text-emerald-800 flex items-center gap-1"
           >
-            View All Doctors <ChevronRight size={16} />
+            View All Doctors <ChevronRight size={14} />
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           {doctors.slice(0, 4).map((doc) => (
             <div
               key={doc.id}
-              className="bg-white rounded-3xl p-5 border border-slate-200/90 shadow-xs hover:shadow-xl hover:border-emerald-400 transition-all duration-300 flex flex-col justify-between group"
+              className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-5 border border-slate-200/90 shadow-xs hover:shadow-xl hover:border-emerald-400 transition-all duration-300 flex flex-col justify-between group"
             >
               <div>
-                <div className="flex items-center gap-3.5 mb-3">
+                <div className="flex items-center gap-3 sm:gap-3.5 mb-2.5 sm:mb-3">
                   <div className="relative">
                     <img
                       src={doc.imageUrl}
                       alt={doc.name}
-                      className="w-16 h-16 rounded-2xl object-cover border-2 border-emerald-100 group-hover:border-emerald-500 transition shadow-xs"
+                      className="w-14 h-14 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl object-cover border-2 border-emerald-100 group-hover:border-emerald-500 transition shadow-xs"
                     />
                     <div className="absolute -bottom-1 -right-1 bg-emerald-600 text-white rounded-full p-0.5">
-                      <CheckCircle2 size={12} />
+                      <CheckCircle2 size={11} />
                     </div>
                   </div>
                   <div>
-                    <h4 className="text-sm font-bold text-slate-900 leading-tight">{doc.name}</h4>
-                    <p className="text-[11px] text-emerald-700 font-semibold">{doc.specialization}</p>
-                    <p className="text-[10px] text-slate-400">{doc.experience} Experience</p>
+                    <h4 className="text-xs sm:text-sm font-bold text-slate-900 leading-tight">{doc.name}</h4>
+                    <p className="text-[10px] sm:text-[11px] text-emerald-700 font-semibold">{doc.specialization}</p>
+                    <p className="text-[9px] sm:text-[10px] text-slate-400">{doc.experience} Experience</p>
                   </div>
                 </div>
 
-                <p className="text-xs text-slate-600 line-clamp-2 leading-relaxed mb-3">
+                <p className="text-[11px] sm:text-xs text-slate-600 line-clamp-2 leading-relaxed mb-2.5 sm:mb-3">
                   {doc.about}
                 </p>
 
-                <div className="flex items-center justify-between text-xs py-2 px-3 rounded-xl bg-slate-50 border border-slate-100">
+                <div className="flex items-center justify-between text-[11px] sm:text-xs py-1.5 sm:py-2 px-2.5 sm:px-3 rounded-xl bg-slate-50 border border-slate-100">
                   <span className="flex items-center gap-1 text-slate-700 font-bold">
-                    <Star size={12} className="text-amber-400 fill-amber-400" /> {doc.rating}
-                    <span className="text-[10px] text-slate-400 font-normal">({doc.reviews})</span>
+                    <Star size={11} className="text-amber-400 fill-amber-400" /> {doc.rating}
+                    <span className="text-[9px] sm:text-[10px] text-slate-400 font-normal">({doc.reviews})</span>
                   </span>
-                  <span className="text-[10px] text-slate-500">
+                  <span className="text-[9px] sm:text-[10px] text-slate-500">
                     {doc.languages.join(', ')}
                   </span>
                 </div>
               </div>
 
-              <div className="pt-4 mt-4 border-t border-slate-100 flex items-center justify-between">
+              <div className="pt-3 sm:pt-4 mt-3 sm:mt-4 border-t border-slate-100 flex items-center justify-between">
                 <div>
-                  <span className="text-[10px] text-slate-400 uppercase">Consult Fee</span>
-                  <p className="text-base font-bold text-emerald-700 font-display">₹1 Only</p>
+                  <span className="text-[9px] sm:text-[10px] text-slate-400 uppercase">Consult Fee</span>
+                  <p className="text-sm sm:text-base font-bold text-emerald-700 font-display">₹1 Only</p>
                 </div>
                 <Link
                   to="/doctors"
-                  className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs transition active:scale-95 shadow-xs"
+                  className="px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs transition active:scale-95 shadow-xs"
                 >
                   Consult Now
                 </Link>
@@ -637,21 +645,21 @@ export default function HomePage({ onLogin, user }: { onLogin: () => void; user:
       {/* ══════════════════════════════════════════════
           8. THE HANDCRAFTED AYURVEDA PROMISE (Authenticity)
       ══════════════════════════════════════════════ */}
-      <section className="max-w-7xl mx-auto px-4 py-12">
-        <div className="bg-gradient-to-br from-emerald-950 via-slate-900 to-emerald-900 rounded-3xl p-8 sm:p-12 text-white shadow-xl">
-          <div className="text-center max-w-2xl mx-auto mb-10">
-            <span className="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-bold border border-emerald-400/30 uppercase tracking-widest inline-block mb-3">
+      <section className="max-w-7xl mx-auto px-2 sm:px-4 py-6 sm:py-12">
+        <div className="bg-gradient-to-br from-emerald-950 via-slate-900 to-emerald-900 rounded-2xl sm:rounded-3xl p-5 sm:p-12 text-white shadow-xl">
+          <div className="text-center max-w-2xl mx-auto mb-6 sm:mb-10">
+            <span className="px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-[10px] sm:text-xs font-bold border border-emerald-400/30 uppercase tracking-widest inline-block mb-2 sm:mb-3">
               The Nexus Ayurve Standard
             </span>
-            <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold font-display">
+            <h3 className="text-lg sm:text-3xl md:text-4xl font-bold font-display">
               Handcrafted with Classical Rigor & Modern Science
             </h3>
-            <p className="text-xs sm:text-sm text-slate-300 mt-2">
-              Every formulation is created following classical Charaka Samhita guidelines and verified by rigorous laboratory testing.
+            <p className="text-[11px] sm:text-sm text-slate-300 mt-1.5 sm:mt-2">
+              Every formulation is created following classical Charaka Samhita guidelines and verified by laboratory testing.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
             {[
               {
                 icon: Award,
@@ -676,13 +684,13 @@ export default function HomePage({ onLogin, user }: { onLogin: () => void; user:
             ].map((p, idx) => (
               <div
                 key={idx}
-                className="bg-white/5 border border-white/10 rounded-2xl p-5 backdrop-blur-sm hover:bg-white/10 transition"
+                className="bg-white/5 border border-white/10 rounded-xl sm:rounded-2xl p-4 sm:p-5 backdrop-blur-sm hover:bg-white/10 transition"
               >
-                <div className="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center mb-3">
-                  <p.icon size={20} />
+                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center mb-2 sm:mb-3">
+                  <p.icon size={18} />
                 </div>
-                <h4 className="text-sm font-bold text-white mb-1.5">{p.title}</h4>
-                <p className="text-xs text-slate-300 leading-relaxed">{p.desc}</p>
+                <h4 className="text-xs sm:text-sm font-bold text-white mb-1">{p.title}</h4>
+                <p className="text-[11px] sm:text-xs text-slate-300 leading-relaxed">{p.desc}</p>
               </div>
             ))}
           </div>
@@ -692,17 +700,17 @@ export default function HomePage({ onLogin, user }: { onLogin: () => void; user:
       {/* ══════════════════════════════════════════════
           9. CUSTOMER HEALTH STORIES & TESTIMONIALS
       ══════════════════════════════════════════════ */}
-      <section className="max-w-7xl mx-auto px-4 py-8">
-        <div className="text-center max-w-xl mx-auto mb-10">
-          <h3 className="text-xl sm:text-2xl font-bold text-slate-900 font-display">
+      <section className="max-w-7xl mx-auto px-2 sm:px-4 py-4 sm:py-8">
+        <div className="text-center max-w-xl mx-auto mb-6 sm:mb-10">
+          <h3 className="text-base sm:text-2xl font-bold text-slate-900 font-display">
             Real Transformations, Real Stories
           </h3>
-          <p className="text-xs sm:text-sm text-slate-500 mt-1">
+          <p className="text-[11px] sm:text-sm text-slate-500 mt-1">
             Over 500,000+ patients across India trust Nexus Ayurve for their holistic wellness journey.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-5">
           {[
             {
               name: "Meera Kulkarni",
@@ -728,24 +736,24 @@ export default function HomePage({ onLogin, user }: { onLogin: () => void; user:
           ].map((t, idx) => (
             <div
               key={idx}
-              className="bg-white rounded-3xl p-6 border border-slate-200/90 shadow-xs hover:shadow-md transition space-y-4"
+              className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 border border-slate-200/90 shadow-xs hover:shadow-md transition space-y-3 sm:space-y-4"
             >
               <div className="flex items-center gap-1 text-amber-400">
                 {[...Array(5)].map((_, i) => (
-                  <Star key={i} size={14} className="fill-amber-400" />
+                  <Star key={i} size={13} className="fill-amber-400" />
                 ))}
               </div>
-              <p className="text-xs sm:text-sm text-slate-700 leading-relaxed italic">
+              <p className="text-[11px] sm:text-sm text-slate-700 leading-relaxed italic">
                 "{t.text}"
               </p>
-              <div className="pt-3 border-t border-slate-100 flex items-center justify-between">
+              <div className="pt-2 sm:pt-3 border-t border-slate-100 flex items-center justify-between">
                 <div>
                   <p className="text-xs font-bold text-slate-900">{t.name}, {t.loc}</p>
-                  <p className="text-[10px] text-emerald-700 font-medium flex items-center gap-1">
+                  <p className="text-[9px] sm:text-[10px] text-emerald-700 font-medium flex items-center gap-1">
                     <CheckCircle2 size={11} /> {t.verified}
                   </p>
                 </div>
-                <div className="w-8 h-8 rounded-full bg-emerald-100 text-emerald-800 font-bold text-xs flex items-center justify-center">
+                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-emerald-100 text-emerald-800 font-bold text-xs flex items-center justify-center">
                   {t.avatar}
                 </div>
               </div>
@@ -757,37 +765,37 @@ export default function HomePage({ onLogin, user }: { onLogin: () => void; user:
       {/* ══════════════════════════════════════════════
           10. DOWNLOAD APP & EMERGENCY VAIDYA HELPLINE
       ══════════════════════════════════════════════ */}
-      <section className="max-w-7xl mx-auto px-4 py-8 mb-12">
-        <div className="bg-gradient-to-r from-emerald-50 via-teal-50 to-white rounded-3xl p-6 sm:p-10 border border-emerald-200 flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="space-y-2 max-w-lg">
-            <span className="px-3 py-1 rounded-full bg-emerald-600 text-white text-[11px] font-bold">
+      <section className="max-w-7xl mx-auto px-2 sm:px-4 py-4 sm:py-8 mb-8 sm:mb-12">
+        <div className="bg-gradient-to-r from-emerald-50 via-teal-50 to-white rounded-2xl sm:rounded-3xl p-4 sm:p-10 border border-emerald-200 flex flex-col md:flex-row items-center justify-between gap-4 sm:gap-6">
+          <div className="space-y-1.5 sm:space-y-2 max-w-lg text-left">
+            <span className="px-2.5 py-0.5 rounded-full bg-emerald-600 text-white text-[10px] sm:text-[11px] font-bold">
               24x7 Ayurvedic Helpline
             </span>
-            <h4 className="text-xl sm:text-2xl font-bold text-slate-900 font-display">
+            <h4 className="text-base sm:text-2xl font-bold text-slate-900 font-display">
               Need personalized guidance on Ayurvedic medicines?
             </h4>
-            <p className="text-xs sm:text-sm text-slate-600">
+            <p className="text-[11px] sm:text-sm text-slate-600">
               Speak directly with our senior Ayurvedic pharmacologists. Free dosage & medicine guidance.
             </p>
           </div>
 
-          <div className="flex flex-wrap items-center gap-3">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3 w-full sm:w-auto">
             <a
               href="tel:+919475002048"
-              className="px-6 py-3 rounded-2xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs sm:text-sm transition flex items-center gap-2 shadow-sm"
+              className="w-full sm:w-auto px-5 sm:px-6 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs sm:text-sm transition flex items-center justify-center gap-2 shadow-sm text-center"
             >
-              <PhoneCall size={16} /> Call +91 94750 02048
+              <PhoneCall size={15} /> Call +91 94750 02048
             </a>
             <Link
               to="/ayurcoach"
-              className="px-6 py-3 rounded-2xl bg-white border border-emerald-300 text-emerald-800 font-bold text-xs sm:text-sm hover:bg-emerald-50 transition"
+              className="w-full sm:w-auto px-5 sm:px-6 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl bg-white border border-emerald-300 text-emerald-800 font-bold text-xs sm:text-sm hover:bg-emerald-50 transition text-center"
             >
               Launch AyurCoach AI
             </Link>
           </div>
         </div>
       </section>
-
     </div>
   );
 }
+

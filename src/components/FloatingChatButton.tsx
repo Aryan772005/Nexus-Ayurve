@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Leaf, X, MessageCircle } from 'lucide-react';
 
@@ -22,19 +22,9 @@ export default function FloatingChatButton() {
 
   return (
     <div
-      style={{
-        position: 'fixed',
-        bottom: '28px',
-        right: '24px',
-        zIndex: 9999,
-        transform: visible ? 'translateY(0)' : 'translateY(120px)',
-        opacity: visible ? 1 : 0,
-        transition: 'transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.4s ease',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'flex-end',
-        gap: '10px',
-      }}
+      className={`fixed bottom-18 md:bottom-7 right-4 md:right-6 z-40 flex flex-col items-end gap-2.5 transition-all duration-500 ${
+        visible ? 'translate-y-0 opacity-100' : 'translate-y-28 opacity-0 pointer-events-none'
+      }`}
     >
       {/* Tooltip bubble above button */}
       <div

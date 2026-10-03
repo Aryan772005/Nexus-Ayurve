@@ -134,10 +134,10 @@ export default function Navbar({ user, onLogin }: NavbarProps) {
             </div>
           </Link>
 
-          {/* Location Selector Pill (1mg signature) */}
+          {/* Location Selector Pill (1mg signature) — Desktop */}
           <button
             onClick={openLocation}
-            className="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-xl border border-slate-200 hover:border-emerald-500 hover:bg-emerald-50/50 transition text-left group"
+            className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-xl border border-slate-200 hover:border-emerald-500 hover:bg-emerald-50/50 transition text-left group"
           >
             <MapPin size={15} className="text-emerald-600 shrink-0 group-hover:animate-bounce" />
             <div className="text-xs leading-tight">
@@ -150,7 +150,17 @@ export default function Navbar({ user, onLogin }: NavbarProps) {
           </button>
         </div>
 
-        {/* CENTER: 1mg-Style Comprehensive Search Bar */}
+        {/* Location Selector Pill — Mobile only (compact) */}
+        <button
+          onClick={openLocation}
+          className="flex sm:hidden items-center gap-1 px-2 py-1 rounded-lg bg-emerald-50 border border-emerald-200 text-[11px] text-emerald-950 font-bold truncate max-w-[130px]"
+        >
+          <MapPin size={12} className="text-emerald-600 shrink-0" />
+          <span className="truncate">{pincode}</span>
+          <ChevronDown size={12} className="text-slate-500 shrink-0" />
+        </button>
+
+        {/* CENTER: 1mg-Style Comprehensive Search Bar (Desktop) */}
         <div ref={searchRef} className="relative flex-1 max-w-xl hidden sm:block">
           <div
             className={`flex items-center w-full rounded-2xl border transition-all ${
@@ -386,6 +396,35 @@ export default function Navbar({ user, onLogin }: NavbarProps) {
               className="px-4 py-2 rounded-xl text-xs font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 transition active:scale-95"
             >
               Sign In
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* ── MOBILE SEARCH BAR (1mg Mobile Signature) ── */}
+      <div className="block sm:hidden px-4 pb-2.5">
+        <div
+          className={`flex items-center w-full rounded-2xl border transition-all ${
+            isSearchFocused
+              ? 'border-emerald-600 ring-2 ring-emerald-100 bg-white'
+              : 'border-slate-200 bg-slate-50'
+          }`}
+        >
+          <Search size={16} className="text-slate-400 ml-3 shrink-0" />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            onFocus={() => setIsSearchFocused(true)}
+            placeholder="Search medicines, herbs, doctors..."
+            className="w-full px-2.5 py-2 text-xs text-slate-900 placeholder:text-slate-400 bg-transparent focus:outline-none"
+          />
+          {searchQuery && (
+            <button
+              onClick={() => setSearchQuery('')}
+              className="p-1 mr-2 text-slate-400 hover:text-slate-600"
+            >
+              <X size={14} />
             </button>
           )}
         </div>
