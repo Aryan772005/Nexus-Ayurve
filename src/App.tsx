@@ -14,6 +14,10 @@ import AuthModal from './components/AuthModal';
 import FloatingChatButton from './components/FloatingChatButton';
 import ScrollToTop from './components/ScrollToTop';
 import FloatingWhatsAppButton from './components/FloatingWhatsAppButton';
+import CartDrawer from './components/CartDrawer';
+import PrescriptionModal from './components/PrescriptionModal';
+import LocationModal from './components/LocationModal';
+import { CartProvider } from './context/CartContext';
 import HomePage from './pages/HomePage';
 import DashboardPage from './pages/DashboardPage';
 import DoctorsPage from './pages/DoctorsPage';
@@ -114,6 +118,9 @@ export default function App() {
         </main>
         
         <Footer />
+        <CartDrawer />
+        <PrescriptionModal />
+        <LocationModal />
         <FloatingChatButton />
         <FloatingWhatsAppButton />
         {showAuth && <AuthModal onClose={() => setShowAuth(false)} />}
@@ -123,7 +130,9 @@ export default function App() {
 
   return (
     <BrowserRouter>
-      <MainApp />
+      <CartProvider user={user}>
+        <MainApp />
+      </CartProvider>
     </BrowserRouter>
   );
 }

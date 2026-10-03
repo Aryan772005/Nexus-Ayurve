@@ -5,6 +5,7 @@ import {
   Zap, Coffee, Sparkles, ShieldCheck, Activity, Pill, Droplet, Apple,
   ChevronRight, Info, Compass, Shield
 } from 'lucide-react';
+import CameraCapture from '../components/CameraCapture';
 
 interface Micronutrient {
   name: string;
@@ -48,6 +49,9 @@ export default function MealAnalysisPage() {
   const [result, setResult] = useState<FoodResult | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'all' | 'macros' | 'micros' | 'ayurveda'>('all');
+  const [showCamera, setShowCamera] = useState(false);
+  const [foodNameInput, setFoodNameInput] = useState('');
+  const [showTextInput, setShowTextInput] = useState(false);
 
   const healthColor = (cat: string) => {
     if (!cat) return '#10B981';
@@ -87,29 +91,41 @@ export default function MealAnalysisPage() {
     reader.readAsDataURL(file);
   };
 
-  const callAPI = async (base64: string) => {
+  const callAPI = async (base64?: string, nameOverride?: string) => {
     setIsAnalyzing(true);
+    setError(null);
     try {
       const res = await fetch('/api/food-analyze', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ imageBase64: base64 }),
+        body: JSON.stringify({
+          imageBase64: base64 || undefined,
+          foodName: nameOverride || foodNameInput || undefined,
+        }),
       });
       const data = await res.json();
+      if (res.status === 422) {
+        // Vision couldn't identify the food — prompt text input
+        setShowTextInput(true);
+        setError('Could not identify the dish from the image. Please type the food name below to get accurate analysis.');
+        return;
+      }
       if (!res.ok) {
-        const rawErr = data.error || '';
-        if (rawErr.includes('429') || rawErr.includes('quota')) {
-          throw new Error('Google AI free tier reached its per-minute rate limit. Please wait 30 seconds and try again.');
-        }
-        throw new Error(rawErr || 'Analysis failed');
+        throw new Error(data.error || 'Analysis failed');
       }
       setResult(data);
+      setShowTextInput(false);
     } catch (err: any) {
       const msg = err?.message || 'Failed to analyse meal. Please try again.';
-      setError(msg.includes('GoogleGenerativeAI') ? 'Google AI is temporarily busy. Please retry in a few moments.' : msg);
+      setError(msg);
     } finally {
       setIsAnalyzing(false);
     }
+  };
+
+  const analyseByName = () => {
+    if (!foodNameInput.trim()) return;
+    callAPI(imagePreview || undefined, foodNameInput.trim());
   };
 
   const reset = () => {
@@ -117,9 +133,30 @@ export default function MealAnalysisPage() {
     setResult(null);
     setError(null);
     setIsAnalyzing(false);
+    setFoodNameInput('');
+    setShowTextInput(false);
+  };
+
+  // Handle photo captured via live camera
+  const handleCameraCapture = (base64: string) => {
+    setResult(null);
+    setError(null);
+    setShowTextInput(false);
+    setFoodNameInput('');
+    setImagePreview(base64);
+    callAPI(base64);
   };
 
   return (
+    <>
+    {showCamera && (
+      <CameraCapture
+        accentColor="#10B981"
+        label="Capture Meal"
+        onCapture={handleCameraCapture}
+        onClose={() => setShowCamera(false)}
+      />
+    )}
     <div className="min-h-screen pt-24 pb-20 px-4 md:px-6 relative overflow-hidden bg-forest">
       {/* Background ambient lighting */}
       <div className="absolute inset-0 -z-10 pointer-events-none">
@@ -153,21 +190,39 @@ export default function MealAnalysisPage() {
           />
 
           {!imagePreview ? (
-            <div
-              onClick={() => fileInputRef.current?.click()}
-              className="cursor-pointer border-2 border-dashed border-gray-300 dark:border-white/15 hover:border-emerald-500/50 rounded-3xl p-12 md:p-16 flex flex-col items-center gap-5 transition-all group bg-white/60 dark:bg-moss/20 hover:bg-emerald-500/5 shadow-sm hover:shadow-md"
-            >
-              <div className="w-20 h-20 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center group-hover:scale-110 transition-transform">
-                <Upload size={34} className="text-emerald-600" />
-              </div>
-              <div className="text-center">
-                <p className="text-cream font-bold text-xl mb-1">Drop or capture your meal photo</p>
-                <p className="text-cream/50 text-sm">JPG, PNG, WebP supported · High resolution recommended</p>
-              </div>
-              <div className="flex flex-wrap justify-center items-center gap-4 md:gap-6 text-xs text-cream/60 font-semibold pt-2">
-                <span className="flex items-center gap-1.5"><Camera size={14} className="text-emerald-600" /> Instant Camera Capture</span>
-                <span className="flex items-center gap-1.5"><Zap size={14} className="text-amber-500" /> Complete Macros &amp; Micros</span>
-                <span className="flex items-center gap-1.5"><Leaf size={14} className="text-emerald-600" /> Full Ayurvedic Dosha Profiling</span>
+            <div className="space-y-3">
+              {/* Two-button upload zone */}
+              <div className="border-2 border-dashed border-gray-300 dark:border-white/15 rounded-3xl p-10 md:p-14 flex flex-col items-center gap-5 bg-white/60 dark:bg-moss/20 shadow-sm">
+                <div className="w-20 h-20 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center">
+                  <Sparkles size={34} className="text-emerald-600" />
+                </div>
+                <div className="text-center">
+                  <p className="text-cream font-bold text-xl mb-1">Analyse Your Meal</p>
+                  <p className="text-cream/50 text-sm">Capture with camera or upload a photo</p>
+                </div>
+                <div className="flex flex-col sm:flex-row gap-3 w-full max-w-sm">
+                  {/* Live Camera button */}
+                  <button
+                    id="meal-open-camera-btn"
+                    onClick={() => setShowCamera(true)}
+                    className="flex-1 flex items-center justify-center gap-2 px-5 py-3.5 rounded-2xl bg-emerald-600 text-white font-bold text-sm transition-all hover:bg-emerald-500 shadow-lg shadow-emerald-600/25 active:scale-95"
+                  >
+                    <Camera size={18} /> Open Camera
+                  </button>
+                  {/* File upload button */}
+                  <button
+                    id="meal-upload-file-btn"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="flex-1 flex items-center justify-center gap-2 px-5 py-3.5 rounded-2xl bg-white dark:bg-moss/40 border border-gray-200 dark:border-white/10 text-cream/80 font-bold text-sm transition-all hover:border-emerald-500/40 active:scale-95"
+                  >
+                    <Upload size={18} /> Upload Photo
+                  </button>
+                </div>
+                <div className="flex flex-wrap justify-center items-center gap-4 text-xs text-cream/50 font-semibold">
+                  <span className="flex items-center gap-1.5"><Camera size={13} className="text-emerald-500" /> Phone &amp; Laptop Camera</span>
+                  <span className="flex items-center gap-1.5"><Zap size={13} className="text-amber-500" /> Macros &amp; Micros</span>
+                  <span className="flex items-center gap-1.5"><Leaf size={13} className="text-emerald-500" /> Ayurvedic Dosha</span>
+                </div>
               </div>
             </div>
           ) : (
@@ -203,6 +258,41 @@ export default function MealAnalysisPage() {
                     <div>
                       <p className="font-bold text-sm mb-0.5">Analysis Issue</p>
                       <p className="text-xs text-red-500/80">{error}</p>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              {/* Food name text input fallback — shown when vision can't identify the dish */}
+              <AnimatePresence>
+                {showTextInput && !isAnalyzing && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0 }}
+                    className="bg-white dark:bg-moss/30 rounded-2xl border border-emerald-500/30 p-4 space-y-3"
+                  >
+                    <p className="text-sm font-bold text-cream flex items-center gap-2">
+                      <Sparkles size={15} className="text-emerald-500" />
+                      Type the dish name for accurate analysis
+                    </p>
+                    <div className="flex gap-2">
+                      <input
+                        type="text"
+                        placeholder="e.g. Butter Chicken, Poha, Masala Dosa..."
+                        value={foodNameInput}
+                        onChange={(e) => setFoodNameInput(e.target.value)}
+                        onKeyDown={(e) => e.key === 'Enter' && analyseByName()}
+                        className="flex-1 px-3 py-2.5 text-sm rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-moss/20 text-cream focus:outline-none focus:border-emerald-500 transition-colors"
+                        autoFocus
+                      />
+                      <button
+                        onClick={analyseByName}
+                        disabled={!foodNameInput.trim() || isAnalyzing}
+                        className="px-4 py-2.5 rounded-xl bg-emerald-600 text-white text-sm font-bold hover:bg-emerald-500 disabled:opacity-40 transition-all active:scale-95 flex items-center gap-1.5"
+                      >
+                        <Zap size={15} /> Analyse
+                      </button>
                     </div>
                   </motion.div>
                 )}
@@ -503,10 +593,16 @@ export default function MealAnalysisPage() {
                   <RefreshCw size={16} /> Analyse Another Meal
                 </button>
                 <button
-                  onClick={() => fileInputRef.current?.click()}
+                  onClick={() => setShowCamera(true)}
                   className="flex items-center gap-2 px-6 py-3 rounded-xl bg-emerald-600 text-white font-bold text-sm transition-all hover:bg-emerald-500 shadow-lg shadow-emerald-600/20"
                 >
-                  <Upload size={16} /> Upload New Meal Photo
+                  <Camera size={16} /> New Camera Capture
+                </button>
+                <button
+                  onClick={() => fileInputRef.current?.click()}
+                  className="flex items-center gap-2 px-5 py-3 rounded-xl bg-white dark:bg-moss/40 border border-gray-200 dark:border-white/10 text-cream/70 font-bold text-sm transition-all hover:border-emerald-500/40"
+                >
+                  <Upload size={16} /> Upload
                 </button>
               </div>
             </div>
@@ -514,5 +610,6 @@ export default function MealAnalysisPage() {
         </motion.div>
       </div>
     </div>
+    </>
   );
 }

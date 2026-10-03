@@ -7,6 +7,7 @@ import {
   ExternalLink, Lock, CheckCheck
 } from 'lucide-react';
 import { KNOWN_PACKAGED_SNACKS } from '../data/foods_dosha_db';
+import CameraCapture from '../components/CameraCapture';
 
 // Types
 type TabType = 'scan' | 'chat' | 'routine' | 'profile';
@@ -102,6 +103,10 @@ export default function AyurCoachPage() {
   const [packagedResult, setPackagedResult] = useState<any>(null);
   const [packagedError, setPackagedError] = useState<string | null>(null);
 
+  // Camera modal state
+  const [showFreshCamera, setShowFreshCamera] = useState(false);
+  const [showPackagedCamera, setShowPackagedCamera] = useState(false);
+
   // Chat State
   const [chatMessages, setChatMessages] = useState<Array<{ role: 'user' | 'assistant'; text: string }>>([
     {
@@ -188,6 +193,21 @@ export default function AyurCoachPage() {
       executeFreshScan(base64);
     };
     reader.readAsDataURL(file);
+  };
+
+  // Handle photo from live camera for fresh scan
+  const handleFreshCamera = (base64: string) => {
+    if (!checkCanScan()) return;
+    setFreshResult(null);
+    setFreshError(null);
+    setFreshImage(base64);
+    executeFreshScan(base64);
+  };
+
+  // Handle photo from live camera for packaged scan
+  const handlePackagedCamera = (base64: string) => {
+    setPackagedImage(base64);
+    executePackagedScan(undefined, base64);
   };
 
   const executeFreshScan = async (base64: string) => {
@@ -370,6 +390,24 @@ export default function AyurCoachPage() {
   };
 
   return (
+    <>
+    {/* Camera modals — rendered outside the page scroll flow */}
+    {showFreshCamera && (
+      <CameraCapture
+        accentColor="#4E6B52"
+        label="Scan Fresh Meal"
+        onCapture={handleFreshCamera}
+        onClose={() => setShowFreshCamera(false)}
+      />
+    )}
+    {showPackagedCamera && (
+      <CameraCapture
+        accentColor="#D97736"
+        label="Scan Label / Barcode"
+        onCapture={handlePackagedCamera}
+        onClose={() => setShowPackagedCamera(false)}
+      />
+    )}
     <div className="min-h-screen bg-[#FDFBF7] text-[#2D3A2F] font-sans pb-24 selection:bg-[#6B8E6F]/20">
       {/* Top Banner / Mobile Shell Header */}
       <header className="sticky top-0 z-40 bg-[#FDFBF7]/90 backdrop-blur-md border-b border-[#ECE3D6] px-4 py-3">
@@ -462,19 +500,35 @@ export default function AyurCoachPage() {
 
                 {/* Upload Action Area */}
                 {!freshImage && (
-                  <div
-                    onClick={() => fileInputRef.current?.click()}
-                    className="cursor-pointer border-2 border-dashed border-[#6B8E6F]/40 hover:border-[#4E6B52] bg-white rounded-3xl p-8 text-center flex flex-col items-center gap-3 transition-all hover:bg-[#E8EFE9]/30 shadow-sm"
-                  >
-                    <div className="w-16 h-16 rounded-2xl bg-[#E8EFE9] text-[#4E6B52] flex items-center justify-center shadow-inner">
-                      <Camera size={28} />
+                  <div className="border-2 border-dashed border-[#6B8E6F]/40 bg-white rounded-3xl p-6 text-center flex flex-col items-center gap-3 shadow-sm">
+                    <div className="w-14 h-14 rounded-2xl bg-[#E8EFE9] text-[#4E6B52] flex items-center justify-center shadow-inner">
+                      <Sparkles size={26} />
                     </div>
                     <div>
                       <p className="font-display font-bold text-lg text-[#2D3A2F]">Scan Cooked Meal</p>
                       <p className="text-xs text-[#2D3A2F]/60 mt-0.5">Paratha, Thali, Biryani, Samosa, Khichdi, etc.</p>
                     </div>
-                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#D97736]/10 text-[#D97736] text-xs font-bold mt-2">
-                      <Sparkles size={13} /> Gemini Vision + 80+ Indian Food DB
+                    {/* Dual-button row */}
+                    <div className="flex gap-2.5 w-full max-w-xs">
+                      <button
+                        id="fresh-open-camera-btn"
+                        onClick={() => setShowFreshCamera(true)}
+                        className="flex-1 flex items-center justify-center gap-1.5 py-3 rounded-2xl bg-[#4E6B52] text-white text-xs font-bold shadow-sm hover:bg-[#3D5541] active:scale-95 transition-all"
+                      >
+                        <Camera size={15} /> Camera
+                      </button>
+                      <label className="flex-1 flex items-center justify-center gap-1.5 py-3 rounded-2xl border-2 border-[#6B8E6F]/30 hover:border-[#4E6B52] text-[#4E6B52] text-xs font-bold cursor-pointer active:scale-95 transition-all">
+                        <Upload size={15} /> Upload
+                        <input
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={(e) => e.target.files?.[0] && handleFreshFile(e.target.files[0])}
+                        />
+                      </label>
+                    </div>
+                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#D97736]/10 text-[#D97736] text-xs font-bold">
+                      <Sparkles size={13} /> Groq AI Vision + 80+ Indian Food DB
                     </div>
                   </div>
                 )}
@@ -513,7 +567,7 @@ export default function AyurCoachPage() {
                       <div>
                         <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#6B8E6F] uppercase tracking-wider">
                           <CheckCircle2 size={14} />
-                          {freshResult.source === 'database_match' ? 'Database Match' : 'Gemini AI Analysis'}
+                          {freshResult.source === 'database_match' ? 'Database Match' : 'Groq AI Analysis'}
                         </div>
                         <h2 className="text-xl font-display font-extrabold text-[#2D3A2F] mt-0.5">
                           {freshResult.food_name}
@@ -665,9 +719,17 @@ export default function AyurCoachPage() {
                     </div>
                   </div>
 
-                  <div className="pt-2 border-t border-[#ECE3D6]">
-                    <label className="w-full py-2.5 rounded-xl border-2 border-dashed border-[#6B8E6F]/30 hover:border-[#4E6B52] bg-[#E8EFE9]/20 flex items-center justify-center gap-2 text-xs font-bold text-[#4E6B52] cursor-pointer">
-                      <Camera size={15} /> Upload Ingredients Label Photo
+                  <div className="pt-2 border-t border-[#ECE3D6] space-y-2">
+                    {/* Camera button for label scan */}
+                    <button
+                      id="packaged-open-camera-btn"
+                      onClick={() => setShowPackagedCamera(true)}
+                      className="w-full py-2.5 rounded-xl bg-[#D97736] text-white flex items-center justify-center gap-2 text-xs font-bold shadow-sm hover:bg-[#c4672d] active:scale-95 transition-all"
+                    >
+                      <Camera size={15} /> Open Camera — Scan Label
+                    </button>
+                    <label className="w-full py-2.5 rounded-xl border-2 border-dashed border-[#6B8E6F]/30 hover:border-[#4E6B52] bg-[#E8EFE9]/20 flex items-center justify-center gap-2 text-xs font-bold text-[#4E6B52] cursor-pointer active:scale-95 transition-all">
+                      <Upload size={15} /> Upload Ingredients Label Photo
                       <input
                         type="file"
                         accept="image/*"
@@ -1240,5 +1302,6 @@ export default function AyurCoachPage() {
         )}
       </AnimatePresence>
     </div>
+    </>
   );
 }

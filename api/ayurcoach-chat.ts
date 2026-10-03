@@ -1,5 +1,3 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
-
 export const maxDuration = 60;
 
 // Knowledge base backup for common student/hostel complaints if API is in high demand
@@ -34,7 +32,6 @@ export default async function handler(req: any, res: any) {
   const { message, userDosha, history } = req.body;
   if (!message) return res.status(400).json({ error: 'Message is required' });
 
-  const geminiKey = (process.env.GEMINI_API_KEY || '').trim();
   const groqKey = (process.env.GROQ_API_KEY || '').trim();
 
   const systemPrompt = `You are "AyurCoach", a friendly and deeply knowledgeable Ayurvedic wellness coach designed for college students and young professionals in India.
@@ -47,7 +44,7 @@ Guidelines:
 4. Always end with a warm one-line lifestyle tip.
 5. If serious symptoms are mentioned (severe pain, bleeding, chest pain), urge them to consult a qualified physician immediately.`;
 
-  // Try Groq if key present
+  // Try Groq
   if (groqKey) {
     try {
       const messages: any[] = [{ role: 'system', content: systemPrompt }];
@@ -65,7 +62,7 @@ Guidelines:
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          model: 'llama-3.3-70b-versatile',
+          model: 'openai/gpt-oss-20b',
           messages,
           temperature: 0.3,
           max_tokens: 800,
@@ -78,38 +75,7 @@ Guidelines:
         if (reply) return res.status(200).json({ reply });
       }
     } catch (gErr) {
-      console.warn('Groq chat failed, trying Gemini:', gErr);
-    }
-  }
-
-  // Try Gemini with retry
-  if (geminiKey) {
-    const genAI = new GoogleGenerativeAI(geminiKey);
-    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
-
-    let fullPrompt = `${systemPrompt}\n\n`;
-    if (Array.isArray(history)) {
-      history.slice(-3).forEach((h: any) => {
-        fullPrompt += `${h.role === 'user' ? 'User' : 'AyurCoach'}: ${h.content}\n`;
-      });
-    }
-    fullPrompt += `User: ${message}\nAyurCoach:`;
-
-    for (let attempt = 0; attempt < 3; attempt++) {
-      try {
-        const result = await model.generateContent(fullPrompt);
-        const reply = result.response.text();
-        if (reply) return res.status(200).json({ reply });
-      } catch (gemErr: any) {
-        const is429 = gemErr?.status === 429 || gemErr?.message?.includes('429') || gemErr?.message?.includes('quota');
-        if (is429) {
-          console.warn('Gemini quota hit on chat, using local fallback.');
-          break; // Skip retries — quota won't recover in seconds
-        }
-        if (attempt < 2) {
-          await new Promise(r => setTimeout(r, 700 * (attempt + 1)));
-        }
-      }
+      console.warn('Groq chat failed:', gErr);
     }
   }
 

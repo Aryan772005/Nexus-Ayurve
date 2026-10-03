@@ -2,150 +2,161 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import {
   Leaf, ShieldCheck, Phone, Mail, MapPin,
-  LayoutDashboard, Stethoscope, ShoppingBag,
-  Brain, Activity, MessageSquare, HeartPulse,
-  ArrowUpRight, Github, ExternalLink } from 'lucide-react';
-
-const FOOTER_LINKS = {
-  Platform: [
-    { to: '/dashboard',    label: 'My Dashboard'      },
-    { to: '/doctors',      label: 'Consult Experts'   },
-    { to: '/shop',         label: 'Herbal Shop'        },
-    { to: '/chat',         label: 'Nexus AI Chat'      },
-  ],
-  'AI Tools': [
-    { to: '/health-coach',  label: 'AI Health Coach'  },
-    { to: '/diagnosis',     label: 'AI Diagnosis'     },
-    { to: '/meal-analysis', label: 'Meal AI Analyser' },
-    { to: '/tools',         label: 'BMI & Heart'      },
-  ],
-  Wellness: [
-    { to: '/calorie-checker', label: 'Calorie Checker' },
-    { to: '/guides',          label: 'Health Guides'   },
-  ] };
-
-const BADGES = [
-  { label: 'HIPAA Secured', color: '#00D97E', bg: 'rgba(0,217,126,0.08)', border: 'rgba(0,217,126,0.2)' },
-  { label: 'AES-256',       color: '#A78BFA', bg: 'rgba(124,58,237,0.08)', border: 'rgba(124,58,237,0.2)' },
-  { label: 'Zero Data',     color: '#60A5FA', bg: 'rgba(96,165,250,0.08)', border: 'rgba(96,165,250,0.2)' },
-];
+  ArrowUpRight, Award, Truck, Lock, CheckCircle2,
+  Heart, Sparkles, Stethoscope, Activity, FileText
+} from 'lucide-react';
 
 export default function Footer() {
   return (
-    <footer
-      className="relative border-t mt-auto overflow-hidden"
-      style={{
-        background: 'linear-gradient(180deg, var(--color-forest) 0%, var(--color-moss) 100%)',
-        borderColor: 'var(--color-border)' }}
-    >
-      {/* Ambient glow */}
-      <div
-        className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[600px] h-[200px] pointer-events-none"
-        style={{ background: 'radial-gradient(ellipse at 50% 100%, rgba(0,217,126,0.07) 0%, transparent 70%)' }}
-      />
+    <footer className="bg-slate-900 text-slate-300 border-t border-slate-800 text-xs">
+      
+      {/* ── 1MG TRUST HIGHLIGHT STRIP ── */}
+      <div className="border-b border-slate-800/80 bg-slate-950/60 py-6 px-4">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="flex items-center gap-3.5">
+            <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center shrink-0 border border-emerald-500/20">
+              <ShieldCheck size={24} />
+            </div>
+            <div>
+              <h4 className="font-bold text-white text-sm">100% Genuine Formulations</h4>
+              <p className="text-slate-400 text-[11px] mt-0.5">Sourced directly from licensed Ayurvedic pharmacies & wildcrafters</p>
+            </div>
+          </div>
 
-      <div className="relative max-w-7xl mx-auto px-6 pt-14 pb-8">
-        {/* TOP ROW — Brand + Links */}
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-10 mb-12">
+          <div className="flex items-center gap-3.5">
+            <div className="w-12 h-12 rounded-2xl bg-sky-500/10 text-sky-400 flex items-center justify-center shrink-0 border border-sky-500/20">
+              <Truck size={24} />
+            </div>
+            <div>
+              <h4 className="font-bold text-white text-sm">Safe & Express Delivery</h4>
+              <p className="text-slate-400 text-[11px] mt-0.5">Temperature-monitored sealed packaging straight to your door</p>
+            </div>
+          </div>
 
-          {/* Brand Column */}
-          <div className="md:col-span-2 space-y-5">
-            {/* Logo */}
-            <div className="flex items-center gap-3">
-              <div
-                className="w-10 h-10 rounded-2xl flex items-center justify-center shadow-lg"
-                style={{ background: 'linear-gradient(135deg, #00D97E, #00B868)', boxShadow: '0 4px 20px rgba(0,217,126,0.35)' }}
-              >
-                <Leaf size={18} className="text-[#080C10]" />
+          <div className="flex items-center gap-3.5">
+            <div className="w-12 h-12 rounded-2xl bg-amber-500/10 text-amber-400 flex items-center justify-center shrink-0 border border-amber-500/20">
+              <Award size={24} />
+            </div>
+            <div>
+              <h4 className="font-bold text-white text-sm">Ayush & GMP Certified</h4>
+              <p className="text-slate-400 text-[11px] mt-0.5">Strict adherence to classical texts and modern laboratory assays</p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-3.5">
+            <div className="w-12 h-12 rounded-2xl bg-rose-500/10 text-rose-400 flex items-center justify-center shrink-0 border border-rose-500/20">
+              <Lock size={24} />
+            </div>
+            <div>
+              <h4 className="font-bold text-white text-sm">HIPAA & AES-256 Secure</h4>
+              <p className="text-slate-400 text-[11px] mt-0.5">Your prescriptions and health records are completely private</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ── MAIN SITEMAP COLUMNS ── */}
+      <div className="max-w-7xl mx-auto px-4 py-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 mb-12">
+          
+          {/* Brand Info */}
+          <div className="lg:col-span-2 space-y-4">
+            <div className="flex items-center gap-2">
+              <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-500 flex items-center justify-center text-white">
+                <Leaf size={20} />
               </div>
-              <div>
-                <p className="font-display font-bold text-xl leading-none" style={{ fontFamily: 'var(--font-display)' }}>
-                  <span className="text-gradient">Nexus</span>
-                  <span className="text-cream/90"> Ayurve</span>
-                </p>
-                <p className="text-[10px] uppercase tracking-[0.18em] text-[#00D97E]/60 mt-0.5">Ayurvedic AI Platform</p>
-              </div>
+              <span className="font-display font-extrabold text-xl tracking-tight text-white">
+                NEXUS <span className="text-emerald-400">AYURVE</span>
+              </span>
             </div>
 
-            {/* Tagline */}
-            <p className="text-[13px] text-cream/45 leading-relaxed max-w-xs">
-              Ancient wisdom meets modern AI. Personalised Ayurvedic health insights, doctor consultations, and wellness tools — all in one secure platform.
+            <p className="text-slate-400 leading-relaxed max-w-sm text-xs">
+              India's premier digital Ayurvedic healthcare ecosystem. Handcrafted authentic medicines, certified doctor teleconsultations, and AI-driven dosha diagnostic intelligence.
             </p>
 
-            {/* Security badges */}
-            <div className="flex flex-wrap gap-2">
-              {BADGES.map(b => (
-                <div
-                  key={b.label}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider"
-                  style={{ background: b.bg, color: b.color, border: `1px solid ${b.border}` }}
-                >
-                  <ShieldCheck size={10} />
-                  {b.label}
-                </div>
-              ))}
-            </div>
-
-            {/* Contact */}
-            <div className="space-y-2">
-              <div className="flex items-center gap-2.5 text-[12px] text-cream/40">
-                <MapPin size={12} className="text-[#00D97E]/50 flex-shrink-0" />
-                <span>Desh Bhagat University, Mandi Govindgarh</span>
+            <div className="space-y-2 text-slate-400">
+              <div className="flex items-start gap-2">
+                <MapPin size={15} className="text-emerald-400 shrink-0 mt-0.5" />
+                <span>Desh Bhagat University, Mandi Gobindgarh, Punjab 147301</span>
               </div>
-              <a href="tel:+919475002048" className="flex items-center gap-2.5 text-[12px] text-cream/40 hover:text-[#00D97E] transition-colors">
-                <Phone size={12} className="text-[#00D97E]/50 flex-shrink-0" />
-                +91 94750 02048
-              </a>
-              <div className="flex items-center gap-2.5 text-[12px] text-cream/40">
-                <Mail size={12} className="text-[#00D97E]/50 flex-shrink-0" />
-                <span>CEO: Aryan Singh Tariani</span>
+              <div className="flex items-center gap-2">
+                <Phone size={15} className="text-emerald-400 shrink-0" />
+                <a href="tel:+919475002048" className="hover:text-emerald-400 transition">+91 94750 02048 (CEO Aryan Singh Tariani)</a>
+              </div>
+              <div className="flex items-center gap-2">
+                <Mail size={15} className="text-emerald-400 shrink-0" />
+                <span>support@nexusayurve.com</span>
               </div>
             </div>
           </div>
 
-          {/* Link columns */}
-          {Object.entries(FOOTER_LINKS).map(([section, links]) => (
-            <div key={section} className="space-y-4">
-              <p
-                className="text-[11px] font-bold uppercase tracking-[0.18em] text-cream/35"
-                style={{ fontFamily: 'var(--font-display)' }}
-              >
-                {section}
-              </p>
-              <ul className="space-y-2.5">
-                {links.map(link => (
-                  <li key={link.to}>
-                    <Link
-                      to={link.to}
-                      className="group flex items-center gap-1.5 text-[13px] text-cream/45 hover:text-cream transition-colors duration-150"
-                    >
-                      <ArrowUpRight size={11} className="text-[#00D97E]/0 group-hover:text-[#00D97E] transition-all -translate-x-1 group-hover:translate-x-0 opacity-0 group-hover:opacity-100 flex-shrink-0" />
-                      {link.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
+          {/* Services */}
+          <div className="space-y-3">
+            <h5 className="font-bold text-white uppercase tracking-wider text-[11px]">Our Services</h5>
+            <ul className="space-y-2 text-slate-400">
+              <li><Link to="/shop" className="hover:text-white transition">Order Medicines</Link></li>
+              <li><Link to="/doctors" className="hover:text-white transition">Consult BAMS Doctors</Link></li>
+              <li><Link to="/shop?filter=lab-tests" className="hover:text-white transition">Book Lab Tests & Scans</Link></li>
+              <li><Link to="/ayurcoach" className="hover:text-white transition">AyurCoach AI</Link></li>
+              <li><Link to="/meal-analysis" className="hover:text-white transition">AI Meal Analyser</Link></li>
+              <li><Link to="/diagnosis" className="hover:text-white transition">AI Dosha Diagnosis</Link></li>
+            </ul>
+          </div>
+
+          {/* Popular Categories */}
+          <div className="space-y-3">
+            <h5 className="font-bold text-white uppercase tracking-wider text-[11px]">Ayurvedic Remedies</h5>
+            <ul className="space-y-2 text-slate-400">
+              <li><Link to="/shop?category=Stress+%26+Sleep" className="hover:text-white transition">Ashwagandha KSM-66</Link></li>
+              <li><Link to="/shop?category=Immunity+%26+Vitality" className="hover:text-white transition">Amla Chyawanprash</Link></li>
+              <li><Link to="/shop?category=Vitality+%26+Strength" className="hover:text-white transition">Himalayan Shilajit Gold</Link></li>
+              <li><Link to="/shop?category=Digestion+%26+Gut" className="hover:text-white transition">Triphala Churna</Link></li>
+              <li><Link to="/shop?category=Skin+%26+Hair" className="hover:text-white transition">Kumkumadi Saffron Oil</Link></li>
+              <li><Link to="/shop?category=Joint+%26+Pain" className="hover:text-white transition">Turmeric Curcumin 95%</Link></li>
+            </ul>
+          </div>
+
+          {/* Trust & Accreditations */}
+          <div className="space-y-3">
+            <h5 className="font-bold text-white uppercase tracking-wider text-[11px]">Certifications</h5>
+            <div className="space-y-2">
+              <div className="p-2.5 rounded-xl bg-slate-800/80 border border-slate-700 text-[11px] text-slate-300 flex items-center gap-2">
+                <CheckCircle2 size={16} className="text-emerald-400 shrink-0" />
+                <span>Ayush Ministry Guidelines Compliant</span>
+              </div>
+              <div className="p-2.5 rounded-xl bg-slate-800/80 border border-slate-700 text-[11px] text-slate-300 flex items-center gap-2">
+                <CheckCircle2 size={16} className="text-sky-400 shrink-0" />
+                <span>NABL Accredited Diagnostics</span>
+              </div>
+              <div className="p-2.5 rounded-xl bg-slate-800/80 border border-slate-700 text-[11px] text-slate-300 flex items-center gap-2">
+                <CheckCircle2 size={16} className="text-amber-400 shrink-0" />
+                <span>Good Manufacturing Practices (GMP)</span>
+              </div>
             </div>
-          ))}
+          </div>
         </div>
 
-        {/* DIVIDER */}
-        <div
-          className="h-px w-full mb-6"
-          style={{ background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent)' }}
-        />
-
-        {/* BOTTOM ROW */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-[11px] text-cream/25 text-center sm:text-left">
-            © 2026 Nexus Ayurve by Aryan Singh Tariani. All rights reserved.
+        {/* ── STATUTORY DISCLAIMER (1mg Style) ── */}
+        <div className="border-t border-slate-800 pt-6 pb-4 text-[11px] text-slate-500 leading-relaxed">
+          <p>
+            <strong>Disclaimer:</strong> Nexus Ayurve is a digital platform connecting users with authentic Ayurvedic products, certified diagnostic laboratories, and licensed Ayurvedic medical practitioners. The information contained herein is for informational and educational purposes only and is not intended to substitute professional medical advice, diagnosis, or treatment. Always seek the advice of your Ayurvedic physician or qualified healthcare provider with any questions you may have regarding a medical condition.
           </p>
+        </div>
+
+        {/* ── BOTTOM COPYRIGHT ── */}
+        <div className="border-t border-slate-800 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-slate-400">
+          <p>© 2026 Nexus Ayurve by Aryan Singh Tariani. All rights reserved.</p>
           <div className="flex items-center gap-4">
-            <span className="text-[11px] text-cream/20">Powered by Gemini AI</span>
-            <div className="flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#00D97E] animate-pulse" />
-              <span className="text-[10px] text-[#00D97E]/60 font-bold uppercase tracking-wider">Systems Online</span>
-            </div>
+            <span className="hover:text-white cursor-pointer">Privacy Policy</span>
+            <span>·</span>
+            <span className="hover:text-white cursor-pointer">Terms of Service</span>
+            <span>·</span>
+            <span className="hover:text-white cursor-pointer">Editorial Policy</span>
+            <span>·</span>
+            <span className="text-emerald-400 font-semibold flex items-center gap-1">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              All Systems Operational
+            </span>
           </div>
         </div>
       </div>

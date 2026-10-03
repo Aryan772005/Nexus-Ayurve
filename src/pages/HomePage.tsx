@@ -1,428 +1,791 @@
-import React, { useRef, useState } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
-  Heart, Calendar, ChevronRight, Star, Users, Award,
-  Leaf, Quote, Shield, ShoppingBag, ExternalLink, ArrowRight,
-  Brain, Camera, Stethoscope, Zap, Play, Volume2, VolumeX, Activity
+  ChevronLeft, ChevronRight, Star, ShieldCheck, Truck, Sparkles,
+  FileText, Stethoscope, ShoppingBag, Activity, Brain, Camera,
+  CheckCircle2, ArrowRight, Clock, Award, Users, HeartHandshake,
+  Percent, AlertCircle, PhoneCall, Plus, Minus, Check, ExternalLink
 } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useCart } from '../context/CartContext';
+import { PRODUCTS, CATEGORIES_WITH_IMAGES, Product } from '../data/products';
+import { LAB_PACKAGES, LabPackage } from '../data/labTests';
+import { doctors } from '../data/doctors';
 
-export default function HomePage({ onLogin, user }: { onLogin: () => void, user: any }) {
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const heroRef = useRef<HTMLDivElement>(null);
-  const [muted, setMuted] = useState(true);
+export default function HomePage({ onLogin, user }: { onLogin: () => void; user: any }) {
+  const navigate = useNavigate();
+  const { addToCart, updateQty, cart, openPrescription, city, pincode } = useCart();
 
-  const { scrollYProgress } = useScroll({ target: heroRef });
-  const heroOpacity  = useTransform(scrollYProgress, [0, 0.55], [1, 0]);
-  const heroScale    = useTransform(scrollYProgress, [0, 0.55], [1, 1.1]);
-  const heroTextY    = useTransform(scrollYProgress, [0, 0.4],  [0, -50]);
+  // Hero Carousel State
+  const [currentSlide, setCurrentSlide] = useState(0);
 
-  const toggleMute = () => {
-    setMuted(m => {
-      const next = !m;
-      if (videoRef.current) videoRef.current.muted = next;
-      return next;
-    });
-  };
-
-  const tools = [
-    { to: '/diagnosis',    label: 'AI Diagnosis',   icon: Activity,    color: '#10B981', glow: 'rgba(16,185,129,0.25)',  desc: 'Symptom & dosha analysis' },
-    { to: '/health-coach', label: 'Health Coach',   icon: Brain,       color: '#A78BFA', glow: 'rgba(167,139,250,0.25)', desc: '13-section wellness report' },
-    { to: '/meal-analysis',label: 'Meal Analyser',  icon: Camera,      color: '#F97316', glow: 'rgba(249,115,22,0.25)',  desc: 'Scan & analyse your food' },
-    { to: '/doctors',      label: 'Expert Doctors', icon: Stethoscope, color: '#60A5FA', glow: 'rgba(96,165,250,0.25)',  desc: 'Consult Ayurvedic doctors for ₹1' },
-    { to: '/chat',         label: 'Nexus Ayurve Chat',  icon: Leaf,        color: '#34D399', glow: 'rgba(52,211,153,0.25)',  desc: 'Ask anything about your health' },
-    { to: '/shop',         label: 'Herbal Shop',    icon: ShoppingBag, color: '#FBBF24', glow: 'rgba(251,191,36,0.25)',  desc: 'Trusted Ayurvedic products' },
+  const heroSlides = [
+    {
+      id: 1,
+      badge: "Pure & Handcrafted Formulation",
+      title: "Authentic Ayurvedic Medicines for Modern Living",
+      subtitle: "Pure Himalayan Shilajit, KSM-66 Ashwagandha, Amla Chyawanprash & Saffron Oil. 100% ethically wildcrafted.",
+      offer: "Flat 25% OFF with code AYUR25",
+      image: "/images/hero-banner-ayurveda.jpg",
+      primaryCta: { label: "Shop Herbal Pharmacy", link: "/shop" },
+      secondaryCta: { label: "Order with Prescription", action: openPrescription }
+    },
+    {
+      id: 2,
+      badge: "Verified BAMS Doctors",
+      title: "Consult Certified Ayurvedic Physicians Online",
+      subtitle: "Get personalized herbal remedies, dosha balance analysis & diet plans starting @ just ₹1.",
+      offer: "Instant Audio/Video Consultation",
+      image: "/images/banner-doctor-consult.jpg",
+      primaryCta: { label: "Consult Doctors for ₹1", link: "/doctors" },
+      secondaryCta: { label: "View Specialists", link: "/doctors" }
+    },
+    {
+      id: 3,
+      badge: "NABL Certified Labs",
+      title: "Ayur-Prakriti Full Body Health Screening",
+      subtitle: "Comprehensive 64 vital parameters including Liver, Kidney, Thyroid, CBC & Dosha risk assessment.",
+      offer: "Free Home Sample Collection · Report in 24 Hrs",
+      image: "/images/banner-lab-tests.jpg",
+      primaryCta: { label: "Book Health Package @ ₹999", link: "/shop?filter=lab-tests" },
+      secondaryCta: { label: "Compare Tests", link: "/shop?filter=lab-tests" }
+    },
+    {
+      id: 4,
+      badge: "Doorstep Pharmacy Delivery",
+      title: "Quick Buy: Order Ayurvedic Medicines with Prescription",
+      subtitle: "Simply upload your prescription and our registered Ayurvedic Vaidyas will assemble and deliver your medicines.",
+      offer: "Free Delivery Above ₹499",
+      image: "/images/banner-prescription.jpg",
+      primaryCta: { label: "Upload Prescription Now", action: openPrescription },
+      secondaryCta: { label: "Explore Store", link: "/shop" }
+    }
   ];
 
-  const herbs = [
-    { name: 'Ashwagandha', benefit: 'Stress Relief',     emoji: '🌿', image: '/ashwagandha.png' },
-    { name: 'Turmeric',    benefit: 'Anti-inflammatory', emoji: '🟡', image: '/turmeric.png'    },
-    { name: 'Tulsi',       benefit: 'Immunity Boost',    emoji: '🍃', image: '/tulsi.png'       },
-    { name: 'Triphala',    benefit: 'Digestive Health',  emoji: '🫐', image: '/triphala.png'    },
-    { name: 'Brahmi',      benefit: 'Brain & Memory',    emoji: '🧠', image: '/brahmi.png'      },
+  // Auto rotate hero carousel
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
+    }, 6500);
+    return () => clearInterval(timer);
+  }, [heroSlides.length]);
+
+  const prevSlide = () => {
+    setCurrentSlide((prev) => (prev === 0 ? heroSlides.length - 1 : prev - 1));
+  };
+  const nextSlide = () => {
+    setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
+  };
+
+  // Helper to check if product is in cart
+  const getProductCartQty = (id: number) => {
+    const found = cart.find((item) => item.product.id === id);
+    return found ? found.qty : 0;
+  };
+
+  // Quick Services Tiles (1mg Signature)
+  const quickServices = [
+    { label: "Order Medicines", icon: ShoppingBag, color: "bg-emerald-500", text: "100% Genuine", link: "/shop" },
+    { label: "Lab Tests & Scans", icon: Activity, color: "bg-sky-500", text: "Home Sample Pickup", link: "/shop?filter=lab-tests" },
+    { label: "Consult Doctors", icon: Stethoscope, color: "bg-amber-500", text: "Starting @ ₹1", link: "/doctors" },
+    { label: "AyurCoach AI", icon: Sparkles, color: "bg-orange-500", text: "Food & Dosha AI", link: "/ayurcoach" },
+    { label: "Meal Analyser", icon: Camera, color: "bg-teal-500", text: "Instant Plate Scan", link: "/meal-analysis" },
+    { label: "Upload Rx", icon: FileText, color: "bg-emerald-700", text: "Quick Delivery", action: openPrescription }
   ];
 
   return (
-    <div className="min-h-screen bg-forest text-cream overflow-x-hidden">
+    <div className="min-h-screen bg-[#F8FAF9] text-slate-900">
+      
+      {/* ══════════════════════════════════════════════
+          1. HERO CAROUSEL BANNER (Tata 1mg Style)
+      ══════════════════════════════════════════════ */}
+      <section className="relative overflow-hidden bg-white border-b border-slate-200">
+        <div className="max-w-7xl mx-auto px-4 py-4 md:py-6">
+          <div className="relative rounded-3xl overflow-hidden shadow-md border border-slate-200 aspect-[16/9] sm:aspect-[21/9] md:aspect-[24/9] min-h-[360px] md:min-h-[420px] bg-slate-950">
+            <AnimatePresence mode="wait">
+              {heroSlides.map((slide, idx) => {
+                if (idx !== currentSlide) return null;
+                return (
+                  <motion.div
+                    key={slide.id}
+                    initial={{ opacity: 0, scale: 1.02 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.6 }}
+                    className="absolute inset-0"
+                  >
+                    {/* Real Photography Background */}
+                    <img
+                      src={slide.image}
+                      alt={slide.title}
+                      className="w-full h-full object-cover object-center"
+                    />
 
-      {/* ════════════════════════════════════════
-          CINEMATIC HERO — Full-bleed video
-      ════════════════════════════════════════ */}
-      <section ref={heroRef} className="relative h-screen min-h-[600px] flex flex-col items-center justify-end overflow-hidden">
+                    {/* Gradient Overlay for Crisp Text Readability */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-slate-950/90 via-slate-950/60 to-transparent sm:to-slate-950/15" />
 
-        {/* Video layer with scroll-zoom — GPU-accelerated */}
-        <motion.div style={{ scale: heroScale, opacity: heroOpacity }} className="absolute inset-0 z-0" data-motion>
-          <video
-            ref={videoRef}
-            autoPlay loop muted playsInline preload="metadata"
-            className="absolute inset-0 w-full h-full object-cover"
-            style={{ transform: 'translateZ(0)', willChange: 'transform', backfaceVisibility: 'hidden' }}
-          >
-            <source src="/nexusdd.mp4" type="video/mp4" />
-          </video>
+                    {/* Banner Content */}
+                    <div className="relative h-full flex flex-col justify-center px-6 sm:px-12 md:px-16 max-w-2xl text-white z-10 space-y-3.5">
+                      <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/20 border border-emerald-400/30 text-emerald-300 text-xs font-bold w-fit backdrop-blur-md">
+                        <Sparkles size={13} className="text-amber-300" />
+                        {slide.badge}
+                      </div>
 
-          {/* Subtle overlays — keep video vivid */}
-          <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, rgba(0,0,0,0.25) 0%, transparent 40%, rgba(0,0,0,0.55) 100%)', transform: 'translateZ(0)' }} />
-          <div className="absolute inset-0" style={{ background: 'linear-gradient(to right, rgba(0,0,0,0.15) 0%, transparent 50%, rgba(0,0,0,0.15) 100%)' }} />
-          {/* Film-grain only on desktop — skip on mobile for perf */}
-          <div className="absolute inset-0 opacity-[0.03] pointer-events-none hidden md:block" style={{
-            backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.05) 2px, rgba(255,255,255,0.05) 4px)' }} />
-        </motion.div>
+                      <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight leading-tight font-display">
+                        {slide.title}
+                      </h2>
 
-        {/* Mute toggle */}
-        <button
-          onClick={toggleMute}
-          className="absolute top-24 right-5 z-30 w-10 h-10 rounded-full bg-black/30 border border-white/10 backdrop-blur-md flex items-center justify-center text-white/50 hover:text-white hover:bg-black/50 transition-all"
-        >
-          {muted ? <VolumeX size={16} /> : <Volume2 size={16} />}
-        </button>
+                      <p className="text-xs sm:text-sm md:text-base text-slate-200 line-clamp-2 max-w-xl">
+                        {slide.subtitle}
+                      </p>
 
-        {/* Hero text overlay */}
-        <motion.div style={{ y: heroTextY }} className="relative z-10 w-full text-center px-5 pb-16 md:pb-28">
+                      <div className="inline-block px-3 py-1 rounded-lg bg-amber-400/20 border border-amber-300/30 text-amber-300 text-xs font-bold w-fit">
+                        {slide.offer}
+                      </div>
 
-          {/* Eyebrow badge */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
-            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-emerald-accent/30 bg-emerald-accent/10 backdrop-blur-sm text-emerald-accent text-[11px] font-bold mb-6 uppercase tracking-widest"
-          >
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-accent animate-pulse" />
-            Ancient Wisdom · Modern Intelligence
-          </motion.div>
+                      <div className="flex flex-wrap items-center gap-3 pt-2">
+                        {slide.primaryCta.link ? (
+                          <Link
+                            to={slide.primaryCta.link}
+                            className="px-6 py-2.5 sm:py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs sm:text-sm transition shadow-lg shadow-emerald-900/30 active:scale-95"
+                          >
+                            {slide.primaryCta.label}
+                          </Link>
+                        ) : (
+                          <button
+                            onClick={slide.primaryCta.action}
+                            className="px-6 py-2.5 sm:py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs sm:text-sm transition shadow-lg shadow-emerald-900/30 active:scale-95"
+                          >
+                            {slide.primaryCta.label}
+                          </button>
+                        )}
 
-          {/* Giant brand name */}
-          <motion.h1
-            initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.42, duration: 0.9 }}
-            className="font-display font-bold leading-none mb-5"
-            style={{ fontSize: 'clamp(3.5rem, 13vw, 9.5rem)', letterSpacing: '-0.025em' }}
-          >
-            <span className="text-cream drop-shadow-2xl">Nexus </span>
-            <span style={{
-              background: 'linear-gradient(130deg, #34D399 0%, #10B981 50%, #6EE7B7 100%)',
-              WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Ayurve</span>
-          </motion.h1>
+                        {slide.secondaryCta && (
+                          slide.secondaryCta.link ? (
+                            <Link
+                              to={slide.secondaryCta.link}
+                              className="px-5 py-2.5 sm:py-3 rounded-xl bg-white/10 hover:bg-white/20 text-white border border-white/20 font-bold text-xs sm:text-sm backdrop-blur-md transition"
+                            >
+                              {slide.secondaryCta.label}
+                            </Link>
+                          ) : (
+                            <button
+                              onClick={slide.secondaryCta.action}
+                              className="px-5 py-2.5 sm:py-3 rounded-xl bg-white/10 hover:bg-white/20 text-white border border-white/20 font-bold text-xs sm:text-sm backdrop-blur-md transition"
+                            >
+                              {slide.secondaryCta.label}
+                            </button>
+                          )
+                        )}
+                      </div>
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </AnimatePresence>
 
-          {/* Subtitle */}
-          <motion.p
-            initial={{ opacity: 0, y: 25 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.58 }}
-            className="text-cream/55 text-base md:text-xl max-w-md md:max-w-xl mx-auto mb-10 leading-relaxed"
-          >
-            Consult Ayurvedic doctors, scan your meals with AI,<br className="hidden md:block" /> track your vitals — all in one platform.
-          </motion.p>
+            {/* Carousel Navigation Arrows */}
+            <button
+              onClick={prevSlide}
+              aria-label="Previous slide"
+              className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-slate-900/40 hover:bg-slate-900/70 text-white flex items-center justify-center backdrop-blur-sm transition z-20"
+            >
+              <ChevronLeft size={22} />
+            </button>
+            <button
+              onClick={nextSlide}
+              aria-label="Next slide"
+              className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-slate-900/40 hover:bg-slate-900/70 text-white flex items-center justify-center backdrop-blur-sm transition z-20"
+            >
+              <ChevronRight size={22} />
+            </button>
 
-          {/* CTAs */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.72 }}
-            className="flex flex-col sm:flex-row items-center justify-center gap-3"
-          >
-            {user ? (
-              <Link to="/dashboard"
-                className="group flex items-center gap-2 px-8 py-3.5 rounded-full font-bold text-sm text-forest transition-all hover:scale-105 active:scale-95"
-                style={{ background: 'linear-gradient(135deg, #34D399, #10B981)', boxShadow: '0 0 50px rgba(52,211,153,0.35)' }}>
-                Go to Dashboard <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
-              </Link>
-            ) : (
-              <button onClick={onLogin}
-                className="group flex items-center gap-2 px-8 py-3.5 rounded-full font-bold text-sm text-forest transition-all hover:scale-105 active:scale-95"
-                style={{ background: 'linear-gradient(135deg, #34D399, #10B981)', boxShadow: '0 0 50px rgba(52,211,153,0.35)' }}>
-                Get Started Free <Zap size={16} className="group-hover:scale-125 transition-transform" />
-              </button>
-            )}
-            <Link to="/doctors"
-              className="flex items-center gap-2 px-8 py-3.5 rounded-full font-bold text-sm text-cream bg-white/5 border border-white/10 backdrop-blur-sm hover:bg-white/10 transition-all">
-              <Play size={14} className="fill-cream" /> See How It Works
-            </Link>
-          </motion.div>
-        </motion.div>
-
-        {/* Scroll cue */}
-        <motion.div
-          initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.3 }}
-          className="absolute bottom-5 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-1.5"
-        >
-          <span className="text-cream/25 text-[9px] uppercase tracking-[0.2em]">Scroll</span>
-          <motion.div animate={{ y: [0, 7, 0] }} transition={{ duration: 1.6, repeat: Infinity }}
-            className="w-px h-8 bg-gradient-to-b from-emerald-accent/50 to-transparent" />
-        </motion.div>
+            {/* Carousel Dots */}
+            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2 z-20">
+              {heroSlides.map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setCurrentSlide(i)}
+                  className={`h-2 rounded-full transition-all ${
+                    currentSlide === i ? 'w-8 bg-emerald-400' : 'w-2 bg-white/40 hover:bg-white/70'
+                  }`}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
       </section>
 
-      {/* ════════════════════════════════════════
-          STATS BAR
-      ════════════════════════════════════════ */}
-      <section className="relative z-10 py-7 border-y border-cream/[0.08] stats-surface">
-        <div className="max-w-4xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-4 px-6 text-center">
-          {[
-            { num: '8+',      label: 'Expert Doctors'   },
-            { num: 'Trusted', label: 'AI Platform'      },
-            { num: '₹1',      label: 'Per Consultation' },
-            { num: '4.8★',    label: 'Average Rating'   },
-          ].map((s, i) => (
-            <motion.div key={i}
-              initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }} transition={{ delay: i * 0.08 }}>
-              <p className="text-2xl md:text-3xl font-display font-bold text-cream mb-0.5">{s.num}</p>
-              <p className="text-[10px] uppercase tracking-widest text-emerald-accent/50">{s.label}</p>
-            </motion.div>
+      {/* ══════════════════════════════════════════════
+          2. QUICK SERVICES STRIP (Tata 1mg Quick Pills)
+      ══════════════════════════════════════════════ */}
+      <section className="max-w-7xl mx-auto px-4 -mt-2 md:-mt-3 relative z-20">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+          {quickServices.map((service, index) => {
+            const Content = (
+              <div className="bg-white p-3.5 rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-md hover:border-emerald-400 hover:-translate-y-0.5 transition-all flex items-center gap-3 cursor-pointer group">
+                <div className={`w-11 h-11 rounded-xl ${service.color} text-white flex items-center justify-center shadow-xs shrink-0 group-hover:scale-105 transition-transform`}>
+                  <service.icon size={20} />
+                </div>
+                <div className="min-w-0">
+                  <h4 className="text-xs font-bold text-slate-900 truncate leading-snug">{service.label}</h4>
+                  <p className="text-[10px] text-slate-500 font-medium truncate">{service.text}</p>
+                </div>
+              </div>
+            );
+
+            return service.link ? (
+              <Link key={index} to={service.link}>
+                {Content}
+              </Link>
+            ) : (
+              <button key={index} onClick={service.action} className="w-full text-left">
+                {Content}
+              </button>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════════
+          3. UPLOAD PRESCRIPTION BANNER (1mg Signature)
+      ══════════════════════════════════════════════ */}
+      <section className="max-w-7xl mx-auto px-4 py-8">
+        <div className="bg-gradient-to-r from-emerald-900 via-teal-900 to-slate-900 rounded-3xl p-6 md:p-8 text-white shadow-xl relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6">
+          {/* Background herbal motif */}
+          <div className="absolute -right-10 -bottom-10 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
+
+          <div className="space-y-3 max-w-xl z-10">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-bold border border-emerald-400/30">
+              <FileText size={14} />
+              Quick Order with Prescription
+            </div>
+            <h3 className="text-2xl sm:text-3xl font-bold font-display leading-tight">
+              Don't have time to search medicines? Just upload your prescription!
+            </h3>
+            <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+              Our registered Ayurvedic Vaidyas & pharmacists will verify your prescription, arrange genuine handcrafted formulations, and deliver to <strong className="text-white">{city} ({pincode})</strong>.
+            </p>
+
+            <div className="flex flex-wrap items-center gap-4 text-xs text-emerald-200 pt-1">
+              <span className="flex items-center gap-1.5">
+                <CheckCircle2 size={15} className="text-emerald-400" /> 100% Genuine Medicines
+              </span>
+              <span className="flex items-center gap-1.5">
+                <CheckCircle2 size={15} className="text-emerald-400" /> Free Doctor Verification
+              </span>
+              <span className="flex items-center gap-1.5">
+                <CheckCircle2 size={15} className="text-emerald-400" /> Express Doorstep Delivery
+              </span>
+            </div>
+          </div>
+
+          <div className="z-10 flex flex-col sm:flex-row items-center gap-3 shrink-0">
+            <button
+              onClick={openPrescription}
+              className="px-8 py-3.5 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold text-sm transition shadow-lg shadow-emerald-500/20 active:scale-95 flex items-center gap-2"
+            >
+              Upload Prescription Now <ArrowRight size={16} />
+            </button>
+            <Link
+              to="/doctors"
+              className="px-6 py-3.5 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold text-xs sm:text-sm transition text-center"
+            >
+              Consult Doctor for ₹1
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════════
+          4. SHOP BY CATEGORY (Roundels with Real Photos)
+      ══════════════════════════════════════════════ */}
+      <section className="max-w-7xl mx-auto px-4 py-8">
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h3 className="text-xl sm:text-2xl font-bold text-slate-900 font-display">
+              Shop by Ayurvedic Health Need
+            </h3>
+            <p className="text-xs sm:text-sm text-slate-500">
+              Authentic handcrafted herbal formulations categorised by traditional Chikitsa
+            </p>
+          </div>
+          <Link
+            to="/shop"
+            className="text-xs sm:text-sm font-bold text-emerald-700 hover:text-emerald-800 flex items-center gap-1"
+          >
+            View All <ChevronRight size={16} />
+          </Link>
+        </div>
+
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+          {CATEGORIES_WITH_IMAGES.map((cat, i) => (
+            <Link
+              key={i}
+              to={`/shop?category=${encodeURIComponent(cat.name)}`}
+              className="bg-white rounded-3xl p-4 border border-slate-200/80 shadow-xs hover:shadow-lg hover:border-emerald-500 hover:-translate-y-1 transition-all duration-300 text-center flex flex-col items-center group"
+            >
+              {/* Circular Real Image with Herb */}
+              <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden border-2 border-emerald-100 p-1 mb-3 group-hover:border-emerald-500 transition-colors shadow-xs bg-slate-50">
+                <img
+                  src={cat.image}
+                  alt={cat.name}
+                  className="w-full h-full object-cover rounded-full group-hover:scale-110 transition-transform duration-500"
+                />
+              </div>
+              <h4 className="text-xs sm:text-sm font-bold text-slate-900 leading-snug group-hover:text-emerald-700 transition">
+                {cat.name}
+              </h4>
+              <p className="text-[11px] text-slate-400 mt-1 line-clamp-1">{cat.desc}</p>
+              <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full mt-2">
+                {cat.count}
+              </span>
+            </Link>
           ))}
         </div>
       </section>
 
-      {/* ════════════════════════════════════════
-          AI TOOLS GRID — the OMA-style section
-      ════════════════════════════════════════ */}
-      <section className="relative z-10 px-5 md:px-8 py-24 md:py-36 overflow-hidden">
-        {/* Ambient orb — small, CPU-painted once, no animation */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full blur-[80px] opacity-[0.06] pointer-events-none hidden md:block"
-          style={{ background: 'radial-gradient(circle, #10B981, transparent)', transform: 'translate(-50%, -50%) translateZ(0)' }} />
-
-        <div className="max-w-6xl mx-auto">
-          <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-            className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-accent/10 border border-emerald-accent/20 text-emerald-accent text-[11px] font-bold uppercase tracking-widest mb-6">
-               AI-Powered Suite
+      {/* ══════════════════════════════════════════════
+          5. DEALS OF THE DAY / FEATURED MEDICINES (1mg Grid)
+      ══════════════════════════════════════════════ */}
+      <section className="max-w-7xl mx-auto px-4 py-8">
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <div className="flex items-center gap-2 mb-1">
+              <span className="px-2.5 py-0.5 rounded-md bg-rose-100 text-rose-700 text-xs font-bold uppercase tracking-wider">
+                Deals of the Day
+              </span>
+              <span className="text-xs text-slate-400 flex items-center gap-1">
+                <Clock size={13} /> Ends in 8h 42m
+              </span>
             </div>
-            <h2 className="font-display font-bold text-cream mb-5"
-              style={{ fontSize: 'clamp(2rem, 6vw, 4rem)', letterSpacing: '-0.025em', lineHeight: 1.1 }}>
-              Everything in one<br />
-              <span style={{
-                background: 'linear-gradient(130deg, #34D399, #6EE7B7)',
-                WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>wellness platform</span>
-            </h2>
-            <p className="text-cream/35 text-lg max-w-lg mx-auto">
-              Ancient Ayurvedic knowledge, supercharged with modern AI.
-            </p>
-          </motion.div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {tools.map((tool, i) => (
-              <motion.div key={i}
-                initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }} transition={{ delay: i * 0.07 }}>
-                <Link to={tool.to}
-                  className="card-surface group relative flex flex-col h-full p-6 rounded-3xl overflow-hidden transition-all duration-500 hover:-translate-y-1.5 hover:border-white/[0.12]"
-                >
-                  {/* Hover radial glow */}
-                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none rounded-3xl"
-                    style={{ background: `radial-gradient(ellipse at 20% 10%, ${tool.glow} 0%, transparent 65%)` }} />
-
-                  {/* Icon */}
-                  <div className="relative w-11 h-11 rounded-2xl flex items-center justify-center mb-5 transition-transform duration-300 group-hover:scale-110"
-                    style={{ background: `${tool.color}18`, border: `1px solid ${tool.color}35` }}>
-                    <tool.icon size={20} style={{ color: tool.color }} />
-                  </div>
-
-                  <h3 className="font-display font-bold text-lg text-cream mb-1.5 group-hover:text-white transition-colors">{tool.label}</h3>
-                  <p className="text-cream/35 text-sm leading-relaxed flex-1">{tool.desc}</p>
-
-                  <div className="flex items-center gap-1.5 mt-5 font-bold text-sm transition-all duration-300"
-                    style={{ color: tool.color }}>
-                    Explore <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
-                  </div>
-                </Link>
-              </motion.div>
-            ))}
+            <h3 className="text-xl sm:text-2xl font-bold text-slate-900 font-display">
+              Handcrafted Ayurvedic Formulations
+            </h3>
           </div>
+          <Link
+            to="/shop"
+            className="text-xs sm:text-sm font-bold text-emerald-700 hover:text-emerald-800 flex items-center gap-1"
+          >
+            See All Deals <ChevronRight size={16} />
+          </Link>
         </div>
-      </section>
 
-      {/* ════════════════════════════════════════
-          SACRED HERBS — cinematic card grid
-      ════════════════════════════════════════ */}
-      <section className="relative z-10 py-24 md:py-32 border-y border-white/[0.06] overflow-hidden">
-        {/* Static bg — bg-fixed removed (iOS broken + laggy everywhere) */}
-        <div className="absolute inset-0 -z-10 bg-cover bg-center opacity-10"
-          style={{ backgroundImage: "url('/bg-herbs.png')" }} />
-        <div className="absolute inset-0 -z-10 bg-gradient-to-b from-forest via-transparent to-forest" />
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {PRODUCTS.slice(0, 8).map((product) => {
+            const qtyInCart = getProductCartQty(product.id);
+            const discountPercent = Math.round(
+              ((product.originalPrice - product.price) / product.originalPrice) * 100
+            );
 
-        <div className="max-w-6xl mx-auto px-5 md:px-8">
-          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-            className="text-center mb-14">
-            <h2 className="font-display font-bold text-cream mb-3"
-              style={{ fontSize: 'clamp(2rem, 5vw, 3.5rem)', letterSpacing: '-0.025em' }}>
-              Sacred Herbs
-            </h2>
-            <p className="text-cream/35 text-base max-w-sm mx-auto">
-              Nature's most potent healing ingredients used in our protocols.
-            </p>
-          </motion.div>
-
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
-            {herbs.map((herb, i) => (
-              <motion.div key={i}
-                initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }} transition={{ delay: i * 0.07 }}
-                className="group relative rounded-3xl overflow-hidden border border-white/[0.06] hover:border-emerald-accent/25 transition-all duration-500 aspect-[3/4]"
+            return (
+              <div
+                key={product.id}
+                className="bg-white rounded-3xl border border-slate-200/90 shadow-xs hover:shadow-xl hover:border-emerald-400 transition-all duration-300 flex flex-col justify-between p-3.5 sm:p-4 group relative"
               >
-                <img src={herb.image} alt={herb.name}
-                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
-                <div className="absolute inset-0 bg-gradient-to-t from-forest via-forest/30 to-transparent" />
-                <div className="absolute bottom-0 left-0 right-0 p-4">
-                  <p className="text-xl mb-0.5">{herb.emoji}</p>
-                  <h4 className="font-bold text-cream text-sm mb-0.5">{herb.name}</h4>
-                  <p className="text-emerald-accent/70 text-[11px]">{herb.benefit}</p>
+                {/* Badge */}
+                {product.badge && (
+                  <span className="absolute top-3 left-3 z-10 px-2.5 py-0.5 rounded-full bg-emerald-600 text-white text-[10px] font-bold shadow-xs">
+                    {product.badge}
+                  </span>
+                )}
+
+                {/* Product Image */}
+                <div className="relative aspect-square rounded-2xl overflow-hidden bg-slate-50 mb-3 border border-slate-100">
+                  <img
+                    src={product.image}
+                    alt={product.name}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                  <div className="absolute bottom-2 right-2 flex items-center gap-1 px-2 py-0.5 rounded-full bg-black/60 backdrop-blur-sm text-white text-[11px] font-bold">
+                    <Star size={11} className="text-amber-400 fill-amber-400" />
+                    <span>{product.rating}</span>
+                  </div>
                 </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
 
-      {/* ════════════════════════════════════════
-          TESTIMONIALS
-      ════════════════════════════════════════ */}
-      <section className="relative z-10 py-24 md:py-32 px-5 md:px-8">
-        <div className="max-w-5xl mx-auto">
-          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-            className="text-center mb-14">
-            <h2 className="font-display font-bold text-cream mb-3"
-              style={{ fontSize: 'clamp(2rem, 5vw, 3.5rem)', letterSpacing: '-0.025em' }}>
-              Real Stories
-            </h2>
-            <p className="text-cream/35 text-base max-w-md mx-auto">
-              From people who transformed their health with Nexus Ayurve.
-            </p>
-          </motion.div>
+                {/* Content */}
+                <div className="space-y-1 flex-1">
+                  <p className="text-[10px] font-bold text-emerald-700 uppercase tracking-wider">
+                    {product.brand}
+                  </p>
+                  <h4 className="text-xs sm:text-sm font-bold text-slate-900 leading-snug line-clamp-2 group-hover:text-emerald-700 transition">
+                    {product.name}
+                  </h4>
+                  <p className="text-[11px] text-slate-400">{product.packSize}</p>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-            {[
-              { name: 'Meera K.', loc: 'Delhi',     avatar: 'M', color: '#34D399',
-                text: 'The AI diagnosed my digestive issues perfectly. The Ayurvedic diet plan worked in just 2 weeks!' },
-              { name: 'Rohit S.', loc: 'Mumbai',    avatar: 'R', color: '#A78BFA',
-                text: 'Booking a consultation for ₹1 was unbelievable. Dr. Vikram\'s therapy completely changed my health.' },
-              { name: 'Anita P.', loc: 'Bangalore', avatar: 'A', color: '#F97316',
-                text: 'Finally an app that blends modern science with ancient wisdom. BMI with Dosha mapping is genius!' },
-            ].map((t, i) => (
-              <motion.div key={i}
-                initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }} transition={{ delay: i * 0.1 }}
-                className="card-surface-subtle relative p-6 rounded-3xl overflow-hidden"
-              >
-                <Quote size={30} className="absolute top-5 right-5 text-white/[0.04]" />
-                <p className="text-cream/65 text-sm leading-relaxed mb-6 italic">"{t.text}"</p>
-                <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-full flex items-center justify-center font-bold text-sm flex-shrink-0"
-                    style={{ background: `${t.color}18`, color: t.color, border: `1px solid ${t.color}30` }}>
-                    {t.avatar}
+                  <div className="flex items-center gap-1.5 text-[10px] text-emerald-700 font-semibold pt-1">
+                    <Truck size={12} />
+                    <span>{product.deliveryTime}</span>
                   </div>
+                </div>
+
+                {/* Price and Cart Action */}
+                <div className="pt-3 mt-2 border-t border-slate-100 flex items-center justify-between gap-2">
                   <div>
-                    <p className="font-bold text-cream text-sm">{t.name}</p>
-                    <p className="text-[11px] text-cream/30">{t.loc}</p>
+                    <div className="flex items-baseline gap-1.5">
+                      <span className="text-base sm:text-lg font-bold text-slate-900 font-display">
+                        ₹{product.price}
+                      </span>
+                      <span className="text-[11px] text-slate-400 line-through">
+                        ₹{product.originalPrice}
+                      </span>
+                    </div>
+                    <span className="text-[10px] font-bold text-emerald-600">
+                      {discountPercent}% OFF
+                    </span>
                   </div>
+
+                  {/* 1mg Style ADD Button / Quantity Stepper */}
+                  {qtyInCart === 0 ? (
+                    <button
+                      onClick={() => addToCart(product)}
+                      className="px-4 py-1.5 rounded-xl border-2 border-emerald-600 text-emerald-700 font-extrabold text-xs hover:bg-emerald-600 hover:text-white transition active:scale-95"
+                    >
+                      ADD
+                    </button>
+                  ) : (
+                    <div className="flex items-center border border-emerald-600 rounded-xl bg-emerald-50 overflow-hidden">
+                      <button
+                        onClick={() => updateQty(product.id, qtyInCart - 1)}
+                        className="px-2 py-1 text-emerald-800 hover:bg-emerald-200 transition"
+                      >
+                        <Minus size={13} />
+                      </button>
+                      <span className="px-2 py-0.5 text-xs font-bold text-emerald-900 bg-white">
+                        {qtyInCart}
+                      </span>
+                      <button
+                        onClick={() => updateQty(product.id, qtyInCart + 1)}
+                        className="px-2 py-1 text-emerald-800 hover:bg-emerald-200 transition"
+                      >
+                        <Plus size={13} />
+                      </button>
+                    </div>
+                  )}
                 </div>
-              </motion.div>
-            ))}
-          </div>
+              </div>
+            );
+          })}
         </div>
       </section>
 
-      {/* ════════════════════════════════════════
-          SHOP SECTION
-      ════════════════════════════════════════ */}
-      <section className="relative z-10 py-24 md:py-32 border-t border-white/[0.06] px-5 md:px-8 overflow-hidden">
-        {/* Static bg — no bg-fixed on mobile */}
-        <div className="absolute inset-0 -z-10 bg-cover bg-center opacity-[0.06]"
-          style={{ backgroundImage: "url('/bg-shop.png')" }} />
-
-        <div className="max-w-6xl mx-auto">
-          <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-12">
-            <motion.div initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}>
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-400/10 border border-amber-400/20 text-amber-400 text-[11px] font-bold uppercase tracking-wider mb-4">
-                <ShoppingBag size={11} /> Ayurvedic Shop
+      {/* ══════════════════════════════════════════════
+          6. POPULAR HEALTH CHECKUPS / LAB TESTS (1mg Style)
+      ══════════════════════════════════════════════ */}
+      <section className="max-w-7xl mx-auto px-4 py-10">
+        <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+            <div>
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-sky-100 text-sky-800 text-xs font-bold mb-2">
+                <Activity size={13} />
+                NABL & ICMR Certified Diagnostics
               </div>
-              <h2 className="font-display font-bold text-cream mb-2"
-                style={{ fontSize: 'clamp(1.8rem, 4vw, 3rem)', letterSpacing: '-0.02em' }}>
-                Trusted Medicines
-              </h2>
-              <p className="text-cream/35 text-base max-w-md">Handpicked from top Indian brands. Fast, trusted delivery.</p>
-            </motion.div>
-            <Link to="/shop" className="mt-5 md:mt-0 flex items-center gap-1.5 text-emerald-accent font-bold text-sm hover:underline">
-              View All <ChevronRight size={16} />
+              <h3 className="text-xl sm:text-2xl font-bold text-slate-900 font-display">
+                Popular Health Checkup Packages
+              </h3>
+              <p className="text-xs sm:text-sm text-slate-500">
+                Preventive health packages with 100% Free Home Sample Collection & 24h Digital Reports
+              </p>
+            </div>
+            <Link
+              to="/shop?filter=lab-tests"
+              className="px-5 py-2.5 rounded-xl border border-sky-300 text-sky-700 hover:bg-sky-50 font-bold text-xs sm:text-sm transition w-fit"
+            >
+              View All Health Packages
             </Link>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {[
-              { name: 'Ashwagandha KSM-66', brand: 'Himalaya',      price: 299, mrp: 450, image: '/med-ashwagandha.png',  rating: 4.7, badge: 'Bestseller',   link: 'https://www.1mg.com/search/all?name=ashwagandha' },
-              { name: 'Chyawanprash',        brand: 'Dabur',         price: 350, mrp: 499, image: '/med-chyawanprash.png', rating: 4.8, badge: 'Most Popular', link: 'https://www.1mg.com/search/all?name=chyawanprash' },
-              { name: 'Shilajit Gold Resin', brand: 'Zandu',         price: 399, mrp: 599, image: '/med-shilajit.png',     rating: 4.4, badge: 'Premium',      link: 'https://www.1mg.com/search/all?name=shilajit' },
-              { name: 'Tulsi Drops',         brand: 'Organic India', price: 220, mrp: 350, image: '/med-tulsi.png',        rating: 4.6, badge: null,           link: 'https://www.1mg.com/search/all?name=tulsi+drops' },
-            ].map((med, i) => (
-              <motion.div key={i}
-                initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }} transition={{ delay: i * 0.09 }}
-                className="card-surface-subtle group rounded-3xl overflow-hidden hover:border-emerald-accent/20 transition-all duration-500 hover:-translate-y-1.5"
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {LAB_PACKAGES.map((pkg) => (
+              <div
+                key={pkg.id}
+                className="rounded-2xl border border-slate-200 p-5 bg-slate-50/50 hover:bg-white hover:border-sky-400 hover:shadow-lg transition-all duration-300 flex flex-col justify-between"
               >
-                <div className="relative aspect-square overflow-hidden">
-                  <img src={med.image} alt={med.name}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-forest/80 to-transparent" />
-                  {med.badge && (
-                    <span className="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-emerald-accent text-forest text-[10px] font-bold">
-                      {med.badge}
+                <div>
+                  {pkg.tag && (
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-sky-700 bg-sky-100 px-2 py-0.5 rounded-md mb-2 inline-block">
+                      {pkg.tag}
                     </span>
                   )}
-                  <div className="absolute top-3 right-3 flex items-center gap-1 px-2 py-0.5 rounded-full bg-black/50 backdrop-blur-sm">
-                    <Star size={10} className="text-yellow-400 fill-yellow-400" />
-                    <span className="text-cream text-[11px] font-bold">{med.rating}</span>
+                  <h4 className="text-sm font-bold text-slate-900 leading-snug mb-1">
+                    {pkg.title}
+                  </h4>
+                  <p className="text-xs text-slate-500 line-clamp-2 mb-3">
+                    {pkg.subtitle}
+                  </p>
+
+                  <div className="bg-white p-2.5 rounded-xl border border-slate-100 space-y-1.5 text-xs text-slate-600 mb-3">
+                    <p className="font-bold text-emerald-800">Includes {pkg.testsCount} Vital Parameters:</p>
+                    <ul className="text-[11px] text-slate-500 space-y-0.5 list-disc pl-4">
+                      {pkg.parameters.slice(0, 3).map((param, pi) => (
+                        <li key={pi} className="truncate">{param}</li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  <div className="space-y-1 text-[11px] text-slate-500">
+                    <p>🧪 <strong>Sample:</strong> {pkg.sampleType}</p>
+                    <p>⚡ <strong>Report:</strong> {pkg.reportTime}</p>
                   </div>
                 </div>
-                <div className="p-3 md:p-4">
-                  <p className="text-emerald-accent/50 text-[9px] font-bold uppercase tracking-wider mb-1">{med.brand}</p>
-                  <h4 className="text-cream font-bold text-[12px] md:text-sm mb-2 truncate">{med.name}</h4>
-                  <div className="flex items-baseline gap-1.5 mb-3">
-                    <span className="text-lg font-display font-bold text-cream">₹{med.price}</span>
-                    <span className="text-[10px] text-cream/30 line-through">₹{med.mrp}</span>
-                    <span className="text-[9px] font-bold text-emerald-accent">{Math.round((1 - med.price / med.mrp) * 100)}% OFF</span>
+
+                <div className="pt-4 mt-4 border-t border-slate-200 flex items-center justify-between">
+                  <div>
+                    <div className="flex items-baseline gap-1.5">
+                      <span className="text-lg font-bold text-slate-900 font-display">₹{pkg.price}</span>
+                      <span className="text-xs text-slate-400 line-through">₹{pkg.originalPrice}</span>
+                    </div>
+                    <span className="text-[10px] font-bold text-emerald-600">
+                      {Math.round(((pkg.originalPrice - pkg.price) / pkg.originalPrice) * 100)}% OFF
+                    </span>
                   </div>
-                  <a href={med.link} target="_blank" rel="noopener noreferrer"
-                    className="w-full py-2.5 rounded-xl bg-emerald-accent text-forest font-bold text-[11px] hover:bg-emerald-accent/90 transition-all flex items-center justify-center gap-1.5">
-                    Buy Now <ExternalLink size={11} />
-                  </a>
+                  <Link
+                    to="/shop?filter=lab-tests"
+                    className="px-4 py-2 rounded-xl bg-sky-600 hover:bg-sky-700 text-white font-bold text-xs transition active:scale-95 shadow-sm shadow-sky-600/20"
+                  >
+                    Book Now
+                  </Link>
                 </div>
-              </motion.div>
+              </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ════════════════════════════════════════
-          FINAL CTA — Cinematic close
-      ════════════════════════════════════════ */}
-      <section className="relative z-10 py-32 md:py-44 px-5 text-center overflow-hidden">
-        {/* Radial glow — smaller + GPU layer */}
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <div className="w-[350px] h-[350px] rounded-full blur-[70px] opacity-[0.12] hidden md:block"
-            style={{ background: 'radial-gradient(circle, #10B981, transparent 70%)', transform: 'translateZ(0)' }} />
+      {/* ══════════════════════════════════════════════
+          7. TOP AYURVEDIC DOCTORS (1mg Doctor Consult)
+      ══════════════════════════════════════════════ */}
+      <section className="max-w-7xl mx-auto px-4 py-8">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+          <div>
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold mb-2">
+              <Stethoscope size={13} />
+              Specialist BAMS & MD Ayurveda Practitioners
+            </div>
+            <h3 className="text-xl sm:text-2xl font-bold text-slate-900 font-display">
+              Consult Top Ayurvedic Doctors Online
+            </h3>
+            <p className="text-xs sm:text-sm text-slate-500">
+              Verified clinical experts with 10+ years experience. Instant video/audio consultations.
+            </p>
+          </div>
+          <Link
+            to="/doctors"
+            className="text-xs sm:text-sm font-bold text-emerald-700 hover:text-emerald-800 flex items-center gap-1"
+          >
+            View All Doctors <ChevronRight size={16} />
+          </Link>
         </div>
 
-        <motion.div initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-          className="relative max-w-2xl mx-auto">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-accent/10 border border-emerald-accent/20 text-emerald-accent text-[11px] font-bold uppercase tracking-widest mb-8">
-            <Leaf size={12} /> Begin Your Journey
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {doctors.slice(0, 4).map((doc) => (
+            <div
+              key={doc.id}
+              className="bg-white rounded-3xl p-5 border border-slate-200/90 shadow-xs hover:shadow-xl hover:border-emerald-400 transition-all duration-300 flex flex-col justify-between group"
+            >
+              <div>
+                <div className="flex items-center gap-3.5 mb-3">
+                  <div className="relative">
+                    <img
+                      src={doc.imageUrl}
+                      alt={doc.name}
+                      className="w-16 h-16 rounded-2xl object-cover border-2 border-emerald-100 group-hover:border-emerald-500 transition shadow-xs"
+                    />
+                    <div className="absolute -bottom-1 -right-1 bg-emerald-600 text-white rounded-full p-0.5">
+                      <CheckCircle2 size={12} />
+                    </div>
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-bold text-slate-900 leading-tight">{doc.name}</h4>
+                    <p className="text-[11px] text-emerald-700 font-semibold">{doc.specialization}</p>
+                    <p className="text-[10px] text-slate-400">{doc.experience} Experience</p>
+                  </div>
+                </div>
+
+                <p className="text-xs text-slate-600 line-clamp-2 leading-relaxed mb-3">
+                  {doc.about}
+                </p>
+
+                <div className="flex items-center justify-between text-xs py-2 px-3 rounded-xl bg-slate-50 border border-slate-100">
+                  <span className="flex items-center gap-1 text-slate-700 font-bold">
+                    <Star size={12} className="text-amber-400 fill-amber-400" /> {doc.rating}
+                    <span className="text-[10px] text-slate-400 font-normal">({doc.reviews})</span>
+                  </span>
+                  <span className="text-[10px] text-slate-500">
+                    {doc.languages.join(', ')}
+                  </span>
+                </div>
+              </div>
+
+              <div className="pt-4 mt-4 border-t border-slate-100 flex items-center justify-between">
+                <div>
+                  <span className="text-[10px] text-slate-400 uppercase">Consult Fee</span>
+                  <p className="text-base font-bold text-emerald-700 font-display">₹1 Only</p>
+                </div>
+                <Link
+                  to="/doctors"
+                  className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs transition active:scale-95 shadow-xs"
+                >
+                  Consult Now
+                </Link>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════════
+          8. THE HANDCRAFTED AYURVEDA PROMISE (Authenticity)
+      ══════════════════════════════════════════════ */}
+      <section className="max-w-7xl mx-auto px-4 py-12">
+        <div className="bg-gradient-to-br from-emerald-950 via-slate-900 to-emerald-900 rounded-3xl p-8 sm:p-12 text-white shadow-xl">
+          <div className="text-center max-w-2xl mx-auto mb-10">
+            <span className="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-bold border border-emerald-400/30 uppercase tracking-widest inline-block mb-3">
+              The Nexus Ayurve Standard
+            </span>
+            <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold font-display">
+              Handcrafted with Classical Rigor & Modern Science
+            </h3>
+            <p className="text-xs sm:text-sm text-slate-300 mt-2">
+              Every formulation is created following classical Charaka Samhita guidelines and verified by rigorous laboratory testing.
+            </p>
           </div>
-          <h2 className="font-display font-bold text-cream mb-5"
-            style={{ fontSize: 'clamp(2.5rem, 8vw, 5.5rem)', letterSpacing: '-0.03em', lineHeight: 1.05 }}>
-            Start Healing<br />
-            <span style={{
-              background: 'linear-gradient(135deg, #34D399, #6EE7B7)',
-              WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Today</span>
-          </h2>
-          <p className="text-cream/35 text-base mb-10 max-w-md mx-auto">
-            Join thousands balancing their doshas, tracking vitals, and consulting Ayurvedic experts.
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[
+              {
+                icon: Award,
+                title: "100% Ethically Sourced",
+                desc: "Wildcrafted herbs gathered sustainably from Himalayan slopes and Western Ghats sanctuaries."
+              },
+              {
+                icon: ShieldCheck,
+                title: "Ayush & GMP Certified",
+                desc: "Manufactured in government-certified facilities adhering to world-class Ayurvedic Good Manufacturing Practices."
+              },
+              {
+                icon: HeartHandshake,
+                title: "Vaidya Formulated",
+                desc: "Recipes fine-tuned by lineage Ayurvedic physicians for optimal bio-absorption and zero synthetic fillers."
+              },
+              {
+                icon: Truck,
+                title: "Fast, Safe Delivery",
+                desc: "Tamper-evident, temperature-controlled packaging ensuring potency reaches your doorstep fresh."
+              }
+            ].map((p, idx) => (
+              <div
+                key={idx}
+                className="bg-white/5 border border-white/10 rounded-2xl p-5 backdrop-blur-sm hover:bg-white/10 transition"
+              >
+                <div className="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center mb-3">
+                  <p.icon size={20} />
+                </div>
+                <h4 className="text-sm font-bold text-white mb-1.5">{p.title}</h4>
+                <p className="text-xs text-slate-300 leading-relaxed">{p.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════════
+          9. CUSTOMER HEALTH STORIES & TESTIMONIALS
+      ══════════════════════════════════════════════ */}
+      <section className="max-w-7xl mx-auto px-4 py-8">
+        <div className="text-center max-w-xl mx-auto mb-10">
+          <h3 className="text-xl sm:text-2xl font-bold text-slate-900 font-display">
+            Real Transformations, Real Stories
+          </h3>
+          <p className="text-xs sm:text-sm text-slate-500 mt-1">
+            Over 500,000+ patients across India trust Nexus Ayurve for their holistic wellness journey.
           </p>
-          {user ? (
-            <Link to="/doctors"
-              className="inline-flex items-center gap-2 px-10 py-4 rounded-full font-bold text-base text-forest transition-all hover:scale-105 active:scale-95"
-              style={{ background: 'linear-gradient(135deg, #34D399, #10B981)', boxShadow: '0 0 70px rgba(52,211,153,0.4)' }}>
-              Browse Doctors <ChevronRight size={18} />
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+          {[
+            {
+              name: "Meera Kulkarni",
+              loc: "Pune",
+              avatar: "M",
+              text: "The pure KSM-66 Ashwagandha transformed my sleep. I used to wake up exhausted, but within 3 weeks my energy and cortisol levels are back to normal!",
+              verified: "Verified Buyer · Ashwagandha KSM-66"
+            },
+            {
+              name: "Rohit Singhania",
+              loc: "New Delhi",
+              avatar: "R",
+              text: "The ₹1 consultation with Dr. Shyam Prasad was incredible. He spent 20 minutes explaining my Pitta imbalance and prescribed custom diet modifications that cleared my acid reflux.",
+              verified: "Verified Patient · Kayachikitsa"
+            },
+            {
+              name: "Anita Panicker",
+              loc: "Bengaluru",
+              avatar: "A",
+              text: "The Ayur-Prakriti Lab test phlebotomist arrived right on time at 7 AM. Digital reports were ready the same evening with clear Ayurvedic dosha indicators. Super convenient!",
+              verified: "Verified Booking · Full Body Screen"
+            }
+          ].map((t, idx) => (
+            <div
+              key={idx}
+              className="bg-white rounded-3xl p-6 border border-slate-200/90 shadow-xs hover:shadow-md transition space-y-4"
+            >
+              <div className="flex items-center gap-1 text-amber-400">
+                {[...Array(5)].map((_, i) => (
+                  <Star key={i} size={14} className="fill-amber-400" />
+                ))}
+              </div>
+              <p className="text-xs sm:text-sm text-slate-700 leading-relaxed italic">
+                "{t.text}"
+              </p>
+              <div className="pt-3 border-t border-slate-100 flex items-center justify-between">
+                <div>
+                  <p className="text-xs font-bold text-slate-900">{t.name}, {t.loc}</p>
+                  <p className="text-[10px] text-emerald-700 font-medium flex items-center gap-1">
+                    <CheckCircle2 size={11} /> {t.verified}
+                  </p>
+                </div>
+                <div className="w-8 h-8 rounded-full bg-emerald-100 text-emerald-800 font-bold text-xs flex items-center justify-center">
+                  {t.avatar}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════════
+          10. DOWNLOAD APP & EMERGENCY VAIDYA HELPLINE
+      ══════════════════════════════════════════════ */}
+      <section className="max-w-7xl mx-auto px-4 py-8 mb-12">
+        <div className="bg-gradient-to-r from-emerald-50 via-teal-50 to-white rounded-3xl p-6 sm:p-10 border border-emerald-200 flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="space-y-2 max-w-lg">
+            <span className="px-3 py-1 rounded-full bg-emerald-600 text-white text-[11px] font-bold">
+              24x7 Ayurvedic Helpline
+            </span>
+            <h4 className="text-xl sm:text-2xl font-bold text-slate-900 font-display">
+              Need personalized guidance on Ayurvedic medicines?
+            </h4>
+            <p className="text-xs sm:text-sm text-slate-600">
+              Speak directly with our senior Ayurvedic pharmacologists. Free dosage & medicine guidance.
+            </p>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-3">
+            <a
+              href="tel:+919475002048"
+              className="px-6 py-3 rounded-2xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs sm:text-sm transition flex items-center gap-2 shadow-sm"
+            >
+              <PhoneCall size={16} /> Call +91 94750 02048
+            </a>
+            <Link
+              to="/ayurcoach"
+              className="px-6 py-3 rounded-2xl bg-white border border-emerald-300 text-emerald-800 font-bold text-xs sm:text-sm hover:bg-emerald-50 transition"
+            >
+              Launch AyurCoach AI
             </Link>
-          ) : (
-            <button onClick={onLogin}
-              className="inline-flex items-center gap-2 px-10 py-4 rounded-full font-bold text-base text-forest transition-all hover:scale-105 active:scale-95"
-              style={{ background: 'linear-gradient(135deg, #34D399, #10B981)', boxShadow: '0 0 70px rgba(52,211,153,0.4)' }}>
-              Sign Up Free <Zap size={18} />
-            </button>
-          )}
-        </motion.div>
+          </div>
+        </div>
       </section>
 
     </div>

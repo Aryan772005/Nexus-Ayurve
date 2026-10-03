@@ -1,5 +1,3 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
-
 export const maxDuration = 60;
 
 // Inline food DB — no cross-directory imports needed for Vercel
@@ -25,6 +23,34 @@ const FOODS_DB = [
   { name: 'Gulab Jamun', aliases: ['jamun', 'sweet dumpling'], category: 'Desserts', dosha_effect: { vata: 'decreases', pitta: 'increases', kapha: 'increases' }, nature: 'Extremely Heavy, Dense, Deeply Sweet', health_rating: 'Indulgent', healthier_alternative: 'Steamed Sandesh or date-and-fig ladoos rolled in crushed pistachios.', reason: 'Deep fried milk solids in refined sugar syrup cause insulin spikes and lymphatic Ama.' }
 ];
 
+// Helper: call Groq text model (with fallback)
+async function groqText(groqKey: string, systemPrompt: string, userPrompt: string, maxTokens = 700): Promise<string | null> {
+  const models = ['openai/gpt-oss-20b', 'groq/compound-mini'];
+  for (const model of models) {
+    try {
+      const r = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${groqKey}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model,
+          messages: [
+            { role: 'system', content: systemPrompt },
+            { role: 'user', content: userPrompt }
+          ],
+          temperature: 0.25,
+          max_tokens: maxTokens,
+        }),
+        signal: AbortSignal.timeout(15000),
+      });
+      if (!r.ok) { console.warn(`[food-scan] ${model} HTTP ${r.status}`); continue; }
+      const d = await r.json();
+      const content = d.choices?.[0]?.message?.content?.trim();
+      if (content) return content;
+    } catch (e: any) { console.warn(`[food-scan] ${model}:`, e?.message); }
+  }
+  return null;
+}
+
 export default async function handler(req: any, res: any) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -33,7 +59,7 @@ export default async function handler(req: any, res: any) {
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  const geminiKey = (process.env.GEMINI_API_KEY || '').trim();
+  const groqKey = (process.env.GROQ_API_KEY || '').trim();
   const localDb = FOODS_DB;
 
   try {
@@ -50,48 +76,61 @@ export default async function handler(req: any, res: any) {
     let detectedName = '';
     let identifyCategory = 'Snacks & Street Food';
 
-    // Step 1: Gemini Vision — safe Promise wrapper, never throws on 429/quota
-    if (geminiKey) {
-      const identifyPrompt = `Identify the primary Indian cooked meal or snack in this photo.
+    // Step 1: Identify food via Groq compound-mini vision
+    if (groqKey) {
+      try {
+        const identifyPrompt = `Identify the primary Indian cooked meal or snack in this photo.
 Return ONLY valid raw JSON with no markdown:
 {"food_name":"Specific dish name (e.g. Samosa, Paratha, Khichdi, Dal Tadka, Dosa)","category":"Snacks / Breakfast / Main Course / Beverage / Dessert"}`;
 
-      const visionText = await new Promise<string | null>((resolve) => {
-        const timer = setTimeout(() => resolve(null), 5000);
-        const genAI = new GoogleGenerativeAI(geminiKey);
-        genAI.getGenerativeModel({ model: 'gemini-2.0-flash' })
-          .generateContent([identifyPrompt, { inlineData: { mimeType, data: base64Data } }])
-          .then(r => { clearTimeout(timer); resolve(r.response.text()); })
-          .catch(e => {
-            clearTimeout(timer);
-            const is429 = e?.status === 429 || String(e?.message).includes('quota');
-            console.warn(is429 ? 'Gemini quota hit — using local DB fallback.' : `Gemini vision skipped: ${e?.message}`);
-            resolve(null);
-          });
-      });
-
-      if (visionText) {
-        const text = visionText.trim().replace(/```(?:json)?\n?|```/g, '');
-        const match = text.match(/\{[\s\S]*\}/);
-        if (match) {
-          try {
-            const parsed = JSON.parse(match[0]);
-            detectedName = parsed.food_name || '';
-            identifyCategory = parsed.category || identifyCategory;
-          } catch { /* ignore */ }
+        const visionRes = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${groqKey}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            model: 'groq/compound-mini',
+            messages: [{
+              role: 'user',
+              content: [
+                { type: 'text', text: identifyPrompt },
+                { type: 'image_url', image_url: { url: `data:${mimeType};base64,${base64Data}` } }
+              ]
+            }],
+            temperature: 0.1,
+            max_tokens: 150,
+          }),
+          signal: AbortSignal.timeout(15000),
+        });
+        if (visionRes.ok) {
+          const vd = await visionRes.json();
+          const vText = vd.choices?.[0]?.message?.content?.trim();
+          if (vText) {
+            const cleaned = vText.replace(/```(?:json)?\n?|```/g, '').trim();
+            const match = cleaned.match(/\{[\s\S]*\}/);
+            if (match) {
+              try {
+                const parsed = JSON.parse(match[0]);
+                detectedName = parsed.food_name || '';
+                identifyCategory = parsed.category || identifyCategory;
+              } catch { /* ignore */ }
+            }
+          }
+        } else {
+          const errText = await visionRes.text();
+          console.warn('[food-scan] vision HTTP', visionRes.status, errText.slice(0, 150));
         }
+      } catch (e: any) {
+        console.warn('[food-scan] vision error:', e?.message);
       }
     }
 
-    // Fallback dish if vision failed or rate limited (e.g. 429)
+    // If vision could not identify food, return a helpful error rather than random fake data
     if (!detectedName) {
-      // Pick a representative Indian dish from database for reliable demo flow
-      const fallbackList = ['Samosa', 'Paratha', 'Chole Bhature', 'Khichdi', 'Dal Tadka', 'Poha'];
-      const randomFallback = fallbackList[Math.floor(Math.random() * fallbackList.length)];
-      detectedName = randomFallback;
+      return res.status(422).json({
+        error: 'Could not identify food from image. Try again with a clearer, well-lit photo of the dish.',
+      });
     }
 
-    // Step 2: Match against local JSON database (~50-100 Indian foods)
+    // Step 2: Match against local JSON database
     const cleanQuery = detectedName.toLowerCase();
 
     const foodsList = Array.isArray(localDb) ? localDb : (localDb as any).foods || [];
@@ -123,14 +162,10 @@ Return ONLY valid raw JSON with no markdown:
       });
     }
 
-    // Step 3: If no local DB match, attempt Gemini text explanation
-    if (geminiKey) {
+    // Step 3: If no local DB match, attempt Groq text explanation
+    if (groqKey) {
       try {
-        const genAI = new GoogleGenerativeAI(geminiKey);
-        const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
-
-        const explanationPrompt = `You are an expert Ayurvedic practitioner for AyurCoach.
-A user scanned a dish identified as: "${detectedName}".
+        const explanationPrompt = `A user scanned a dish identified as: "${detectedName}".
 Analyze its Ayurvedic properties (dosha impact on Vata, Pitta, Kapha), qualitative nature, health rating, and suggest a practical healthier Indian alternative.
 
 Return strictly raw JSON (no markdown):
@@ -144,23 +179,16 @@ Return strictly raw JSON (no markdown):
   },
   "nature": "e.g. Heavy, Warming, Slightly Oily",
   "health_rating": "Healthy / Moderate / Indulgent",
-  "healthier_alternative": "Specific, practical Indian swap (e.g. whole wheat or roasted alternative)",
+  "healthier_alternative": "Specific, practical Indian swap",
   "reason": "Clear explanation of why this dish affects doshas and why the alternative is superior"
 }`;
 
-        // Safe wrapper — 429 resolves null instead of throwing
-        const aiText = await new Promise<string | null>((resolve) => {
-          const timer = setTimeout(() => resolve(null), 4000);
-          model.generateContent(explanationPrompt)
-            .then(r => { clearTimeout(timer); resolve(r.response.text()); })
-            .catch(e => {
-              clearTimeout(timer);
-              const is429 = e?.status === 429 || e?.message?.includes('429') || e?.message?.includes('quota');
-              if (is429) console.warn('Gemini quota hit on food-scan, using fallback.');
-              else console.warn('Gemini food-scan failed:', e?.message || e);
-              resolve(null);
-            });
-        });
+        const aiText = await groqText(
+          groqKey,
+          'You are an expert Ayurvedic practitioner for AyurCoach.',
+          explanationPrompt,
+          500
+        );
 
         if (aiText) {
           const cleanText = aiText.trim().replace(/```(?:json)?\n?|```/g, '');
@@ -181,7 +209,7 @@ Return strictly raw JSON (no markdown):
           }
         }
       } catch (textErr: any) {
-        console.warn('Gemini text analysis skipped:', textErr?.message || textErr);
+        console.warn('Groq text analysis skipped:', textErr?.message || textErr);
       }
     }
 
@@ -201,7 +229,6 @@ Return strictly raw JSON (no markdown):
 
   } catch (error: any) {
     console.error('AyurCoach Fresh Food Scan Error:', error);
-    // Never crash the demo — return a clean response
     return res.status(200).json({
       source: 'database_match',
       food_name: 'Dal Khichdi with Ghee',

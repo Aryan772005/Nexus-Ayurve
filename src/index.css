@@ -281,6 +281,12 @@ img, video { display: block; image-rendering: -webkit-optimize-contrast; }
 .animate-spin-slow  { animation: spin-slow 3s linear infinite; }
 .animate-gradient   { background-size: 200% 200%; animation: gradient-shift 4s ease infinite; }
 
+@keyframes scanLine {
+  0%, 100% { top: 20%; opacity: 0.5; }
+  50% { top: 80%; opacity: 1; }
+}
+.animate-scan-line { animation: scanLine 2s ease-in-out infinite; }
+
 /* ═══════════════════════════════════════════
    PREMIUM SCROLLBAR
 ═══════════════════════════════════════════ */

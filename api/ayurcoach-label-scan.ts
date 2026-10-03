@@ -1,4 +1,4 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
+// Groq API — replaces Gemini for all AI analysis
 
 export const maxDuration = 60;
 
@@ -91,7 +91,6 @@ export default async function handler(req: any, res: any) {
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  const geminiKey = (process.env.GEMINI_API_KEY || '').trim();
   const groqKey = (process.env.GROQ_API_KEY || '').trim();
 
   try {
@@ -140,8 +139,8 @@ export default async function handler(req: any, res: any) {
       }
     }
 
-    // 3. Photo OCR via Gemini Vision
-    if (!ingredientsText && imageBase64 && geminiKey) {
+    // 3. Photo OCR via Groq Vision (llama-4-scout multimodal)
+    if (!ingredientsText && imageBase64 && groqKey) {
       scanMode = 'label_photo';
       const base64Data = imageBase64.startsWith('data:') ? imageBase64.split(',')[1] : imageBase64;
       const mimeType = imageBase64.startsWith('data:image/png') ? 'image/png' : 'image/jpeg';
@@ -150,12 +149,22 @@ export default async function handler(req: any, res: any) {
 {"product_name":"Name","brand":"Brand","ingredients_text":"Full ingredients list"}`;
 
       const ocrText = await new Promise<string | null>((resolve) => {
-        if (!geminiKey) return resolve(null);
-        const timer = setTimeout(() => resolve(null), 4000);
-        const genAI = new GoogleGenerativeAI(geminiKey);
-        genAI.getGenerativeModel({ model: 'gemini-2.0-flash' })
-          .generateContent([ocrPrompt, { inlineData: { mimeType, data: base64Data } }])
-          .then(r => { clearTimeout(timer); resolve(r.response.text()); })
+        const timer = setTimeout(() => resolve(null), 8000);
+        fetch('https://api.groq.com/openai/v1/chat/completions', {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${groqKey}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            model: 'groq/compound-mini',
+            messages: [{ role: 'user', content: [
+              { type: 'text', text: ocrPrompt },
+              { type: 'image_url', image_url: { url: `data:${mimeType};base64,${base64Data}` } }
+            ]}],
+            temperature: 0.1,
+            max_tokens: 300,
+          }),
+          signal: AbortSignal.timeout(8000),
+        })
+          .then(async r => { clearTimeout(timer); if (!r.ok) { resolve(null); return; } const d = await r.json(); resolve(d.choices?.[0]?.message?.content || null); })
           .catch(e => { clearTimeout(timer); console.warn('OCR skipped:', e?.message); resolve(null); });
       });
 
@@ -187,7 +196,7 @@ export default async function handler(req: any, res: any) {
       }
     }
 
-    // 6. AI plain-language explanation — Groq first, Gemini fallback, both safe against 429/timeout
+    // 6. AI plain-language explanation via Groq — safe against rate limits/timeout
     const systemPrompt = `You are a modern Ayurvedic wellness coach for Indian college students. Give concise, honest, practical feedback on packaged snacks.`;
     const userPrompt = `Product: ${productName}${brand ? ` (${brand})` : ''}
 Ingredients: ${ingredientsText}
@@ -199,45 +208,35 @@ Return ONLY raw JSON (no markdown):
 
     let ai: any = null;
 
-    // Try Groq (llama-3.3-70b) — free, fast, generous quota
+    // Try Groq — primary model then fallback
     if (groqKey && !ai) {
-      ai = await new Promise<any>((resolve) => {
-        const timer = setTimeout(() => resolve(null), 4000);
-        fetch('https://api.groq.com/openai/v1/chat/completions', {
-          method: 'POST',
-          headers: { Authorization: `Bearer ${groqKey}`, 'Content-Type': 'application/json' },
-          body: JSON.stringify({ model: 'llama-3.3-70b-versatile', messages: [{ role: 'system', content: systemPrompt }, { role: 'user', content: userPrompt }], temperature: 0.2, response_format: { type: 'json_object' } }),
-          signal: AbortSignal.timeout(4000),
-        }).then(async r => {
-          clearTimeout(timer);
-          if (!r.ok) return resolve(null);
-          const d = await r.json();
-          const c = d.choices?.[0]?.message?.content;
-          try { resolve(c ? JSON.parse(c) : null); } catch { resolve(null); }
-        }).catch(e => { clearTimeout(timer); console.warn('Groq skipped:', e?.message); resolve(null); });
-      });
-    }
-
-    // Try Gemini — safe Promise wrapper, never throws on 429
-    if (geminiKey && !ai) {
-      ai = await new Promise<any>((resolve) => {
-        const timer = setTimeout(() => resolve(null), 4000);
-        const genAI = new GoogleGenerativeAI(geminiKey);
-        genAI.getGenerativeModel({ model: 'gemini-2.0-flash' })
-          .generateContent(`${systemPrompt}\n\n${userPrompt}`)
-          .then(r => {
-            clearTimeout(timer);
-            const clean = r.response.text().trim().replace(/```(?:json)?\n?|```/g, '');
-            const m = clean.match(/\{[\s\S]*\}/);
-            try { resolve(m ? JSON.parse(m[0]) : null); } catch { resolve(null); }
-          })
-          .catch(e => {
-            clearTimeout(timer);
-            const is429 = e?.status === 429 || String(e?.message).includes('quota');
-            console.warn(is429 ? 'Gemini quota hit — using local fallback.' : `Gemini skipped: ${e?.message}`);
-            resolve(null);
+      const textModels = ['openai/gpt-oss-20b', 'groq/compound-mini'];
+      for (const model of textModels) {
+        if (ai) break;
+        try {
+          const r = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+            method: 'POST',
+            headers: { Authorization: `Bearer ${groqKey}`, 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              model,
+              messages: [{ role: 'system', content: systemPrompt }, { role: 'user', content: userPrompt }],
+              temperature: 0.25,
+              max_tokens: 600,
+            }),
+            signal: AbortSignal.timeout(15000),
           });
-      });
+          if (!r.ok) { console.warn(`[label-scan] ${model} HTTP ${r.status}`); continue; }
+          const d = await r.json();
+          const c = d.choices?.[0]?.message?.content?.trim();
+          if (c) {
+            const clean = c.replace(/```(?:json)?\n?|```/g, '').trim();
+            const match = clean.match(/\{[\s\S]*\}/);
+            if (match) {
+              try { ai = JSON.parse(match[0]); } catch { /* ignore */ }
+            }
+          }
+        } catch (e: any) { console.warn(`[label-scan] ${model}:`, e?.message); }
+      }
     }
 
     // 7. Always return 200 with either AI result or smart local fallback

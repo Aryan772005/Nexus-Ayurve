@@ -242,7 +242,7 @@ export default function ChatPage({ user }: { user: FirebaseUser | null }) {
       setMessages(prev => [...prev, { role: 'assistant', content: aiText }]);
     } catch (err: any) {
       const errorMsg = err?.message || 'Please try again in a moment.';
-      const cleanMsg = errorMsg.includes('GoogleGenerativeAI') 
+      const cleanMsg = (errorMsg.includes('GoogleGenerativeAI') || errorMsg.includes('Groq'))
         ? 'Our Ayurvedic assistant is temporarily busy. Please ask your question again in a moment.'
         : errorMsg;
       setMessages(prev => [...prev, { role: 'assistant', content: `🌿 ${cleanMsg}` }]);

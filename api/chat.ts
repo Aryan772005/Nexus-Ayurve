@@ -1,8 +1,6 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
-
 export const maxDuration = 60;
 
-// Knowledge-based intelligent Ayurvedic fallback if Google AI is rate-limited (429)
+// Knowledge-based intelligent Ayurvedic fallback if API is rate-limited
 function generateIntelligentAyurvedicFallback(message: string): string {
   const lower = message.toLowerCase();
 
@@ -78,35 +76,45 @@ export default async function handler(req: any, res: any) {
   const { message } = req.body;
   if (!message) return res.status(400).json({ error: 'Missing message' });
 
-  const geminiKey = (process.env.GEMINI_API_KEY || '').trim();
+  const groqKey = (process.env.GROQ_API_KEY || '').trim();
 
-  const prompt = `You are a knowledgeable, compassionate Ayurvedic health assistant for Nexus Ayurve.
+  const systemPrompt = `You are a knowledgeable, compassionate Ayurvedic health assistant for Nexus Ayurve.
 Provide helpful advice based on Ayurvedic principles including dosha balancing (Vata, Pitta, Kapha), herbal remedies, yoga, pranayama, and diet recommendations.
 Always be warm, professional, and use bullet points for lists.
-Recommend consulting a qualified Ayurvedic doctor for serious conditions.
+Recommend consulting a qualified Ayurvedic doctor for serious conditions.`;
 
-User: ${message}`;
+  if (groqKey) {
+    try {
+      const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${groqKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: 'openai/gpt-oss-20b',
+          messages: [
+            { role: 'system', content: systemPrompt },
+            { role: 'user', content: message },
+          ],
+          temperature: 0.3,
+          max_tokens: 800,
+        }),
+      });
 
-  // Try candidate Gemini models
-  if (geminiKey) {
-    const candidateModels = ['gemini-3.6-flash', 'gemini-2.5-flash'];
-    const genAI = new GoogleGenerativeAI(geminiKey);
-
-    for (const modelName of candidateModels) {
-      try {
-        const model = genAI.getGenerativeModel({ model: modelName });
-        const result = await model.generateContent(prompt);
-        const aiText = result.response.text();
+      if (response.ok) {
+        const data = await response.json();
+        const aiText = data.choices?.[0]?.message?.content;
         if (aiText) {
           return res.status(200).json({ reply: aiText });
         }
-      } catch (err: any) {
-        console.warn(`Model ${modelName} returned error (likely 429 quota):`, err?.message || err);
       }
+    } catch (err: any) {
+      console.warn('Groq chat error:', err?.message || err);
     }
   }
 
-  // If rate limit (429) was hit or key unavailable, deliver intelligent Ayurvedic consultation reply
+  // If rate limit or key unavailable, deliver intelligent Ayurvedic consultation reply
   const fallbackReply = generateIntelligentAyurvedicFallback(message);
   return res.status(200).json({ reply: fallbackReply });
 }

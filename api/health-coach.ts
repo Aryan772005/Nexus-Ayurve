@@ -1,5 +1,4 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { GoogleGenerativeAI } from '@google/generative-ai';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   // CORS
@@ -26,6 +25,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(400).json({
       error: 'Missing required fields (age, gender, height, weight, goal)',
     });
+  }
+
+  const groqKey = (process.env.GROQ_API_KEY || '').trim();
+  if (!groqKey) {
+    return res.status(500).json({ error: 'GROQ_API_KEY is not configured.' });
   }
 
   // Concise System Prompt
@@ -72,33 +76,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 `;
 
-  const geminiKey = (process.env.GEMINI_API_KEY || '').trim();
-  const groqKey = (process.env.GROQ_API_KEY || '').trim();
-
-  // Try Gemini first if configured
-  if (geminiKey) {
-    try {
-      const genAI = new GoogleGenerativeAI(geminiKey);
-      const model = genAI.getGenerativeModel({ model: 'gemini-3.6-flash' });
-      const prompt = `${SYSTEM_PROMPT}\n\n${USER_PROMPT}`;
-      const result = await model.generateContent(prompt);
-      let output = result.response.text().trim();
-      output = output.replace(/```(?:json)?\n?|```/g, '').trim();
-      const jsonMatch = output.match(/\{[\s\S]*\}/);
-      if (jsonMatch) {
-        let jsonText = jsonMatch[0];
-        jsonText = jsonText.replace(/:\s*(\d+(?:\.\d+)?\s*(?:g|kcal|mg|kg|ml|mcg|IU|cup|item|cal|calories))\b/gi, ': "$1"');
-        return res.status(200).json(JSON.parse(jsonText));
-      }
-    } catch (gErr: any) {
-      console.error('Gemini health coach error, trying Groq fallback:', gErr?.message || gErr);
-    }
-  }
-
-  if (!groqKey) {
-    return res.status(500).json({ error: 'Neither GEMINI_API_KEY nor GROQ_API_KEY is configured.' });
-  }
-
   try {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 20000);
@@ -111,7 +88,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'llama-3.1-8b-instant',
+        model: 'openai/gpt-oss-20b',
         messages: [
           { role: 'system', content: SYSTEM_PROMPT },
           { role: 'user', content: USER_PROMPT },
