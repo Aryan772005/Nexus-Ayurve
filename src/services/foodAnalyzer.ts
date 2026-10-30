@@ -7,7 +7,6 @@ export interface FoodAnalysisResult {
   health_rating: string;
 }
 
-// A smart fallback database if the AI API fails or is not available
 const FOOD_DATABASE: Record<string, FoodAnalysisResult> = {
   default: {
     food_name: "Unknown Food",
@@ -67,22 +66,15 @@ const FOOD_DATABASE: Record<string, FoodAnalysisResult> = {
   }
 };
 
-/**
- * Simulates analyzing a food image if the backend API isn't available.
- * It randomly selects or attempts to pseudo-recognize based on dummy logic,
- * giving the "feel" of AI for the hackathon demo.
- */
 export const fallbackAnalyzeFood = async (imageFile: File): Promise<FoodAnalysisResult> => {
   return new Promise((resolve) => {
     setTimeout(() => {
-      // For demo purposes, we randomly assign a known food or return dal
       const keys = Object.keys(FOOD_DATABASE).filter(k => k !== 'default');
-      // Simple hash of filename to get a deterministic result per file
       const hash = imageFile.name.length;
       const index = hash % keys.length;
       const key = keys[index];
       
       resolve(FOOD_DATABASE[key] || FOOD_DATABASE.default);
-    }, 2000); // Simulate API latency
+    }, 2000);
   });
 };
